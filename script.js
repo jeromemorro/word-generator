@@ -31,8 +31,10 @@ window.addEventListener('DOMContentLoaded', function() {
       button.textContent = 'Start';
       button.style.backgroundColor = 'green';
     } else {
-      // Word generation is currently stopped, start it
-      startWordGeneration();
+      // Word generation is currently stopped, start it only if it was previously running
+      if (button.textContent === 'Stop') {
+        startWordGeneration();
+      }
       button.textContent = 'Stop';
       button.style.backgroundColor = 'red';
     }
@@ -40,7 +42,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
   secondsSelect.addEventListener('change', function() {
     stopWordGeneration();
-    startWordGeneration();
+    // Start word generation only if it was previously running
+    if (button.textContent === 'Stop') {
+      startWordGeneration();
+    }
   });
 
   button.addEventListener('click', toggleWordGeneration);
