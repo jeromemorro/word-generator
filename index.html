@@ -6,10 +6,7 @@
 </head>
 <body>
   <table>
-    <tr>
-      <th colspan="4">Controls</th>
-    </tr>
-    <tr>
+    <tr class="row1">
       <td colspan="4">
         <div id="word-container">
           <div id="word" class="initial-text">Let's Goooo!</div>
@@ -17,7 +14,8 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2">
+      <td class="row2"></td>
+      <td class="row3">
         <div id="seconds-container">
           <label for="seconds-select" class="label-text">Seconds between generated words:</label>
           <select id="seconds-select">
@@ -43,8 +41,6 @@
             <option value="20">20</option>
           </select>
         </div>
-      </td>
-      <td colspan="2">
         <div id="syllables-container">
           <label for="syllables-select" class="label-text">Syllables per word:</label>
           <select id="syllables-select">
@@ -56,9 +52,10 @@
           </select>
         </div>
       </td>
+      <td class="row4"></td>
+      <td class="row5"></td>
     </tr>
   </table>
-
   <script src="script.js"></script>
 </body>
 </html>
