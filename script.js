@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
     startWordGeneration();
   }
 
-  numberSelect.addEventListener('change', updateInterval);
+  secondsSelect.addEventListener('change', updateInterval);
 
   startWordGeneration();
 });
