@@ -18,6 +18,11 @@ body {
   color: black;
 }
 
+.label-text {
+  font-size: 16px;
+}
+
 .initial-text {
   font-size: 120px;
 }
+
