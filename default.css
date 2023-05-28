@@ -1,0 +1,9 @@
+#word-container {
+  text-align: center;
+  margin-top: 100px;
+}
+
+#generate-button {
+  display: block;
+  margin: 20px auto;
+}
