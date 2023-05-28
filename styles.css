@@ -1,17 +1,19 @@
+body {
+  background-color: black;
+}
+
 #word-container {
   text-align: center;
   margin-top: 100px;
-}
-
-#word {
-  font-size: 90px;
+  color: white;
 }
 
 #select-container {
   margin-top: 20px;
+  color: white;
 }
 
 #number-select {
   font-size: 16px;
+  color: black;
 }
-
