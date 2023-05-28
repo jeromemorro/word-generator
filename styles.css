@@ -29,6 +29,10 @@ body {
   color: black;
 }
 
+#toggle-container {
+  margin-top: 20px;
+}
+
 .label-text {
   font-size: 18px;
 }
@@ -44,7 +48,7 @@ table {
 
 td {
   border: 1px solid black;
-  /* padding: 10px; */
+  padding: 10px; 
 }
 
 .row1 {
@@ -64,7 +68,6 @@ td {
 .row3 {
   width: 30%;
   vertical-align: top;
-  margin-top: 20px;
 }
 
 .row4 {
