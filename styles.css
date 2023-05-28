@@ -58,10 +58,12 @@ td {
 
 .row2 {
   width: 20%;
+  vertical-align: top;
 }
 
 .row3 {
   width: 30%;
+  vertical-align: top;
 }
 
 .row4 {
