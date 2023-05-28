@@ -9,8 +9,7 @@ window.addEventListener('DOMContentLoaded', function() {
     startStopBtn.textContent = "Stop";
     startStopBtn.classList.remove("start");
     startStopBtn.classList.add("stop");
-  } 
-  else {
+  } else {
     startStopBtn.textContent = "Start";
     startStopBtn.classList.remove("stop");
     startStopBtn.classList.add("start");
