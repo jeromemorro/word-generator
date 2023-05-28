@@ -25,5 +25,8 @@ function startWordCycle(seconds) {
     wordContainer.textContent = word;
     
     index = (index + 1) % words.length;
+    
+    // Apply font size of 90 pixels
+    wordContainer.style.fontSize = "90px";
   }, seconds * 1000);
 }
