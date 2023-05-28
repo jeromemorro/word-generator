@@ -5,6 +5,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var secondsSelect = document.getElementById('seconds-select');
   var intervalId;
   var button = document.getElementById('toggle-button');
+  var isWordGenerationRunning = false;
 
   function generateRandomWord() {
     var words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Spring', 'Summer', 'Autumn', 'Winter'];
@@ -17,33 +18,33 @@ window.addEventListener('DOMContentLoaded', function() {
     var interval = secondsSelect.value * 1000; // Convert selected value to milliseconds
     generateRandomWord();
     intervalId = setInterval(generateRandomWord, interval);
+    isWordGenerationRunning = true;
   }
 
   function stopWordGeneration() {
     clearInterval(intervalId);
     intervalId = null;
+    isWordGenerationRunning = false;
   }
 
   function toggleWordGeneration() {
-    if (intervalId) {
+    if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
       button.textContent = 'Start';
       button.style.backgroundColor = 'green';
     } else {
-      // Word generation is currently stopped, start it only if it was previously running
-      if (button.textContent === 'Stop') {
-        startWordGeneration();
-      }
+      // Word generation is currently stopped, start it
+      startWordGeneration();
       button.textContent = 'Stop';
       button.style.backgroundColor = 'red';
     }
   }
 
   secondsSelect.addEventListener('change', function() {
-    stopWordGeneration();
-    // Start word generation only if it was previously running
-    if (button.textContent === 'Stop') {
+    // Update interval only if the word generation is currently running
+    if (isWordGenerationRunning) {
+      stopWordGeneration();
       startWordGeneration();
     }
   });
