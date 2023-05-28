@@ -12,6 +12,6 @@ generateButton.addEventListener("click", () => {
     const randomWord = words[randomIndex];
     wordContainer.textContent = randomWord;
   } else {
-    wordContainer.textContent = "Number of seconds between words";
+    wordContainer.textContent = "Please select a valid number (1-30)";
   }
 });
