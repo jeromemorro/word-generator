@@ -3,9 +3,10 @@ body {
 }
 
 #word-container {
-  text-align: center;
-  margin-top: 100px;
-  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 #seconds-container {
@@ -50,6 +51,7 @@ td {
   background-color: #333;
   color: white;
   text-align: center;
+  vertical-align: middle;
   font-weight: bold;
 }
 
