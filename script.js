@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', function() {
   var wordElement = document.getElementById('word');
-  var numberSelect = document.getElementById('number-select');
+  var secondsSelect = document.getElementById('seconds-select');
   var intervalId;
 
   function generateRandomWord() {
@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function startWordGeneration() {
-    var interval = numberSelect.value * 1000; // Convert selected value to milliseconds
+    var interval = secondsSelect.value * 1000; // Convert selected value to milliseconds
     generateRandomWord();
     intervalId = setInterval(generateRandomWord, interval);
   }
