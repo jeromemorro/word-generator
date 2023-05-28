@@ -68,10 +68,12 @@ td {
 
 .row4 {
   width: 30%;
+  vertical-align: top;
 }
 
 .row5 {
   width: 20%;
+  vertical-align: top;
 }
 
 .control-button {
