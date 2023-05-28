@@ -1,20 +1,10 @@
+// script.js
+
 window.addEventListener('DOMContentLoaded', function() {
   var wordElement = document.getElementById('word');
   var secondsSelect = document.getElementById('seconds-select');
   var intervalId;
-  var startStopBtn = document.getElementById("start-stop-btn");
-  
-  startStopBtn.addEventListener("click", function() {
-  if (startStopBtn.classList.contains("start")) {
-    startStopBtn.textContent = "Stop";
-    startStopBtn.classList.remove("start");
-    startStopBtn.classList.add("stop");
-  } else {
-    startStopBtn.textContent = "Start";
-    startStopBtn.classList.remove("stop");
-    startStopBtn.classList.add("start");
-  }
-
+  var button = document.getElementById('toggle-button');
 
   function generateRandomWord() {
     var words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Spring', 'Summer', 'Autumn', 'Winter'];
@@ -29,12 +19,30 @@ window.addEventListener('DOMContentLoaded', function() {
     intervalId = setInterval(generateRandomWord, interval);
   }
 
-  function updateInterval() {
+  function stopWordGeneration() {
     clearInterval(intervalId);
-    startWordGeneration();
   }
 
-  secondsSelect.addEventListener('change', updateInterval);
+  function toggleWordGeneration() {
+    if (intervalId) {
+      // Word generation is currently running, stop it
+      stopWordGeneration();
+      button.textContent = 'Start';
+      button.style.backgroundColor = 'green';
+    } else {
+      // Word generation is currently stopped, start it
+      startWordGeneration();
+      button.textContent = 'Stop';
+      button.style.backgroundColor = 'red';
+    }
+  }
+
+  secondsSelect.addEventListener('change', function() {
+    stopWordGeneration();
+    startWordGeneration();
+  });
+
+  button.addEventListener('click', toggleWordGeneration);
 
   startWordGeneration();
 });
