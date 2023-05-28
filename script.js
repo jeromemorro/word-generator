@@ -31,12 +31,12 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
-      button.textContent = 'Start';
+      button.textContent = 'Start generator';
       button.style.backgroundColor = 'green';
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
-      button.textContent = 'Stop';
+      button.textContent = 'Stop generator';
       button.style.backgroundColor = 'red';
     }
   }
