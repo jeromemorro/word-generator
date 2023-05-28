@@ -2,16 +2,16 @@ const words = ["January", "February", "March", "April", "May", "June", "July", "
 
 const wordContainer = document.getElementById("word");
 const generateButton = document.getElementById("generate-button");
-const numberInput = document.getElementById("number-input");
+const numberSelect = document.getElementById("number-select");
 
 generateButton.addEventListener("click", () => {
-  const selectedNumber = parseInt(numberInput.value);
+  const selectedNumber = parseInt(numberSelect.value);
   
   if (selectedNumber >= 1 && selectedNumber <= 30) {
     const randomIndex = Math.floor(Math.random() * words.length);
     const randomWord = words[randomIndex];
     wordContainer.textContent = randomWord;
   } else {
-    wordContainer.textContent = "Please enter a valid number (1-30)";
+    wordContainer.textContent = "Please select a valid number (1-30)";
   }
 });
