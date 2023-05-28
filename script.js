@@ -21,6 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function stopWordGeneration() {
     clearInterval(intervalId);
+    intervalId = null;
   }
 
   function toggleWordGeneration() {
