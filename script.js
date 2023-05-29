@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var intervalId;
   var toggleButton = document.getElementById('toggle-button');
   var isWordGenerationRunning = false;
+  var definitionButton = document.getElementById('definition-button');
 
   function generateRandomWord() {
     var words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Spring', 'Summer', 'Autumn', 'Winter'];
@@ -41,6 +42,10 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  window.addEventListener('resize', function() {
+    toggleButton.style.width = definitionButton.offsetWidth + 'px';
+  });  
+  
   secondsSelect.addEventListener('change', function() {
     // Update interval only if the word generation is currently running
     if (isWordGenerationRunning) {
@@ -49,16 +54,9 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  toggleButton.addEventListener('click', toggleWordGeneration);
-
-  startWordGeneration();
-
   // Dynamically adjust the width of the toggle button to match the definition button
-  var definitionButton = document.getElementById('definition-button');
-
   toggleButton.style.width = definitionButton.offsetWidth + 'px';
-
-  window.addEventListener('resize', function() {
-    toggleButton.style.width = definitionButton.offsetWidth + 'px';
-  });
+  
+  toggleButton.addEventListener('click', toggleWordGeneration);
+  startWordGeneration();
 });
