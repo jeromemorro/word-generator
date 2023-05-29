@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random Word Generator</title>
+  <link rel="stylesheet" type="text/css" href="styles2.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row row1">
+      <div id="word-container">
+        <div id="word" class="word-text">Let's Goooo!</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column row2">
+        <div id="seconds-container">
+          <label for="seconds-select" class="label-text">Seconds between generated words:</label>
+          <select id="seconds-select">
+            <!-- Options here -->
+          </select>
+        </div>
+        <div id="syllables-container">
+          <label for="syllables-select" class="label-text">Syllables per word:</label>
+          <select id="syllables-select">
+            <!-- Options here -->
+          </select>
+        </div>
+        <div id="obscure-words-container">
+          <label for="obscure-words-checkbox" class="label-text">Show obscure words:</label>
+          <input type="checkbox" id="obscure-words-checkbox">
+        </div>
+      </div>
+      <div class="column row3">
+        <div id="toggle-container">
+          <button id="toggle-button" class="toggle-button">Stop generator</button>
+        </div>
+      </div>
+      <div class="column row4">
+        <div id="definition-container">
+          <button id="definition-button" class="definition-button">Show definition</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
