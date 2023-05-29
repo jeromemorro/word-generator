@@ -13,6 +13,23 @@ window.addEventListener('DOMContentLoaded', function() {
     var randomNumber = Math.floor(Math.random() * words.length);
     var randomWord = words[randomNumber];
     wordElement.textContent = randomWord;
+    
+  // Generate random sentences for the text control
+  var sentences = [
+    'The quick brown fox jumps over the lazy dog.',
+    'OpenAIs ChatGPT is a powerful language model.',
+    'I love coding and learning new technologies.',
+    'The sun sets in the west, bringing an end to the day.',
+    'Artificial intelligence is transforming various industries.'
+  ];
+  var randomSentences = '';
+  for (var i = 0; i < 2; i++) {
+    var randomIndex = Math.floor(Math.random() * sentences.length);
+    randomSentences += sentences[randomIndex] + ' ';
+  }
+  textControl.textContent = randomSentences;
+  // end of Generate random sentences for the text control
+    
   }
 
   function startWordGeneration() {
