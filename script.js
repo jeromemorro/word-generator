@@ -7,6 +7,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var toggleButton = document.getElementById('toggle-button');
   var isWordGenerationRunning = false;
   var definitionButton = document.getElementById('definition-button');
+  var textControl = document.getElementById('text-control');
 
   function generateRandomWord() {
     var words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Spring', 'Summer', 'Autumn', 'Winter'];
