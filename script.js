@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var wordElement = document.getElementById('word');
   var secondsSelect = document.getElementById('seconds-select');
   var intervalId;
-  var button = document.getElementById('toggle-button');
+  var toggleButton = document.getElementById('toggle-button');
   var isWordGenerationRunning = false;
 
   function generateRandomWord() {
@@ -31,13 +31,13 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
-      button.textContent = 'Start generator';
-      button.style.backgroundColor = 'red';
+      toggleButton.textContent = 'Start generator';
+      toggleButton.style.backgroundColor = 'red';
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
-      button.textContent = 'Stop generator';
-      button.style.backgroundColor = 'green';
+      toggleButton.textContent = 'Stop generator';
+      toggleButton.style.backgroundColor = 'green';
     }
   }
 
@@ -49,7 +49,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  button.addEventListener('click', toggleWordGeneration);
+  toggleButton.addEventListener('click', toggleWordGeneration);
 
   startWordGeneration();
 });
