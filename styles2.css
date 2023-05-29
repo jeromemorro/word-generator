@@ -12,8 +12,7 @@ body {
 #seconds-container,
 #syllables-container,
 #obscure-words-container,
-#toggle-container,
-#definition-container {
+#toggle-container {
   display: flex;
   align-items: center;
   margin-top: 20px;
@@ -21,9 +20,7 @@ body {
 
 #seconds-container select,
 #syllables-container select,
-#obscure-words-container input[type="checkbox"],
-#toggle-container button,
-#definition-container button {
+#obscure-words-container input[type="checkbox"] {
   flex: 1;
 }
 
@@ -88,4 +85,5 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: #993399;
+  width: auto; /* Ensure definition-button's width remains unchanged */
 }
