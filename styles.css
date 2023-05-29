@@ -41,61 +41,11 @@ body {
 
 #toggle-container {
   margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
 }
 
-#definition-container {
-  margin-top: 20px;
-}
-
-.label-text {
-  font-size: 18px;
-}
-
-.word-text {
-  font-size: 150px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-td {
-  border: 1px solid black;
-  padding: 10px; 
-}
-
-.row1 {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  vertical-align: middle;
-  font-weight: bold;
-  height: 60vh;
-}
-
-.row2 {
-  width: 20%;
-  vertical-align: top;
-}
-
-.row3 {
-  width: 30%;
-  vertical-align: top;
-}
-
-.row4 {
-  width: 45%;
-  vertical-align: top;
-}
-
-.row5 {
-  width: 5%;
-  vertical-align: top;
-}
-
-.toggle-button {
-  /* width: 20%; */
+#toggle-button {
   height: 100%;
   color: white;
   font-size: 16px;
@@ -103,23 +53,15 @@ td {
   background-color: green;
 }
 
+#definition-container {
+  margin-top: 20px;
+  display: inline-block;
+}
+
 .definition-button {
-  /*  width: 100%; */
   height: 100%;
   color: white;
   font-size: 16px;
   font-weight: bold;
   background-color: #993399;
-}
-
-/* Adjust the width of toggle-button based on definition-button */
-#definition-container {
-  display: inline-block;
-}
-
-#toggle-container::after {
-  content: "";
-  display: inline-block;
-  width: calc(100% - 10px -  /* Padding between buttons */
-    #definition-container.offsetWidth); /* Adjust width based on definition-button */
 }
