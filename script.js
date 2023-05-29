@@ -52,4 +52,13 @@ window.addEventListener('DOMContentLoaded', function() {
   toggleButton.addEventListener('click', toggleWordGeneration);
 
   startWordGeneration();
+
+  // Dynamically adjust the width of the toggle button to match the definition button
+  var definitionButton = document.getElementById('definition-button');
+
+  toggleButton.style.width = definitionButton.offsetWidth + 'px';
+
+  window.addEventListener('resize', function() {
+    toggleButton.style.width = definitionButton.offsetWidth + 'px';
+  });
 });
