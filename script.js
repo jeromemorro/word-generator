@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var intervalId;
   var toggleButton = document.getElementById('toggle-button');
   var isWordGenerationRunning = false;
+  var isDefinitionVisible = false;
   var definitionButton = document.getElementById('definition-button');
   var textControl = document.getElementById('text-control');
 
@@ -60,6 +61,19 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function toggleDefinition() {
+    if (isDefinitionVisible) {
+      // Hide the text control and update the button text
+      textControl.style.display = 'none';
+      definitionButton.textContent = 'Show definition';
+    } else {
+      // Show the text control and update the button text
+      textControl.style.display = 'block';
+      definitionButton.textContent = 'Hide definition';
+    }
+    isDefinitionVisible = !isDefinitionVisible;
+  }
+  
   window.addEventListener('resize', function() {
     toggleButton.style.width = definitionButton.offsetWidth + 'px';
   });  
@@ -75,6 +89,11 @@ window.addEventListener('DOMContentLoaded', function() {
   // Dynamically adjust the width of the toggle button to match the definition button
   toggleButton.style.width = definitionButton.offsetWidth + 'px';
   
+  // Hide the text control on page load
+  textControl.style.display = 'none';
+  
   toggleButton.addEventListener('click', toggleWordGeneration);
+  definitionButton.addEventListener('click', toggleDefinition);
+  
   startWordGeneration();
 });
