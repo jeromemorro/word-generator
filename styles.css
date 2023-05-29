@@ -41,8 +41,6 @@ body {
 
 #toggle-container {
   margin-top: 20px;
-  display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
 }
 
 #definition-container {
@@ -103,7 +101,6 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: green;
-  flex: 1; /* Occupy remaining width */
 }
 
 .definition-button {
@@ -113,4 +110,16 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: #993399;
+}
+
+/* Adjust the width of toggle-button based on definition-button */
+#definition-container {
+  display: inline-block;
+}
+
+#toggle-container::after {
+  content: "";
+  display: inline-block;
+  width: calc(100% - 10px -  /* Padding between buttons */
+    #definition-container.offsetWidth); /* Adjust width based on definition-button */
 }
