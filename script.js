@@ -70,11 +70,10 @@ window.addEventListener('DOMContentLoaded', function() {
       // Show the text control and update the button text
       textControl.style.display = 'block';
       definitionButton.textContent = 'Hide definition';
+      // Adjust the width of the definition button to match the toggle button
+      definitionButton.style.width = toggleButton.offsetWidth + 'px';
     }
     isDefinitionVisible = !isDefinitionVisible;
-    
-    // Adjust the width of the definition button to match the toggle button
-    definitionButton.style.width = toggleButton.offsetWidth + 'px';
   }
   
   window.addEventListener('resize', function() {
