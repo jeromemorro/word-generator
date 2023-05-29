@@ -21,6 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
       'OpenAI\'s ChatGPT is a powerful language model.',
       'I love coding and learning new technologies.',
       'The sun sets in the west, bringing an end to the day.',
+      'This is a super long sentence filed with a bunch of nonsense wording that should push the boundaries of the new text control that I have created today purely for my testing purposes.',
       'Artificial intelligence is transforming various industries.'
     ];
     var randomSentences = '';
