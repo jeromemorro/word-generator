@@ -41,6 +41,8 @@ body {
 
 #toggle-container {
   margin-top: 20px;
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
 }
 
 #definition-container {
@@ -94,13 +96,14 @@ td {
   vertical-align: top;
 }
 
-.control-button {
+.toggle-button {
   /* width: 20%; */
   height: 100%;
   color: white;
   font-size: 16px;
   font-weight: bold;
   background-color: green;
+  flex: 1; /* Occupy remaining width */
 }
 
 .definition-button {
