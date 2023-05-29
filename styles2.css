@@ -9,19 +9,48 @@ body {
   height: 100%;
 }
 
-#seconds-container,
-#syllables-container,
-#obscure-words-container,
-#toggle-container {
-  display: flex;
-  align-items: center;
+#seconds-container {
   margin-top: 20px;
+  color: white;
 }
 
-#seconds-container select,
-#syllables-container select,
-#obscure-words-container input[type="checkbox"] {
-  flex: 1;
+#seconds-select {
+  font-size: 16px;
+  color: black;
+}
+
+#syllables-container {
+  margin-top: 20px;
+  color: white;
+}
+
+#syllables-select {
+  font-size: 16px;
+  color: black;
+}
+
+#obscure-words-container {
+  margin-top: 20px;
+  color: white;
+}
+
+#obscure-words-checkbox {
+  font-size: 16px;
+  color: black;
+}
+
+#toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+  width: auto;
+}
+
+#definition-container {
+  margin-top: 20px;
+  display: inline-block;
+  width: auto;
 }
 
 .label-text {
@@ -77,6 +106,7 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: green;
+  width: auto;
 }
 
 .definition-button {
@@ -85,5 +115,8 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: #993399;
-  width: auto; /* Ensure definition-button's width remains unchanged */
+}
+
+#definition-container ~ div {
+  flex-grow: 1;
 }
