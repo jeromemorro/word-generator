@@ -47,6 +47,11 @@ body {
   margin-top: 20px;
 }
 
+#text-container {
+  margin-top: 20px;
+}
+
+
 .label-text {
   font-size: 18px;
 }
@@ -110,4 +115,11 @@ td {
   font-size: 16px;
   font-weight: bold;
   background-color: #993399;
+}
+
+.text-control {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
 }
