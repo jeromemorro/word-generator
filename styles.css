@@ -34,7 +34,7 @@ body {
   color: white;
 }
 
-obscure-words-checkbox {
+#obscure-words-checkbox {
   font-size: 16px;
   color: black;
 }
