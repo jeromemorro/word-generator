@@ -11,36 +11,36 @@ body {
 
 
 #progress-bar-container {
+  display: flex;
   justify-content: flex-start;
   align-items: flex-end;
   height: 20px;
   margin-top: 10px;
-  overflow: hidden; /* Hide the overflowing blocks */
+  overflow: hidden; /* Hide the overflowing squares */
 }
 
 #progress-bar {
   display: block;
-  white-space: nowrap; /* Prevent line wrapping */
 }
 
 .progress-square {
-  display: inline-block;
   width: 20px;
   height: 20px;
   background-color: green;
   margin-right: 5px;
-  transform: translateX(-100%); /* Start the blocks outside the container */
-  animation: progressAnimation 1s linear infinite;
+  opacity: 0; /* Initially hide the squares */
+  animation: progressAnimation 2s linear forwards;
 }
 
 @keyframes progressAnimation {
   0% {
-    transform: translateX(-100%);
+    opacity: 0; /* Start with squares hidden */
   }
   100% {
-    transform: translateX(0%);
+    opacity: 1; /* End with squares fully visible */
   }
 }
+
 
 
 #interval-container {
