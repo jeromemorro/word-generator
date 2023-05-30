@@ -72,9 +72,6 @@ window.addEventListener('DOMContentLoaded', function() {
       definitionButton.textContent = 'Hide definition';
     }
     isDefinitionVisible = !isDefinitionVisible;
-    
-    // Adjust the width of the definition button to match the toggle button
-    definitionButton.style.width = toggleButton.style.width';  
   }
   
   window.addEventListener('resize', function() {
