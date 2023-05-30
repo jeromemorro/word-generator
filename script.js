@@ -93,7 +93,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  fetch('words.json')
+  fetch('words-temp.json')
     .then(function(response) {
       return response.json();
     })
