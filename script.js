@@ -1,7 +1,7 @@
 // script.js
 
 window.addEventListener('DOMContentLoaded', function() {
-  var wordElement = document.getElementById('word-text');
+  var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
   var intervalId;
   var generatorToggle = document.getElementById('generator-toggle');
@@ -37,10 +37,10 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
       var definition = filteredWords[randomNumber].d;
 
-      wordElement.textContent = randomWord;
+      wordDisplay.textContent = randomWord;
       definitionDisplay.value = definition;
     } else {
-      wordElement.textContent = 'No matching words found.';
+      wordDisplay.textContent = 'No matching words found.';
       definitionDisplay.value = '';
     }
   }
