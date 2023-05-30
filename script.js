@@ -9,30 +9,42 @@ window.addEventListener('DOMContentLoaded', function() {
   var isDefinitionVisible = false;
   var definitionButton = document.getElementById('definition-button');
   var textControl = document.getElementById('text-control');
+  var syllablesSelect = document.getElementById('syllables-select');
+  var obscureWordsCheckbox = document.getElementById('obscure-words-checkbox');
+
+  var words = []; // Array to store the word entries from the JSON file
+  
+  // Fetch the words from the JSON file
+  fetch('words.json')
+    .then(response => response.json())
+    .then(data => {
+      words = data;
+      startWordGeneration();
+    })
+    .catch(error => console.error('Error fetching words:', error));
 
   function generateRandomWord() {
-    var words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Spring', 'Summer', 'Autumn', 'Winter'];
-    var randomNumber = Math.floor(Math.random() * words.length);
-    var randomWord = words[randomNumber];
-    wordElement.textContent = randomWord;
-
-    // Generate random sentences for the text control
-    var sentences = [
-      'The quick brown fox jumps over the lazy dog.',
-      'OpenAI\'s ChatGPT is a powerful language model.',
-      'I love coding and learning new technologies.',
-      'The sun sets in the west, bringing an end to the day.',
-      'This is a super long sentence filed with a bunch of nonsense wording that should push the boundaries of the new text control that I have created today purely for my testing purposes.',
-      'Artificial intelligence is transforming various industries.'
-    ];
-    var randomSentences = '';
-    for (var i = 0; i < 2; i++) {
-      var randomIndex = Math.floor(Math.random() * sentences.length);
-      randomSentences += sentences[randomIndex] + ' ';
+    var filteredWords = words;
+    
+    // Filter words based on selected syllables
+    var selectedSyllables = syllablesSelect.value;
+    if (selectedSyllables !== '0') {
+      filteredWords = filteredWords.filter(word => word.s == selectedSyllables);
     }
-  textControl.textContent = randomSentences;
-  }
+    
+    // Filter words based on obscure words checkbox
+    if (!obscureWordsCheckbox.checked) {
+      filteredWords = filteredWords.filter(word => word.c == 1);
+    }
 
+    // Generate a random word from the filtered list
+    var randomNumber = Math.floor(Math.random() * filteredWords.length);
+    var randomWord = filteredWords[randomNumber].w;
+    var definition = filteredWords[randomNumber].d;
+    
+    wordElement.textContent = randomWord;
+    textControl.textContent = definition;
+  }
 
   function startWordGeneration() {
     var interval = secondsSelect.value * 1000; // Convert selected value to milliseconds
@@ -72,31 +84,28 @@ window.addEventListener('DOMContentLoaded', function() {
       definitionButton.textContent = 'Hide definition';
     }
     isDefinitionVisible = !isDefinitionVisible;
-    
-    // Set the width of the definition button to match the width of the toggle button
-    definitionButton.style.width = toggleButton.offsetWidth + 'px';
   }
-  
+
+  function handleOptionChange() {
+    if (isWordGenerationRunning) {
+      // Word generation is currently running, regenerate word based on new options
+      generateRandomWord();
+    }
+  }
+
   window.addEventListener('resize', function() {
     toggleButton.style.width = definitionButton.offsetWidth + 'px';
-  });  
-  
-  secondsSelect.addEventListener('change', function() {
-    // Update interval only if the word generation is currently running
-    if (isWordGenerationRunning) {
-      stopWordGeneration();
-      startWordGeneration();
-    }
   });
 
   // Dynamically adjust the width of the toggle button to match the definition button
   toggleButton.style.width = definitionButton.offsetWidth + 'px';
-  
+
   // Hide the text control on page load
   textControl.style.display = 'none';
-  
+
   toggleButton.addEventListener('click', toggleWordGeneration);
   definitionButton.addEventListener('click', toggleDefinition);
-  
-  startWordGeneration();
+  syllablesSelect.addEventListener('change', handleOptionChange);
+  obscureWordsCheckbox.addEventListener('change', handleOptionChange);
+  secondsSelect.addEventListener('change', handleOptionChange);
 });
