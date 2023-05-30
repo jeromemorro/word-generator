@@ -2,7 +2,7 @@ body {
   background-color: black;
 }
 
-#word-display {
+#word-container {
   align-items: center;  
   display: flex;
   height: 100%;  
