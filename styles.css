@@ -11,25 +11,33 @@ body {
 
 
 #progress-bar-container {
-  display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
   height: 20px;
   margin-top: 10px;
 }
 
 #progress-bar {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr); /* Adjust the number of columns as needed */
-  gap: 25px; /* Adjust the gap between blocks as needed */
-  height: 20px;
+  display: block;
 }
 
 .progress-square {
+  display: inline-block; /* Use inline-block to arrange blocks horizontally */
   width: 20px;
   height: 20px;
   background-color: green;
   margin-right: 5px;
+  opacity: 0; /* Start with no opacity */
+  animation: progressAnimation 1s linear infinite;
+}
+
+@keyframes progressAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 
