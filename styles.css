@@ -19,22 +19,12 @@ body {
 } 
 */
 
-.progress-bar {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  background-color: #ccc;
-}
-
-.progress-block {
-  flex: 1 0 auto;
-  height: 100%;
-  background-color: green;
-  margin-right: 5px; /* Adjust the spacing between blocks */
-}
-
 .progress-block.empty {
-  background-color: transparent;
+  background-color: blue; /* Set the color for empty blocks */
+}
+
+.progress-block.filled {
+  background-color: green; /* Set the color for filled blocks */
 }
 
 
