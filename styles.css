@@ -22,18 +22,20 @@ body {
 .progress-bar {
   display: flex;
   align-items: center;
-  height: 20px; /* Set the desired height of the progress bar */
+  height: 100%;
   background-color: #ccc;
-  margin-top: 10px;
 }
 
 .progress-block {
-  flex: 1;
+  flex: 1 0 auto;
   height: 100%;
   background-color: green;
   margin-right: 5px; /* Adjust the spacing between blocks */
 }
 
+.progress-block.empty {
+  background-color: transparent;
+}
 
 
 
