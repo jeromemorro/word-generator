@@ -124,5 +124,6 @@ td {
   color: white;
   padding: 10px;
   margin-top: 20px;
+  tab-size: 1;
   width: 100%;
 }
