@@ -114,11 +114,13 @@ td {
   color: white;
   font-size: 16px;
   font-weight: bold;
+  white-space: nowrap;
   background-color: #993399;
 }
 
 .text-control {
   background-color: black;
+  border: 1px solid white;
   color: white;
   padding: 10px;
   margin-top: 20px;
