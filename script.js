@@ -10,9 +10,10 @@ window.addEventListener('DOMContentLoaded', function() {
   var definitionDisplay = document.getElementById('definition-display');
   var syllablesSelect = document.getElementById('syllables-select');
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
+  var progressBar = document.getElementById('progress-bar');
+  var progressBlocks = progressBar.getElementsByClassName('progress-block');
   
   var words = []; // Array to store the word entries from the JSON file
-
 
   function generateRandomWord() {
     var filteredWords = words;
@@ -40,6 +41,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
       wordDisplay.textContent = randomWord;
       definitionDisplay.value = definition;
+      
+      updateProgressBar(); // Update the progress bar
     } else {
       wordDisplay.textContent = 'No matching words found.';
       definitionDisplay.value = '';
@@ -91,6 +94,25 @@ window.addEventListener('DOMContentLoaded', function() {
       var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
       clearInterval(intervalId);
       intervalId = setInterval(generateRandomWord, interval);
+    }
+  }
+
+  function updateProgressBar() {
+    var progress = 0;
+
+    // Calculate the progress based on the displayed word
+    if (wordDisplay.textContent !== 'No matching words found.') {
+      progress = Math.floor((wordDisplay.textContent.length / 10) * progressBlocks.length);
+    }
+
+    // Reset all progress blocks to empty
+    for (var i = 0; i < progressBlocks.length; i++) {
+      progressBlocks[i].classList.remove('filled');
+    }
+
+    // Fill the progress blocks based on the calculated progress
+    for (var j = 0; j < progress; j++) {
+      progressBlocks[j].classList.add('filled');
     }
   }
 
