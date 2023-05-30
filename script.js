@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var words = []; // Array to store the word entries from the JSON file
   
   // Fetch the words from the JSON file
-  fetch('words.json')
+  fetch('words-temp.json')
     .then(response => response.json())
     .then(data => {
       words = data;
