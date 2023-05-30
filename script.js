@@ -10,9 +10,26 @@ window.addEventListener('DOMContentLoaded', function() {
   var definitionDisplay = document.getElementById('definition-display');
   var syllablesSelect = document.getElementById('syllables-select');
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
-
+  var progressBar = document.getElementById('progress-bar');
+  
   var words = []; // Array to store the word entries from the JSON file
 
+
+  function updateProgressBar() {
+    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+    var progress = 0;
+    var increment = 100 / (interval / 1000); // Calculate the percentage increment based on interval
+
+    var progressBarIntervalId = setInterval(function() {
+      progress += increment;
+      progressBar.style.width = progress + '%';
+
+      if (progress >= 100) {
+        clearInterval(progressBarIntervalId);
+      }
+    }, 1000);
+  }
+  
   function generateRandomWord() {
     var filteredWords = words;
 
@@ -50,6 +67,8 @@ window.addEventListener('DOMContentLoaded', function() {
     generateRandomWord();
     intervalId = setInterval(generateRandomWord, interval);
     isWordGenerationRunning = true;
+    
+    updateProgressBar(); // Call the updateProgressBar function when starting word generation
   }
 
   function stopWordGeneration() {
