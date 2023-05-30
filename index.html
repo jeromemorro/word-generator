@@ -8,7 +8,7 @@
   <table>
     <tr class="row1">
       <td colspan="4">
-        <div id="word-container">
+        <div id="word-display">
           <div id="word" class="word-text">Let's Goooo!</div>
         </div>
       </td>
@@ -16,9 +16,9 @@
     <tr>
       <td class="row2"></td>
       <td class="row3">
-        <div id="seconds-container">
-          <label for="seconds-select" class="label-text">Seconds between generated words:</label>
-          <select id="seconds-select">
+        <div id="interval-container">
+          <label for="interval-select" class="label-text">Seconds between generated words:</label>
+          <select id="interval-select">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -52,19 +52,19 @@
           </select>
         </div>
         <div id="obscure-words-container">
-          <label for="obscure-words-checkbox" class="label-text">Show obscure words:</label>
-          <input type="checkbox" id="obscure-words-checkbox">
+          <label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
+          <input type="checkbox" id="obscure-words-toggle">
         </div>
       </td>
       <td class="row4">
-        <div id="toggle-container">
-          <button id="toggle-button" class="toggle-button">Stop generator</button>
+        <div id="generator-toggle-container">
+          <button id="generator-toggle" class="generator-toggle-button">Stop generator</button>
         </div>
-        <div id="definition-container">
-          <button id="definition-button" class="definition-button">Show definition</button>
+        <div id="definition-toggle-container">
+          <button id="definition-toggle" class="definition-toggle-button">Show definition</button>
         </div>
-        <div id="text-container">
-          <textarea id="text-control" class="text-control" readonly rows="4"></textarea>
+        <div id="definition-display-container">
+          <textarea id="definition-display" class="text-control" readonly rows="4"></textarea>
         </div>
       </td>
       <td class="row5"></td>
