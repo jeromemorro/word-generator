@@ -19,7 +19,7 @@ body {
 }
 
 #progress-bar {
-  display: flex;
+  display: block;
 }
 
 .progress-square {
