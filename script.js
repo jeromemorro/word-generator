@@ -65,16 +65,16 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isDefinitionVisible) {
       // Hide the text control and update the button text
       textControl.style.display = 'none';
-      definitionButton.textContent = 'Show definition';
-      
-      // Adjust the width of the definition button to match the toggle button
-      definitionButton.style.width = toggleButton.offsetWidth + 'px';      
+      definitionButton.textContent = 'Show definition';    
     } else {
       // Show the text control and update the button text
       textControl.style.display = 'block';
       definitionButton.textContent = 'Hide definition';
     }
     isDefinitionVisible = !isDefinitionVisible;
+    
+    // Adjust the width of the definition button to match the toggle button
+    definitionButton.style.width = toggleButton.style.width';  
   }
   
   window.addEventListener('resize', function() {
