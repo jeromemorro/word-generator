@@ -24,24 +24,12 @@ body {
   position: relative;
 }
 
-#progress-bar::after {
-  content: '';
-  display: inline-block;
-  height: 100%;
+.progress-block {
   width: 5%;
+  height: 100%;
   background-color: green;
-  animation: progress-animation 5s linear infinite;
+  margin-right: 5px; /* Adjust the spacing between blocks */
 }
-
-@keyframes progress-animation {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
 
 
 
