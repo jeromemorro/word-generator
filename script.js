@@ -1,16 +1,15 @@
 // script.js
 
 window.addEventListener('DOMContentLoaded', function() {
-  var wordElement = document.getElementById('word');
-  var secondsSelect = document.getElementById('seconds-select');
+  var wordElement = document.getElementById('word-display');
+  var intervalSelect = document.getElementById('interval-select');
   var intervalId;
-  var toggleButton = document.getElementById('toggle-button');
+  var generatorToggle = document.getElementById('generator-toggle');
   var isWordGenerationRunning = false;
-  var isDefinitionVisible = false;
-  var definitionButton = document.getElementById('definition-button');
-  var textControl = document.getElementById('text-control');
+  var definitionToggle = document.getElementById('definition-toggle');
+  var definitionDisplay = document.getElementById('definition-display');
   var syllablesSelect = document.getElementById('syllables-select');
-  var obscureWordsCheckbox = document.getElementById('obscure-words-checkbox');
+  var obscureWordsToggle = document.getElementById('obscure-words-toggle');
 
   var words = []; // Array to store the word entries from the JSON file
 
@@ -26,7 +25,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     // Filter words based on obscure words checkbox
-    if (!obscureWordsCheckbox.checked) {
+    if (!obscureWordsToggle.checked) {
       filteredWords = filteredWords.filter(function(word) {
         return word.c == 1;
       });
@@ -39,15 +38,15 @@ window.addEventListener('DOMContentLoaded', function() {
       var definition = filteredWords[randomNumber].d;
 
       wordElement.textContent = randomWord;
-      textControl.value = definition;
+      definitionDisplay.value = definition;
     } else {
       wordElement.textContent = 'No matching words found.';
-      textControl.value = '';
+      definitionDisplay.value = '';
     }
   }
 
   function startWordGeneration() {
-    var interval = secondsSelect.value * 1000; // Convert selected value to milliseconds
+    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
     generateRandomWord();
     intervalId = setInterval(generateRandomWord, interval);
     isWordGenerationRunning = true;
@@ -63,39 +62,38 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
-      toggleButton.textContent = 'Start generator';
-      toggleButton.style.backgroundColor = 'red';
+      generatorToggle.textContent = 'Start generator';
+      generatorToggle.style.backgroundColor = 'red';
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
-      toggleButton.textContent = 'Stop generator';
-      toggleButton.style.backgroundColor = 'green';
+      generatorToggle.textContent = 'Stop generator';
+      generatorToggle.style.backgroundColor = 'green';
     }
   }
 
   function toggleDefinition() {
-    if (isDefinitionVisible) {
-      // Hide the text control and update the button text
-      textControl.style.display = 'none';
-      definitionButton.textContent = 'Show definition';
+    if (definitionDisplay.style.display === 'none') {
+      // Show the definition display and update the button text
+      definitionDisplay.style.display = 'block';
+      definitionToggle.textContent = 'Hide definition';
     } else {
-      // Show the text control and update the button text
-      textControl.style.display = 'block';
-      definitionButton.textContent = 'Hide definition';
+      // Hide the definition display and update the button text
+      definitionDisplay.style.display = 'none';
+      definitionToggle.textContent = 'Show definition';
     }
-    isDefinitionVisible = !isDefinitionVisible;
   }
 
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, update the interval duration
-      var interval = secondsSelect.value * 1000; // Convert selected value to milliseconds
+      var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
       clearInterval(intervalId);
       intervalId = setInterval(generateRandomWord, interval);
     }
   }
 
-  fetch('words-temp.json')
+  fetch('words.json')
     .then(function(response) {
       return response.json();
     })
@@ -107,17 +105,17 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
-  // Dynamically adjust the width of the toggle button to match the definition button
+  // Dynamically adjust the width of the generator toggle button to match the definition toggle button
   window.addEventListener('resize', function() {
-    toggleButton.style.width = definitionButton.offsetWidth + 'px';
+    generatorToggle.style.width = definitionToggle.offsetWidth + 'px';
   });
 
-  // Hide the text control on page load
-  textControl.style.display = 'none';
+  // Hide the definition display on page load
+  definitionDisplay.style.display = 'none';
 
-  toggleButton.addEventListener('click', toggleWordGeneration);
-  definitionButton.addEventListener('click', toggleDefinition);
+  generatorToggle.addEventListener('click', toggleWordGeneration);
+  definitionToggle.addEventListener('click', toggleDefinition);
   syllablesSelect.addEventListener('change', handleOptionChange);
-  obscureWordsCheckbox.addEventListener('change', handleOptionChange);
-  secondsSelect.addEventListener('change', handleOptionChange);
+  obscureWordsToggle.addEventListener('change', handleOptionChange);
+  intervalSelect.addEventListener('change', handleOptionChange);
 });
