@@ -39,10 +39,10 @@ window.addEventListener('DOMContentLoaded', function() {
       var definition = filteredWords[randomNumber].d;
 
       wordElement.textContent = randomWord;
-      textControl.textContent = definition;
+      textControl.value = definition;
     } else {
       wordElement.textContent = 'No matching words found.';
-      textControl.textContent = '';
+      textControl.value = '';
     }
   }
 
