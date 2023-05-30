@@ -12,25 +12,36 @@ body {
 
 #progress-bar-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-end;
   height: 20px;
   margin-top: 10px;
-  background-color: #000;
-  overflow: hidden;
 }
 
 #progress-bar {
-  display: flex;
-  flex-direction: row;
+  width: 100%;
+  background-color: #ccc;
+  position: relative;
 }
 
-.progress-square {
-  width: 10px;
-  height: 10px;
+#progress-bar::after {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  width: 5%;
   background-color: green;
-  margin-right: 25px;
+  animation: progress-animation 5s linear infinite;
 }
+
+@keyframes progress-animation {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 
 
 
