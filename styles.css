@@ -21,7 +21,7 @@ body {
 #progress-bar {
   display: grid;
   grid-template-columns: repeat(10, 1fr); /* Adjust the number of columns as needed */
-  gap: 5px; /* Adjust the gap between blocks as needed */
+  gap: 25px; /* Adjust the gap between blocks as needed */
   height: 20px;
 }
 
