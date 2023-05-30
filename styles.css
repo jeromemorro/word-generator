@@ -9,6 +9,7 @@ body {
   justify-content: center;
 }
 
+/*
 #progress-bar-container {
   display: flex;
   justify-content: center;
@@ -16,24 +17,34 @@ body {
   height: 20px;
   margin-top: 10px;
 } 
+*/
 
 .progress-block {
-  width: auto;
+  width: 5%;
   height: 100%;
   background-color: green;
+  margin-right: 5px; /* Adjust the spacing between blocks */
 }
 
+
 .progress-block.empty {
-  background-color: transparent;
+  background-color: transparent; /* Set the color for empty blocks */
 }
 
 .progress-block.filled {
-  background-color: green;
+  background-color: green; /* Set the color for filled blocks */
 }
+
+
 
 #interval-container {
   color: white;
   margin-top: 20px;
+}
+
+#interval-select {
+  color: black;
+  font-size: 16px;
 }
 
 #syllables-container {
@@ -41,9 +52,19 @@ body {
   margin-top: 20px;
 }
 
+#syllables-select {
+  color: black;
+  font-size: 16px;
+}
+
 #obscure-words-container {
   color: white;
   margin-top: 20px;
+}
+
+#obscure-words-toggle {
+  color: black;
+  font-size: 16px;
 }
 
 #generator-toggle-container {
@@ -66,8 +87,47 @@ body {
   font-size: 150px;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.row1 {
+  background-color: #333;
+  color: white;
+  font-weight: bold;
+  height: 60vh;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.row2 {
+  vertical-align: top;
+  width: 20%;
+}
+
+.row3 {
+  vertical-align: top;
+  width: 30%;
+}
+
+.row4 {
+  vertical-align: top;
+  width: 45%;
+}
+
+.row5 {
+  vertical-align: top;
+  width: 5%;
+}
+
 .generator-toggle-button {
-  background-color: red;
+  background-color: green;
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -75,7 +135,7 @@ body {
 }
 
 .definition-toggle-button {
-  background-color: blue;
+  background-color: #993399;
   color: white;
   font-size: 16px;
   font-weight: bold;
