@@ -28,7 +28,7 @@ body {
 
 
 .progress-block.empty {
-  background-color: blue; /* Set the color for empty blocks */
+  background-color: transparent; /* Set the color for empty blocks */
 }
 
 .progress-block.filled {
