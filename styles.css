@@ -16,28 +16,30 @@ body {
   align-items: flex-end;
   height: 20px;
   margin-top: 10px;
-  overflow: hidden; /* Hide the overflowing squares */
+  overflow: hidden;
 }
 
 #progress-bar {
   display: block;
+  width: 220px; /* Adjust the width based on the number of squares */
+  background-color: rgba(0, 255, 0, 0.2); /* Adjust the background color */
 }
 
 .progress-square {
-  width: 20px;
-  height: 20px;
-  background-color: green;
-  margin-right: 5px;
-  opacity: 0; /* Initially hide the squares */
+  display: inline-block;
+  width: 10px; /* Adjust the width of each square */
+  height: 10px; /* Adjust the height of each square */
+  background-color: green; /* Adjust the color of each square */
+  margin-right: 5px; /* Adjust the space between each square */
   animation: progressAnimation 2s linear forwards;
 }
 
 @keyframes progressAnimation {
   0% {
-    opacity: 0; /* Start with squares hidden */
+    transform: translateX(-100%);
   }
   100% {
-    opacity: 1; /* End with squares fully visible */
+    transform: translateX(0);
   }
 }
 
