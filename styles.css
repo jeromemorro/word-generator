@@ -16,31 +16,20 @@ body {
   align-items: flex-end;
   height: 20px;
   margin-top: 10px;
+  background-color: #000;
   overflow: hidden;
 }
 
 #progress-bar {
-  display: block;
-  width: 220px; /* Adjust the width based on the number of squares */
-  background-color: rgba(0, 255, 0, 0.2); /* Adjust the background color */
+  display: flex;
+  flex-direction: row;
 }
 
 .progress-square {
-  display: inline-block;
-  width: 10px; /* Adjust the width of each square */
-  height: 10px; /* Adjust the height of each square */
-  background-color: green; /* Adjust the color of each square */
-  margin-right: 5px; /* Adjust the space between each square */
-  animation: progressAnimation 2s linear forwards;
-}
-
-@keyframes progressAnimation {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  margin-right: 5px;
 }
 
 
