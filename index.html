@@ -6,63 +6,23 @@
 </head>
 <body>
   <table>
-    <tr class="row1">
-      <td colspan="4">
-        <div id="word-container">
-          <div id="word-display" class="word-display">Let's Goooo!</div>
-        </div>
-        <div id="progress-bar-container">
-<div id="progress-bar" class="progress-bar">
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <div class="progress-block empty"></div>
-  <!-- Add more divs for additional blocks -->
-</div>
-        </div>        
-      </td>
+    <tr>
+      <td class="row1" colspan="5"></td>
     </tr>
     <tr>
-      <td class="row2"></td>
-      <td class="row3">
+      <td class="row2" colspan="5"></td>
+    </tr>
+    <tr>
+      <td class="row3-col1" rowspan="2"></td>
+      <td class="row3-col2-1">
+        <div id="playlist-container">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PLLasX02E8BPCkqipgpNf9wHM07Kl1-Y8a"></iframe>
+        </div>
+      </td>
+      <td class="row3-col3-1">
         <div id="interval-container">
-          <label for="interval-select" class="label-text">Seconds between generated words:</label>
-          <select id="interval-select">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5" selected>5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-          </select>
+          <label for="interval-select" class="label-text">Seconds between words:</label>
+          <input type="number" id="interval-select" min="1" max="30" value="5" required>
         </div>
         <div id="syllables-container">
           <label for="syllables-select" class="label-text">Syllables per word:</label>
@@ -74,23 +34,37 @@
             <option value="4">4 or more</option>
           </select>
         </div>
-        <div id="obscure-words-container">
+        <div id="obscure-words-toggle-container">
           <label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
           <input type="checkbox" id="obscure-words-toggle">
         </div>
+        <div id="definitions-toggle-container">
+          <label for="definitions-toggle" class="label-text">Show definitions:</label>
+          <input type="checkbox" id="definitions-toggle">
+        </div>
       </td>
-      <td class="row4">
+      <td class="row3-col4" rowspan="2">
+        <div id="definition-display-container">
+           <textarea id="definition-display" class="definition-display" readonly rows="8"></textarea>
+        </div>    
+      </td>
+      <td class="row3-col5" rowspan="2"></td>
+    </tr>
+    <tr>
+      <td class="row3-col2-2">
+        <div id="load-playlist-container">
+          <input type="url" id="playlist-text">
+          <button id="load-playlist-button" class="load-playlist-button">Load</button>
+        </div>
+      </td>
+      <td class="row3-col3-2">
         <div id="generator-toggle-container">
           <button id="generator-toggle" class="generator-toggle-button">Stop generator</button>
-        </div>
-        <div id="definition-toggle-container">
-          <button id="definition-toggle" class="definition-toggle-button">Show definition</button>
-        </div>
-        <div id="definition-display-container">
-          <textarea id="definition-display" class="text-control" readonly rows="4"></textarea>
-        </div>
+        </div>    
       </td>
-      <td class="row5"></td>
+    </tr>
+    <tr>
+      <td class="row4" colspan="5"></td>
     </tr>
   </table>
   <script src="script.js"></script>
