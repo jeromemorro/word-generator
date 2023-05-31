@@ -93,6 +93,17 @@ td {
   font-size: 150px;
 }
 
+#myProgress {
+  width: 100%
+  background-color: DimGray;
+}
+
+#myBar {
+  width: 0%
+  height: 6vh;
+  background-color: Lime;
+}
+
 #interval-container, 
 #syllables-container, 
 #obscure-words-toggle-container, 
