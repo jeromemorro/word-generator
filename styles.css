@@ -98,7 +98,7 @@ td {
 #obscure-words-toggle-container, 
 #definitions-toggle-container {
   color: white;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 #interval-select,
@@ -113,7 +113,7 @@ td {
   align-items: center; 
   display: flex;
   justify-content: right; 
-  margin-top: 20px;  
+  margin-top: 10px;  
 }
 
 #load-playlist-container {
@@ -151,7 +151,7 @@ td {
   color: white;
   display: flex;
   justify-content: center;    
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .definition-display {
