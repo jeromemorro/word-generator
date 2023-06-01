@@ -28,27 +28,31 @@
         </div>
       </td>
       <td class="row3-col3-1">
-        <div class="interval-container">
-          <label for="interval-select" class="label-text">Seconds between words:</label>
-          <input type="number" id="interval-select" min="1" max="30" value="5" required>
-        </div>
-        <div class="syllables-container">
-          <label for="syllables-select" class="label-text">Syllables per word:</label>
-          <select id="syllables-select">
-            <option value="0" selected>Any</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4 or more</option>
-          </select>
-        </div>
-        <div class="obscure-words-toggle-container">
-          <label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
-          <input type="checkbox" id="obscure-words-toggle">
-        </div>
-        <div class="definitions-toggle-container">
-          <label for="definitions-toggle" class="label-text">Show definitions:</label>
-          <input type="checkbox" id="definitions-toggle">
+        <div id="parent-center">
+        	<div id="child-left">      
+        		<div id="interval-container">
+          			<label for="interval-select" class="label-text">Seconds between words:</label>
+          			<input type="number" id="interval-select" min="1" max="30" value="5" required>
+        		</div>
+        		<div id="syllables-container">
+          			<label for="syllables-select" class="label-text">Syllables per word:</label>
+          			<select id="syllables-select">
+            			<option value="0" selected>Any</option>
+            			<option value="1">1</option>
+            			<option value="2">2</option>
+            			<option value="3">3</option>
+            			<option value="4">4 or more</option>
+          			</select>
+        		</div>
+        		<div id="obscure-words-toggle-container">
+          			<label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
+          			<input type="checkbox" id="obscure-words-toggle">
+        		</div>
+        		<div id="definitions-toggle-container">
+          			<label for="definitions-toggle" class="label-text">Show definitions:</label>
+          			<input type="checkbox" id="definitions-toggle">
+        		</div>
+        	</div>
         </div>
       </td>
       <td class="row3-col4" rowspan="2">
@@ -61,8 +65,8 @@
     <tr>
       <td class="row3-col2-2">
         <div id="load-playlist-container">
-          <input type="url" id="load-playlist-text">
-          <button id="load-playlist-button" class="load-playlist-button">Load</button>
+          <input type="text" id="load-playlist-input" placeholder="Enter YouTube playlist ID">
+          <button id="load-playlist-button" class="load-playlist-button">Load Playlist</button>
         </div>
       </td>
       <td class="row3-col3-2">
