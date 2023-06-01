@@ -124,7 +124,12 @@ td {
   align-items: center; 
   display: flex;
   justify-content: right; 
-  margin-top: 10px;  
+  margin-top: 10px;
+  width: 100%;
+}
+
+#playlist-container iframe {
+  width: 100%;
 }
 
 #load-playlist-container {
