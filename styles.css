@@ -1,5 +1,5 @@
 body {
-  background-color: brown;
+  background-color: black;
 }
 
 table {
@@ -191,7 +191,7 @@ td {
   background-color: black;
   border: 1px solid white;
   color: white;
-  /* display: none; */
+  display: none; 
   flex: 1;
   font-family: inherit;
   font-size: 16px;
