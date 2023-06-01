@@ -159,7 +159,7 @@ td {
 }
 
 .load-playlist-button {
-  background-color: LimeGreen;
+  background-color: #993399;
   color: white;
   flex-shrink: 0;
   font-size: 16px;
