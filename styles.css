@@ -134,12 +134,16 @@ td {
 }
 
 #load-playlist-container input {
+  box-sizing: border-box;
+  flex: 1; 
   margin-right: 3px;
+  width: 100%;  
 }
 
 .load-playlist-button {
   background-color: LimeGreen;
   color: white;
+  flex-shrink: 0;
   font-size: 16px;
   font-weight: bold;
 }
