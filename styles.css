@@ -39,6 +39,10 @@ td {
   width: 30%;
 }
 
+.row3-col2-1 iframe {
+  width: 100%;
+}
+
 .row3-col2-2 {
   height: 4vh;
   vertical-align: top;
@@ -116,19 +120,19 @@ td {
   background-color: Lime;
 }
 
-#interval-container, 
-#syllables-container, 
-#obscure-words-toggle-container, 
-#definitions-toggle-container {
+.interval-container, 
+.syllables-container, 
+.obscure-words-toggle-container, 
+.definitions-toggle-container {
   align-items: flex-start;
   color: white;
   margin-top: 10px;
 }
 
-#interval-select,
-#syllables-select,
-#obscure-words-toggle,
-#definitions-toggle {
+.interval-select,
+.syllables-select,
+.obscure-words-toggle,
+.definitions-toggle {
   color: black;
   font-size: 16px;
 }
