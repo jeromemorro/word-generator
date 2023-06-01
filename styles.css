@@ -28,7 +28,7 @@ td {
 }
 
 .row3-col1 {
-  height: 34vh;
+  height: 32vh;
   vertical-align: top;
   width: 5%;
 }
@@ -40,7 +40,7 @@ td {
 }
 
 .row3-col2-2 {
-  height: 4vh;
+  height: 2vh;
   vertical-align: top;
   width: 30%;
 }
@@ -52,19 +52,19 @@ td {
 }
 
 .row3-col3-2 {
-  height: 4vh;
+  height: 2vh;
   vertical-align: top;
   width: 30%;
 }
 
 .row3-col4 {
-  height: 34vh;
+  height: 32vh;
   vertical-align: top;
   width: 30%;
 }
 
 .row3-col5 {
-  height: 34vh;
+  height: 32vh;
   vertical-align: top;
   width: 5%;
 }
@@ -105,15 +105,15 @@ td {
 }
 
 #parent-center {
-  align-items: center;  
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #child-left {
-  align-items: left; 
   display: flex;
   flex-direction: column;
+  align-items: left;
 }
 
 #interval-container, 
