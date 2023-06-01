@@ -51,6 +51,18 @@ td {
   width: 30%;
 }
 
+.row3-col3-1 .control-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.row3-col3-1 .control-container > div {
+  margin-left: auto;
+  margin-right: 0;
+}
+
 .row3-col3-2 {
   height: 4vh;
   vertical-align: top;
