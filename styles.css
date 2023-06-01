@@ -106,12 +106,12 @@ td {
 }
 
 #myProgress {
-  width: 100%
+  width: 100%;
   background-color: DimGray;
 }
 
 #myBar {
-  width: 0%
+  width: 0%;
   height: 6vh;
   background-color: Lime;
 }
@@ -120,6 +120,7 @@ td {
 #syllables-container, 
 #obscure-words-toggle-container, 
 #definitions-toggle-container {
+  align-items: flex-start;
   color: white;
   margin-top: 10px;
 }
