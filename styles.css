@@ -41,6 +41,8 @@ td {
 
 .row3-col2-2 {
   height: 2vh;
+  padding-bottom: 0;
+  padding-top: 0;  
   vertical-align: top;
   width: 30%;
 }
@@ -53,6 +55,8 @@ td {
 
 .row3-col3-2 {
   height: 2vh;
+  padding-bottom: 0;  
+  padding-top: 0;  
   vertical-align: top;
   width: 30%;
 }
