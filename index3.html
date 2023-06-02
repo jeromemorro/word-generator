@@ -84,14 +84,14 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
-  function startWordGeneration() {
-    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
-    wordIntervalId = setInterval(function () {
-      updateProgressIndicator(); // Update progress indicator before generating the word
-      generateRandomWord();
-    }, interval);
-    isWordGenerationRunning = true;
-  }
+function startWordGeneration() {
+  var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+  wordIntervalId = setInterval(function() {
+    updateProgressIndicator(); // Update progress indicator before generating the word
+    generateRandomWord();
+  }, interval);
+  isWordGenerationRunning = true;
+}
 
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
@@ -100,19 +100,20 @@ window.addEventListener('DOMContentLoaded', function() {
     resetProgressIndicator();
   }
 
-  function toggleWordGeneration() {
-    if (isWordGenerationRunning) {
-      // Word generation is currently running, stop it
-      stopWordGeneration();
-      generatorToggle.textContent = 'Start generator';
-      generatorToggle.style.backgroundColor = 'red';
-    } else {
-      // Word generation is currently stopped, start it
-      startWordGeneration();
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'limegreen';
-    }
+function toggleWordGeneration() {
+  if (isWordGenerationRunning) {
+    // Word generation is currently running, stop it
+    stopWordGeneration();
+    generatorToggle.textContent = 'Start generator';
+    generatorToggle.style.backgroundColor = 'red';
+  } else {
+    // Word generation is currently stopped, start it
+    startWordGeneration();
+    generatorToggle.textContent = 'Stop generator';
+    generatorToggle.style.backgroundColor = 'limegreen';
+    updateProgressIndicator(); // Set the progress indicator to 100% immediately
   }
+}
 
   function handleOptionChange() {
     if (isWordGenerationRunning) {
