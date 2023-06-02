@@ -62,8 +62,9 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
 
       if (!isProgressUpdating) {
-        wordDisplay.textContent = randomWord;
         startProgressIndicator();
+        wordDisplay.textContent = randomWord;
+        
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
