@@ -135,7 +135,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateProgressIndicator() {
-    progressWidth -= 100 / intervalSelect.value;
+    progressWidth -= (100 / intervalSelect.value) / (intervalSelect.value - 1);
     progressIndicator.style.width = progressWidth + '%';
     if (progressWidth <= 0) {
       stopProgressIndicator();
