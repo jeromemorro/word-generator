@@ -7,7 +7,7 @@
 }
 
 #progress-indicator {
-  width: 0%; /* Updated initial width to 100% */
+  width: 0%;
   height: 30px;
   background-color: Lime;
 }
@@ -62,9 +62,8 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
 
       if (!isProgressUpdating) {
-        startProgressIndicator();
         wordDisplay.textContent = randomWord;
-        
+        startProgressIndicator();
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
@@ -87,7 +86,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function startWordGeneration() {
     var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
-    wordIntervalId = setInterval(generateRandomWord, interval);
+    wordIntervalId = setInterval(function () {
+      updateProgressIndicator(); // Update progress indicator before generating the word
+      generateRandomWord();
+    }, interval);
     isWordGenerationRunning = true;
   }
 
@@ -117,7 +119,10 @@ window.addEventListener('DOMContentLoaded', function() {
       // Word generation is currently running, update the interval duration
       var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
       clearInterval(wordIntervalId);
-      wordIntervalId = setInterval(generateRandomWord, interval);
+      wordIntervalId = setInterval(function () {
+        updateProgressIndicator(); // Update progress indicator before generating the word
+        generateRandomWord();
+      }, interval);
       resetProgressIndicator();
     }
   }
