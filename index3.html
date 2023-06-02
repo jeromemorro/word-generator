@@ -43,12 +43,11 @@ window.addEventListener('DOMContentLoaded', function() {
   var generatorToggle = document.getElementById('generator-toggle-button');
   var progressBar = document.getElementById('progress-indicator');
   var wordIntervalId;
+  var progressIntervalId;
   var isWordGenerationRunning = false;
   var currentWordDuration = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
   var progressIncrement;
   var progressWidth = 100;
-  var isProgressUpdating = false;
-  var progressIntervalId; // Added variable declaration
 
   var words = []; // Array to store the word entries from the JSON file
 
@@ -61,9 +60,7 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
 
       wordDisplay.textContent = randomWord;
-      if (!isProgressUpdating) {
-        startProgressIndicator(currentWordDuration);
-      }
+      startProgressIndicator();
     } else {
       wordDisplay.textContent = 'No matching words found.';
     }
@@ -91,11 +88,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
+    clearInterval(progressIntervalId);
     wordIntervalId = null;
+    progressIntervalId = null;
     isWordGenerationRunning = false;
     progressWidth = 100;
     progressBar.style.width = '100%';
-    isProgressUpdating = false;
   }
 
   function toggleWordGeneration() {
@@ -122,16 +120,13 @@ window.addEventListener('DOMContentLoaded', function() {
       currentWordDuration = interval;
       progressWidth = 100;
       progressBar.style.width = '100%';
-      isProgressUpdating = false;
+      startProgressIndicator();
     }
   }
 
-  function startProgressIndicator(duration) {
+  function startProgressIndicator() {
     clearInterval(progressIntervalId);
-    progressWidth = 100;
-    progressBar.style.width = '100%';
-    progressIncrement = 100 / (duration / 1000); // Calculate the decrement per second
-    isProgressUpdating = true;
+    progressIncrement = 100 / (currentWordDuration / 1000); // Calculate the decrement per second
     progressIntervalId = setInterval(updateProgress, 1000);
   }
 
@@ -141,9 +136,9 @@ window.addEventListener('DOMContentLoaded', function() {
       progressBar.style.width = progressWidth + '%';
     } else {
       clearInterval(progressIntervalId);
+      progressIntervalId = null;
       progressWidth = 100;
       progressBar.style.width = '100%';
-      isProgressUpdating = false;
     }
   }
 
