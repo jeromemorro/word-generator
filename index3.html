@@ -128,6 +128,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateProgress() {
+    progressIncrement = 100 / (currentWordDuration / 1000); // Calculate the decrement per second
     progressWidth -= progressIncrement;
     progressBar.style.width = progressWidth + '%';
 
