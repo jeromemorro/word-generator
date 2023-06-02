@@ -1,51 +1,15 @@
-<!DOCTYPE html>
-<html>
-<style>
-#progress-bar {
-  width: 100%;
-  background-color: #ddd;
-}
-
-#progress-indicator {
-  width: 0%;
-  height: 30px;
-  background-color: Lime;
-}
-
-.generator-toggle-button {
-  background-color: red;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-</style>
-<body>
-
-<div id="word-container">
-    <div id="word-display" class="word-display">Let's Goooo!</div>
-</div>
-<div id="progress-bar">
-    <div id="progress-indicator"></div>
-</div>
-<div id="interval-container">
-    <label for="interval-select" class="label-text">Seconds between words:</label>
-    <input type="number" id="interval-select" min="1" max="30" value="5" required>
-</div>
-<br>
-<button id="generator-toggle-button" class="generator-toggle-button">Start generator</button>
-
-
-<script>
-
 window.addEventListener('DOMContentLoaded', function() {
   var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
   var generatorToggle = document.getElementById('generator-toggle-button');
+  var progressBar = document.getElementById('progress-indicator');
   var wordIntervalId;
-  var progressIntervalId; // Variable to store the progress indicator interval ID
   var isWordGenerationRunning = false;
-
+  var currentWordDuration = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
+  var progressIntervalId;
+  var progressIncrement;
+  var progressWidth = 100;
+  
   var words = []; // Array to store the word entries from the JSON file
 
   function generateRandomWord() {
@@ -57,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
 
       wordDisplay.textContent = randomWord;
-      startProgressIndicator(); // Start the progress indicator animation
+      startProgressIndicator();
     } else {
       wordDisplay.textContent = 'No matching words found.';
     }
@@ -78,22 +42,25 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
   function startWordGeneration() {
-    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+    var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
     wordIntervalId = setInterval(generateRandomWord, interval);
     isWordGenerationRunning = true;
   }
 
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
+    clearInterval(progressIntervalId);
     wordIntervalId = null;
+    progressIntervalId = null;
     isWordGenerationRunning = false;
+    progressWidth = 100;
+    progressBar.style.width = '100%';
   }
 
   function toggleWordGeneration() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
-      stopProgressIndicator(); // Stop the progress indicator animation
       generatorToggle.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
     } else {
@@ -107,39 +74,35 @@ window.addEventListener('DOMContentLoaded', function() {
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, update the interval duration
-      var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+      var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
       clearInterval(wordIntervalId);
+      clearInterval(progressIntervalId);
       wordIntervalId = setInterval(generateRandomWord, interval);
-      stopProgressIndicator(); // Stop the progress indicator animation
+      currentWordDuration = interval;
+      progressWidth = 100;
+      progressBar.style.width = '100%';
+      startProgressIndicator();
     }
   }
 
   function startProgressIndicator() {
-    var elem = document.getElementById("progress-indicator");
-    var width = 100;
-    elem.style.width = width + "%";
-    progressIntervalId = setInterval(frame, 60);
-
-    function frame() {
-      if (width <= 0) {
-        clearInterval(progressIntervalId);
-      } else {
-        width--;
-        elem.style.width = width + "%";
-      }
-    }
+    clearInterval(progressIntervalId);
+    progressIncrement = 100 / (currentWordDuration / 1000); // Calculate the decrement per second
+    progressIntervalId = setInterval(updateProgress, 1000);
   }
 
-  function stopProgressIndicator() {
-    clearInterval(progressIntervalId);
-    var elem = document.getElementById("progress-indicator");
-    elem.style.width = "0%";
+  function updateProgress() {
+    if (progressWidth > 0) {
+      progressWidth -= progressIncrement;
+      progressBar.style.width = progressWidth + '%';
+    } else {
+      clearInterval(progressIntervalId);
+      progressIntervalId = null;
+      progressWidth = 100;
+      progressBar.style.width = '100%';
+    }
   }
 
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
 });
-
-</script>
-</body>
-</html>
