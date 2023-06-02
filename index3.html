@@ -102,11 +102,14 @@ window.addEventListener('DOMContentLoaded', function() {
       stopWordGeneration();
       generatorToggle.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
+      progressWidth = 0; // Set progress width to 0 instantly
+      progressBar.style.width = '0%';
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
       generatorToggle.textContent = 'Stop generator';
       generatorToggle.style.backgroundColor = 'limegreen';
+      startProgressIndicator();
     }
   }
 
