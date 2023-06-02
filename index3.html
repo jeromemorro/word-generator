@@ -61,9 +61,8 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomNumber = Math.floor(Math.random() * filteredWords.length);
       var randomWord = filteredWords[randomNumber].w;
 
-      wordDisplay.textContent = randomWord;
-
       if (!isProgressUpdating) {
+        wordDisplay.textContent = randomWord;
         startProgressIndicator();
       }
     } else {
