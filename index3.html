@@ -43,11 +43,12 @@ window.addEventListener('DOMContentLoaded', function() {
   var generatorToggle = document.getElementById('generator-toggle-button');
   var progressBar = document.getElementById('progress-indicator');
   var wordIntervalId;
-  var progressIntervalId;
   var isWordGenerationRunning = false;
   var currentWordDuration = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
   var progressIncrement;
   var progressWidth = 100;
+  var isProgressUpdating = false;
+  var progressIntervalId;
 
   var words = []; // Array to store the word entries from the JSON file
 
@@ -60,7 +61,9 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomWord = filteredWords[randomNumber].w;
 
       wordDisplay.textContent = randomWord;
-      startProgressIndicator();
+      if (!isProgressUpdating) {
+        startProgressIndicator(currentWordDuration);
+      }
     } else {
       wordDisplay.textContent = 'No matching words found.';
     }
@@ -82,19 +85,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function startWordGeneration() {
     var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
-    generateRandomWord();
     wordIntervalId = setInterval(generateRandomWord, interval);
     isWordGenerationRunning = true;
   }
 
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
-    clearInterval(progressIntervalId);
     wordIntervalId = null;
-    progressIntervalId = null;
     isWordGenerationRunning = false;
     progressWidth = 100;
     progressBar.style.width = '100%';
+    isProgressUpdating = false;
   }
 
   function toggleWordGeneration() {
@@ -103,6 +104,7 @@ window.addEventListener('DOMContentLoaded', function() {
       stopWordGeneration();
       generatorToggle.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
+      clearInterval(progressIntervalId); // Stop the progress indicator
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
@@ -116,20 +118,20 @@ window.addEventListener('DOMContentLoaded', function() {
       // Word generation is currently running, update the interval duration
       var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
       clearInterval(wordIntervalId);
-      clearInterval(progressIntervalId);
-      generateRandomWord();
       wordIntervalId = setInterval(generateRandomWord, interval);
       currentWordDuration = interval;
       progressWidth = 100;
       progressBar.style.width = '100%';
-      startProgressIndicator();
+      isProgressUpdating = false;
     }
   }
 
-  function startProgressIndicator() {
-    clearInterval(progressIntervalId);
-    progressIncrement = 100 / currentWordDuration; // Calculate the decrement per millisecond
-    progressIntervalId = setInterval(updateProgress, 1);
+  function startProgressIndicator(duration) {
+    progressWidth = 100;
+    progressBar.style.width = '100%';
+    progressIncrement = 100 / (duration / 1000); // Calculate the decrement per second
+    isProgressUpdating = true;
+    progressIntervalId = setInterval(updateProgress, 1000);
   }
 
   function updateProgress() {
@@ -138,9 +140,9 @@ window.addEventListener('DOMContentLoaded', function() {
       progressBar.style.width = progressWidth + '%';
     } else {
       clearInterval(progressIntervalId);
-      progressIntervalId = null;
       progressWidth = 100;
       progressBar.style.width = '100%';
+      isProgressUpdating = false;
     }
   }
 
