@@ -1,147 +1,143 @@
 <!DOCTYPE html>
 <html>
 <style>
-#progress-bar {
-  width: 100%;
-  background-color: #ddd;
-}
+  #progress-bar {
+    width: 100%;
+    background-color: #ddd;
+  }
 
-#progress-indicator {
-  width: 0%;
-  height: 30px;
-  background-color: Lime;
-}
+  #progress-indicator {
+    width: 0%;
+    height: 30px;
+    background-color: Lime;
+  }
 
-.generator-toggle-button {
-  background-color: red;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-
+  .generator-toggle-button {
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
 </style>
 <body>
-
-<div id="word-container">
+  <div id="word-container">
     <div id="word-display" class="word-display">Let's Goooo!</div>
-</div>
-<div id="progress-bar">
+  </div>
+  <div id="progress-bar">
     <div id="progress-indicator"></div>
-</div>
-<div id="interval-container">
+  </div>
+  <div id="interval-container">
     <label for="interval-select" class="label-text">Seconds between words:</label>
     <input type="number" id="interval-select" min="1" max="30" value="5" required>
-</div>
-<br>
-<button id="generator-toggle-button" class="generator-toggle-button">Start generator</button>
+  </div>
+  <br>
+  <button id="generator-toggle-button" class="generator-toggle-button">Start generator</button>
 
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var wordDisplay = document.getElementById('word-display');
+      var intervalSelect = document.getElementById('interval-select');
+      var generatorToggle = document.getElementById('generator-toggle-button');
+      var progressBar = document.getElementById('progress-indicator');
+      var wordIntervalId;
+      var isWordGenerationRunning = false;
+      var currentWordDuration = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
+      var progressIntervalId;
+      var progressIncrement;
+      var progressWidth = 100;
 
-<script>
-window.addEventListener('DOMContentLoaded', function() {
-  var wordDisplay = document.getElementById('word-display');
-  var intervalSelect = document.getElementById('interval-select');
-  var generatorToggle = document.getElementById('generator-toggle-button');
-  var progressBar = document.getElementById('progress-indicator');
-  var wordIntervalId;
-  var isWordGenerationRunning = false;
-  var currentWordDuration = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
-  var progressIncrement;
-  var progressWidth = 100;
-  var progressIntervalId; // Add this line
+      var words = []; // Array to store the word entries from the JSON file
 
-  var words = []; // Array to store the word entries from the JSON file
+      function generateRandomWord() {
+        var filteredWords = words;
 
-  function generateRandomWord() {
-    var filteredWords = words;
+        // Generate a random word from the filtered list
+        if (filteredWords.length > 0) {
+          var randomNumber = Math.floor(Math.random() * filteredWords.length);
+          var randomWord = filteredWords[randomNumber].w;
 
-    // Generate a random word from the filtered list
-    if (filteredWords.length > 0) {
-      var randomNumber = Math.floor(Math.random() * filteredWords.length);
-      var randomWord = filteredWords[randomNumber].w;
+          wordDisplay.textContent = randomWord;
+          startProgressIndicator(currentWordDuration);
+        } else {
+          wordDisplay.textContent = 'No matching words found.';
+        }
+      }
 
-      wordDisplay.textContent = randomWord;
-      startProgressIndicator();
-    } else {
-      wordDisplay.textContent = 'No matching words found.';
-    }
-  }
+      fetch('words-temp.json')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          words = data;
+          startWordGeneration();
+          generatorToggle.textContent = 'Stop generator';
+          generatorToggle.style.backgroundColor = 'limegreen';
+        })
+        .catch(function (error) {
+          console.error('Error fetching words:', error);
+        });
 
-  fetch('words-temp.json')
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      words = data;
-      startWordGeneration();
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'limegreen';
-    })
-    .catch(function(error) {
-      console.error('Error fetching words:', error);
+      function startWordGeneration() {
+        var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
+        wordIntervalId = setInterval(generateRandomWord, interval);
+        isWordGenerationRunning = true;
+      }
+
+      function stopWordGeneration() {
+        clearInterval(wordIntervalId);
+        wordIntervalId = null;
+        isWordGenerationRunning = false;
+        progressWidth = 100;
+        progressBar.style.width = '100%';
+      }
+
+      function toggleWordGeneration() {
+        if (isWordGenerationRunning) {
+          // Word generation is currently running, stop it
+          stopWordGeneration();
+          generatorToggle.textContent = 'Start generator';
+          generatorToggle.style.backgroundColor = 'red';
+        } else {
+          // Word generation is currently stopped, start it
+          startWordGeneration();
+          generatorToggle.textContent = 'Stop generator';
+          generatorToggle.style.backgroundColor = 'limegreen';
+        }
+      }
+
+      function handleOptionChange() {
+        if (isWordGenerationRunning) {
+          // Word generation is currently running, update the interval duration
+          var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
+          clearInterval(wordIntervalId);
+          wordIntervalId = setInterval(generateRandomWord, interval);
+          currentWordDuration = interval;
+          progressWidth = 100;
+          progressBar.style.width = '100%';
+        }
+      }
+
+      function startProgressIndicator(duration) {
+        clearInterval(progressIntervalId);
+        progressIncrement = 100 / (duration / 1000); // Calculate the decrement per second
+        progressIntervalId = setInterval(updateProgress, 1000);
+      }
+
+      function updateProgress() {
+        if (progressWidth > 0) {
+          progressWidth -= progressIncrement;
+          progressBar.style.width = progressWidth + '%';
+        } else {
+          clearInterval(progressIntervalId);
+          progressIntervalId = null;
+          progressWidth = 100;
+          progressBar.style.width = '100%';
+        }
+      }
+
+      generatorToggle.addEventListener('click', toggleWordGeneration);
+      intervalSelect.addEventListener('change', handleOptionChange);
     });
-
-  function startWordGeneration() {
-    var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
-    wordIntervalId = setInterval(generateRandomWord, interval);
-    isWordGenerationRunning = true;
-  }
-
-  function stopWordGeneration() {
-    clearInterval(wordIntervalId);
-    wordIntervalId = null;
-    isWordGenerationRunning = false;
-    progressWidth = 100;
-    progressBar.style.width = '100%';
-  }
-
-  function toggleWordGeneration() {
-    if (isWordGenerationRunning) {
-      // Word generation is currently running, stop it
-      stopWordGeneration();
-      generatorToggle.textContent = 'Start generator';
-      generatorToggle.style.backgroundColor = 'red';
-    } else {
-      // Word generation is currently stopped, start it
-      startWordGeneration();
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'limegreen';
-    }
-  }
-
-  function handleOptionChange() {
-    if (isWordGenerationRunning) {
-      // Word generation is currently running, update the interval duration
-      var interval = parseInt(intervalSelect.value) * 1000; // Convert selected value to milliseconds
-      clearInterval(wordIntervalId);
-      wordIntervalId = setInterval(generateRandomWord, interval);
-      currentWordDuration = interval;
-      progressWidth = 100;
-      progressBar.style.width = '100%';
-      startProgressIndicator();
-    }
-  }
-
-  function startProgressIndicator() {
-    clearInterval(progressIntervalId);
-    progressIncrement = 100 / (currentWordDuration / 1000); // Calculate the decrement per second
-    progressIntervalId = setInterval(updateProgress, 1000);
-  }
-
-  function updateProgress() {
-    if (progressWidth > 0) {
-      progressWidth -= progressIncrement;
-      progressBar.style.width = progressWidth + '%';
-    } else {
-      clearInterval(progressIntervalId);
-      progressIntervalId = null;
-      progressWidth = 100;
-      progressBar.style.width = '100%';
-    }
-  }
-
-  generatorToggle.addEventListener('click', toggleWordGeneration);
-  intervalSelect.addEventListener('change', handleOptionChange);
-});
-</script>
+  </script>
 </body>
 </html>
