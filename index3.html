@@ -43,6 +43,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var intervalSelect = document.getElementById('interval-select');
   var generatorToggle = document.getElementById('generator-toggle-button');
   var wordIntervalId;
+  var progressIntervalId; // Variable to store the progress indicator interval ID
   var isWordGenerationRunning = false;
 
   var words = []; // Array to store the word entries from the JSON file
@@ -55,9 +56,8 @@ window.addEventListener('DOMContentLoaded', function() {
       var randomNumber = Math.floor(Math.random() * filteredWords.length);
       var randomWord = filteredWords[randomNumber].w;
 
-
       wordDisplay.textContent = randomWord;
-
+      startProgressIndicator(); // Start the progress indicator animation
     } else {
       wordDisplay.textContent = 'No matching words found.';
     }
@@ -93,6 +93,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
+      stopProgressIndicator(); // Stop the progress indicator animation
       generatorToggle.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
     } else {
@@ -109,32 +110,34 @@ window.addEventListener('DOMContentLoaded', function() {
       var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
       clearInterval(wordIntervalId);
       wordIntervalId = setInterval(generateRandomWord, interval);
+      stopProgressIndicator(); // Stop the progress indicator animation
     }
+  }
+
+  function startProgressIndicator() {
+    var elem = document.getElementById("progress-indicator");
+    var width = 100;
+    elem.style.width = width + "%";
+    progressIntervalId = setInterval(frame, 60);
+
+    function frame() {
+      if (width <= 0) {
+        clearInterval(progressIntervalId);
+      } else {
+        width--;
+        elem.style.width = width + "%";
+      }
+    }
+  }
+
+  function stopProgressIndicator() {
+    clearInterval(progressIntervalId);
+    var elem = document.getElementById("progress-indicator");
+    elem.style.width = "0%";
   }
 
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
-
-  var i = 0;
-  var id;
-  function move() {
-    if (i == 0) {
-      i = 1;
-      var elem = document.getElementById("progress-indicator");
-      var width = 100;
-      var id = setInterval(frame, 60);
-      function frame() {
-        if (width <= 0) {
-          clearInterval(id);
-          i = 0;
-        } else {
-          width--;
-          elem.style.width = width + "%";
-        }
-      }
-    }
-}
-
 });
 
 </script>
