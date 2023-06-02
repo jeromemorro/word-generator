@@ -50,7 +50,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // Progress indicator variables
   var progressIndicator = document.getElementById('progress-indicator');
   var progressIntervalId;
-  var progressWidth = 100;
+  var progressWidth = 0;
   var isProgressUpdating = false;
 
   function generateRandomWord() {
@@ -146,7 +146,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function resetProgressIndicator() {
     stopProgressIndicator();
-    progressWidth = 100;
+    progressWidth = 0;
     progressIndicator.style.width = progressWidth + '%';
   }
 
