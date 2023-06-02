@@ -7,7 +7,7 @@
 }
 
 #progress-indicator {
-  width: 0%;
+  width: 0%; /* Updated initial width to 100% */
   height: 30px;
   background-color: Lime;
 }
@@ -63,7 +63,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
       if (!isProgressUpdating) {
         wordDisplay.textContent = randomWord;
-        startProgressIndicator();
+        startProgressIndicator();      
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
@@ -84,14 +84,12 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
-function startWordGeneration() {
-  var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
-  wordIntervalId = setInterval(function() {
-    updateProgressIndicator(); // Update progress indicator before generating the word
-    generateRandomWord();
-  }, interval);
-  isWordGenerationRunning = true;
-}
+  function startWordGeneration() {
+    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+    generateRandomWord(); // Generate the first word immediately
+    wordIntervalId = setInterval(generateRandomWord, interval);
+    isWordGenerationRunning = true;
+  }
 
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
@@ -100,30 +98,26 @@ function startWordGeneration() {
     resetProgressIndicator();
   }
 
-function toggleWordGeneration() {
-  if (isWordGenerationRunning) {
-    // Word generation is currently running, stop it
-    stopWordGeneration();
-    generatorToggle.textContent = 'Start generator';
-    generatorToggle.style.backgroundColor = 'red';
-  } else {
-    // Word generation is currently stopped, start it
-    startWordGeneration();
-    generatorToggle.textContent = 'Stop generator';
-    generatorToggle.style.backgroundColor = 'limegreen';
-    updateProgressIndicator(); // Set the progress indicator to 100% immediately
+  function toggleWordGeneration() {
+    if (isWordGenerationRunning) {
+      // Word generation is currently running, stop it
+      stopWordGeneration();
+      generatorToggle.textContent = 'Start generator';
+      generatorToggle.style.backgroundColor = 'red';
+    } else {
+      // Word generation is currently stopped, start it
+      startWordGeneration();
+      generatorToggle.textContent = 'Stop generator';
+      generatorToggle.style.backgroundColor = 'limegreen';
+    }
   }
-}
 
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, update the interval duration
       var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
       clearInterval(wordIntervalId);
-      wordIntervalId = setInterval(function () {
-        updateProgressIndicator(); // Update progress indicator before generating the word
-        generateRandomWord();
-      }, interval);
+      wordIntervalId = setInterval(generateRandomWord, interval);
       resetProgressIndicator();
     }
   }
