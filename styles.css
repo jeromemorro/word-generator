@@ -97,7 +97,7 @@ td {
   font-weight: bold;
 }
 
-#myProgress {
+#progress-indicator {
   width: 100%;
   background-color: DimGray;
 }
