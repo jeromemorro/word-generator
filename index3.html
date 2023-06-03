@@ -165,11 +165,12 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+/*
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       if (intervalSelect.checkValidity() ) {
         // Word generation is currently running, update the interval duration
-        intervalSelectValue  = intervalSelect.value;
+        intervalSelectValue = intervalSelect.value;
         var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
         clearInterval(wordIntervalId);
         wordIntervalId = setInterval(generateRandomWord, interval);
@@ -177,6 +178,16 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
   }
+*/
+
+
+function handleOptionChange() {
+  if (isWordGenerationRunning) {
+    stopWordGeneration();
+    startWordGeneration();
+  }
+}
+
 
 function handleOptionInput() {
   var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
