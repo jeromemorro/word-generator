@@ -182,7 +182,7 @@ function handleOptionInput() {
   var previousValue = intervalSelect.dataset.previousValue || intervalSelect.value; // Store the previous value
 
   if (!intervalSelect.checkValidity()) {
-    intervalSelect.value = previousValue; // Restore the previous value
+
     intervalSelect.reportValidity(); // Display the warning message
     intervalSelect.value = previousValue; // Restore the previous value
   } else {
