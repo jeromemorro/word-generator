@@ -169,6 +169,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       if (intervalSelect.checkValidity() ) {
         // Word generation is currently running, update the interval duration
+        intervalSelectValue  = intervalSelect.value;
         var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
         clearInterval(wordIntervalId);
         wordIntervalId = setInterval(generateRandomWord, interval);
