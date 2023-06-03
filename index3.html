@@ -34,7 +34,41 @@
 </div>
 <br>
 <button id="generator-toggle-button" class="generator-toggle-button">Start generator</button>
-
+<br>
+<br>
+<div id="syllables-container">
+    <label for="syllables-select" class="label-text">Syllables per word:</label>
+    <select id="syllables-select">
+        <option value="0" selected>Any</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4 or more</option>
+    </select>
+</div>
+<div id="obscure-words-toggle-container">
+    <label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
+    <input type="checkbox" id="obscure-words-toggle">
+</div>
+<div id="definitions-toggle-container">
+    <label for="definitions-toggle" class="label-text">Show definitions:</label>
+    <input type="checkbox" id="definitions-toggle">
+</div>
+<div id="definition-display-container">
+    <textarea id="definition-display" class="definition-display" readonly rows="8"></textarea>
+</div>
+<br>
+<br>
+<div id="playlist-container">
+    <iframe src="https://www.youtube.com/embed/videoseries?list=PLLasX02E8BPCkqipgpNf9wHM07Kl1-Y8a"></iframe>
+</div>
+<div id="load-playlist-container">
+    <input type="text" id="load-playlist-input" placeholder="Enter YouTube playlist ID">
+    <button id="load-playlist-button" class="load-playlist-button">Load Playlist</button>
+</div>
+<div id="generator-toggle-container">
+    <button id="generator-toggle" class="generator-toggle-button">Stop generator</button>
+</div>  
 
 <script>
 
