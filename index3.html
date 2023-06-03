@@ -160,21 +160,24 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function handleOptionChange() {
     if (isWordGenerationRunning) {
-      // Word generation is currently running, update the interval duration
-      var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
-      clearInterval(wordIntervalId);
-      wordIntervalId = setInterval(generateRandomWord, interval);
-      resetProgressIndicator();
+      //if (!intervalSelect.checkValidity() ) {
+      //  intervalSelect.reportValidity(); //Pop up warning message
+      //} else {
+        // Word generation is currently running, update the interval duration
+        var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+        clearInterval(wordIntervalId);
+        wordIntervalId = setInterval(generateRandomWord, interval);
+        resetProgressIndicator();
+      //}
     }
   }
 
   function handleOptionInput() {
-    if (!intervalSelect.checkValidity() ) {
+    if (isWordGenerationRunning) {
+      if (!intervalSelect.checkValidity() ) {
         intervalSelect.reportValidity(); //Pop up warning message
-    //else {
-    //   const value = parseInt(intervalSelect.value, 10);
-
-    //}
+      } 
+    }
   }
 
   function startProgressIndicator() {
