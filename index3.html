@@ -170,6 +170,15 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function handleOptionInput() {
+    if (!intervalSelect.checkValidity() ) {
+        intervalSelect.reportValidity(); //Pop up warning message
+    //else {
+    //   const value = parseInt(intervalSelect.value, 10);
+
+    //}
+  }
+
   function startProgressIndicator() {
     progressWidth = 100;
     progressIndicator.style.width = progressWidth + '%';
@@ -200,6 +209,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
+  intervalSelect.addEventListener('input', handleOptionInput);
+
 
 });
 
