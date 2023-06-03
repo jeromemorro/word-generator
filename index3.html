@@ -183,10 +183,11 @@ window.addEventListener('DOMContentLoaded', function() {
 
 function handleOptionChange() {
   if (isWordGenerationRunning) {
-    stopWordGeneration();
-    startWordGeneration();
+    var newInterval = parseInt(intervalSelect.value);
+    intervalSelectValue = newInterval;
   }
 }
+
 
 
 function handleOptionInput() {
