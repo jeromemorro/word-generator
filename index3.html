@@ -185,7 +185,7 @@ function handleOptionInput() {
     // Revert the value after a short delay
     setTimeout(function() {
       intervalSelect.value = previousValue; // Restore the previous value
-    }, 100);
+    }, 1500);
   } else {
     intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
   }
