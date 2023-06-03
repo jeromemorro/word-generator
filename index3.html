@@ -167,8 +167,6 @@ window.addEventListener('DOMContentLoaded', function() {
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       if (intervalSelect.checkValidity() ) {
-      //  intervalSelect.reportValidity(); //Pop up warning message
-      //} else {
         // Word generation is currently running, update the interval duration
         var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
         clearInterval(wordIntervalId);
@@ -182,25 +180,14 @@ function handleOptionInput() {
   var previousValue = intervalSelect.dataset.previousValue || intervalSelect.value; // Store the previous value
 
   if (!intervalSelect.checkValidity()) {
-
+    var currentValue = intervalSelect.value; // Store the current invalid value
+    intervalSelect.value = previousValue; // Restore the previous value temporarily
     intervalSelect.reportValidity(); // Display the warning message
-    intervalSelect.value = previousValue; // Restore the previous value
+    intervalSelect.value = currentValue; // Restore the current invalid value
   } else {
     intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
   }
 }
-
-/*
-  function handleOptionInput() {
-    var currentValue = intervalSelect.value; // Store the current value
-    if (!intervalSelect.checkValidity() ) {
-      intervalSelect.reportValidity(); //Pop up warning message
-
-      // Restore the previous value after the warning message is displayed
-      intervalSelect.value = currentValue;
-    } 
-  }
-*/
 
   function startProgressIndicator() {
     progressWidth = 100;
