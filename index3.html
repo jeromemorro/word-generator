@@ -88,16 +88,34 @@ window.addEventListener('DOMContentLoaded', function() {
   var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
   var generatorToggle = document.getElementById('generator-toggle-button');
-  var wordIntervalId;
-  var isWordGenerationRunning = false;
-
-  var words = []; // Array to store the word entries from the JSON file
-
-  // Progress indicator variables
   var progressIndicator = document.getElementById('progress-indicator');
+
+  var wordIntervalId;
   var progressIntervalId;
   var progressWidth = 0;
   var isProgressUpdating = false;
+  var isWordGenerationRunning = false;
+  var words = []; // Array to store the word entries from the JSON file
+
+
+  intervalSelect.dataset.previousValue = intervalSelect.value;
+  generatorToggle.addEventListener('click', toggleWordGeneration);
+  intervalSelect.addEventListener('change', handleOptionChange);
+  intervalSelect.addEventListener('input', handleOptionInput);
+
+  fetch('words-temp.json')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      words = data;
+      startWordGeneration();
+      generatorToggle.textContent = 'Stop generator';
+      generatorToggle.style.backgroundColor = 'limegreen';
+    })
+    .catch(function(error) {
+      console.error('Error fetching words:', error);
+    });
 
   function generateRandomWord() {
     var filteredWords = words;
@@ -116,19 +134,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  fetch('words-temp.json')
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      words = data;
-      startWordGeneration();
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'limegreen';
-    })
-    .catch(function(error) {
-      console.error('Error fetching words:', error);
-    });
+
 
   function startWordGeneration() {
     var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
@@ -222,11 +228,6 @@ function handleOptionInput() {
     progressWidth = 0;
     progressIndicator.style.width = progressWidth + '%';
   }
-
-  generatorToggle.addEventListener('click', toggleWordGeneration);
-  intervalSelect.addEventListener('change', handleOptionChange);
-  intervalSelect.addEventListener('input', handleOptionInput);
-
 
 });
 
