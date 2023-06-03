@@ -160,7 +160,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function handleOptionChange() {
     if (isWordGenerationRunning) {
-      //if (!intervalSelect.checkValidity() ) {
+      if (intervalSelect.checkValidity() ) {
       //  intervalSelect.reportValidity(); //Pop up warning message
       //} else {
         // Word generation is currently running, update the interval duration
@@ -168,16 +168,14 @@ window.addEventListener('DOMContentLoaded', function() {
         clearInterval(wordIntervalId);
         wordIntervalId = setInterval(generateRandomWord, interval);
         resetProgressIndicator();
-      //}
+      }
     }
   }
 
   function handleOptionInput() {
-    if (isWordGenerationRunning) {
-      if (!intervalSelect.checkValidity() ) {
-        intervalSelect.reportValidity(); //Pop up warning message
-      } 
-    }
+    if (!intervalSelect.checkValidity() ) {
+      intervalSelect.reportValidity(); //Pop up warning message
+    } 
   }
 
   function startProgressIndicator() {
