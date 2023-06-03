@@ -173,8 +173,12 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function handleOptionInput() {
+    var currentValue = intervalSelect.value; // Store the current value
     if (!intervalSelect.checkValidity() ) {
       intervalSelect.reportValidity(); //Pop up warning message
+
+      // Restore the previous value after the warning message is displayed
+      intervalSelect.value = previousValue;
     } 
   }
 
