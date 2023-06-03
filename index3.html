@@ -165,46 +165,27 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-/*
   function handleOptionChange() {
     if (isWordGenerationRunning) {
-      if (intervalSelect.checkValidity() ) {
-        // Word generation is currently running, update the interval duration
-        intervalSelectValue = intervalSelect.value;
-        var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
-        clearInterval(wordIntervalId);
-        wordIntervalId = setInterval(generateRandomWord, interval);
-        resetProgressIndicator();
-      }
+      intervalSelectValue = intervalSelect.value;
     }
   }
-*/
 
+  function handleOptionInput() {
+    var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
 
-function handleOptionChange() {
-  if (isWordGenerationRunning) {
-    var newInterval = parseInt(intervalSelect.value);
-    intervalSelectValue = newInterval;
-  }
-}
-
-
-
-function handleOptionInput() {
-  var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
-
-  if (!intervalSelect.checkValidity()) {
-    intervalSelect.reportValidity(); // Display the warning message
+    if (!intervalSelect.checkValidity()) {
+        intervalSelect.reportValidity(); // Display the warning message
     
-    // Revert the value after a short delay
-    setTimeout(function() {
-      intervalSelect.value = previousValue; // Restore the previous value
-    }, 2000);
-  } else {
-    intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
-    intervalSelectValue = intervalSelect.value;
+        // Revert the value after a short delay
+        setTimeout(function() {
+        intervalSelect.value = previousValue; // Restore the previous value
+      }, 2500);
+    } else {
+      intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
+      intervalSelectValue = intervalSelect.value;
+    }
   }
-}
 
   function startProgressIndicator() {
     progressWidth = 100;
