@@ -180,10 +180,12 @@ function handleOptionInput() {
   var previousValue = intervalSelect.dataset.previousValue || intervalSelect.value; // Store the previous value
 
   if (!intervalSelect.checkValidity()) {
-    var currentValue = intervalSelect.value; // Store the current invalid value
-    intervalSelect.value = previousValue; // Restore the previous value temporarily
     intervalSelect.reportValidity(); // Display the warning message
-    intervalSelect.value = currentValue; // Restore the current invalid value
+    
+    // Revert the value after a short delay
+    setTimeout(function() {
+      intervalSelect.value = previousValue; // Restore the previous value
+    }, 100);
   } else {
     intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
   }
