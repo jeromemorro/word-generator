@@ -95,10 +95,11 @@ window.addEventListener('DOMContentLoaded', function() {
   var progressWidth = 0;
   var isProgressUpdating = false;
   var isWordGenerationRunning = false;
+  var intervalSelectValue = intervalSelect.value;
   var words = []; // Array to store the word entries from the JSON file
 
 
-  intervalSelect.dataset.previousValue = intervalSelect.value;
+  intervalSelect.dataset.previousValue = intervalSelectValue;
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
@@ -137,7 +138,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
   function startWordGeneration() {
-    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+    var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
     generateRandomWord(); // Generate the first word immediately
     wordIntervalId = setInterval(generateRandomWord, interval);
     isWordGenerationRunning = true;
@@ -168,7 +169,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       if (intervalSelect.checkValidity() ) {
         // Word generation is currently running, update the interval duration
-        var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
+        var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
         clearInterval(wordIntervalId);
         wordIntervalId = setInterval(generateRandomWord, interval);
         resetProgressIndicator();
@@ -177,7 +178,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
 function handleOptionInput() {
-  var previousValue = intervalSelect.dataset.previousValue || intervalSelect.value; // Store the previous value
+  var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
 
   if (!intervalSelect.checkValidity()) {
     intervalSelect.reportValidity(); // Display the warning message
@@ -185,9 +186,10 @@ function handleOptionInput() {
     // Revert the value after a short delay
     setTimeout(function() {
       intervalSelect.value = previousValue; // Restore the previous value
-    }, 1500);
+    }, 2000);
   } else {
     intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
+    intervalSelectValue = intervalSelect.value;
   }
 }
 
@@ -205,7 +207,7 @@ function handleOptionInput() {
   }
 
   function updateProgressIndicator() {
-    progressWidth -= 100 / (intervalSelect.value - 1);
+    progressWidth -= 100 / (intervalSelectValue - 1);
     progressIndicator.style.width = progressWidth + '%';
     if (progressWidth < 0) {
       stopProgressIndicator();
