@@ -172,6 +172,18 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+function handleOptionInput() {
+  var previousValue = intervalSelect.dataset.previousValue || intervalSelect.value; // Store the previous value
+
+  if (!intervalSelect.checkValidity()) {
+    intervalSelect.value = previousValue; // Restore the previous value
+    intervalSelect.reportValidity(); // Display the warning message
+  } else {
+    intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
+  }
+}
+
+/*
   function handleOptionInput() {
     var currentValue = intervalSelect.value; // Store the current value
     if (!intervalSelect.checkValidity() ) {
@@ -181,6 +193,7 @@ window.addEventListener('DOMContentLoaded', function() {
       intervalSelect.value = currentValue;
     } 
   }
+*/
 
   function startProgressIndicator() {
     progressWidth = 100;
@@ -213,6 +226,8 @@ window.addEventListener('DOMContentLoaded', function() {
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
+
+
 });
 
 </script>
