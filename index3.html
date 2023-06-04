@@ -19,7 +19,7 @@
   font-weight: bold;
 }
 
-.definition-display {
+.definitions-display {
   background-color: black;
   border: 1px solid white;
   color: white;
@@ -68,8 +68,8 @@
     <label for="definitions-toggle" class="label-text">Show definitions:</label>
     <input type="checkbox" id="definitions-toggle">
 </div>
-<div id="definition-display-container">
-    <textarea id="definition-display" class="definition-display" readonly rows="8"></textarea>
+<div id="definitions-display-container">
+    <textarea id="definitions-display" class="definitions-display" readonly rows="8"></textarea>
 </div>
 <br>
 <br>
@@ -83,35 +83,45 @@
  
 
 <script>
-
 window.addEventListener('DOMContentLoaded', function() {
+  // Get references to HTML elements
   var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
   var generatorToggle = document.getElementById('generator-toggle-button');
   var progressIndicator = document.getElementById('progress-indicator');
+  var definitionsToggle = document.getElementById('definitions-toggle');
+  var definitionsDisplay = document.getElementById('definitions-display');
+  var syllablesSelect = document.getElementById('syllables-select');
+  var obscureWordsToggle = document.getElementById('obscure-words-toggle');
 
-  var wordIntervalId;
-  var progressIntervalId;
-  var progressWidth;
-  var progressIteration;
-  var isProgressUpdating = false;
-  var isWordGenerationRunning = false;
-  var intervalSelectValue = intervalSelect.value;
-  var words = []; // Array to store the word entries from the JSON file
+  // Declare variables
+  var wordIntervalId; // ID for the word generation interval
+  var progressIntervalId; // ID for the progress indicator interval
+  var progressWidth; // Current width of the progress indicator
+  var progressIteration; // Current iteration of the progress indicator
+  var isProgressUpdating = false; // Flag to track if progress indicator is updating
+  var isWordGenerationRunning = false; // Flag to track if word generation is running
+  var intervalSelectValue = intervalSelect.value; // Selected value of the interval
 
-
+  // Store the previous value of the interval select
   intervalSelect.dataset.previousValue = intervalSelectValue;
+
+  // Event listeners
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
+  definitionsToggle.addEventListener('click', toggleDefinitions);
+  syllablesSelect.addEventListener('change', handleOptionChange);
+  obscureWordsToggle.addEventListener('change', handleOptionChange);
 
+  // Fetch the word data from a JSON file
   fetch('words-temp.json')
     .then(function(response) {
       return response.json();
     })
     .then(function(data) {
-      words = data;
-      startWordGeneration();
+      words = data; // Store the fetched word entries in the 'words' array
+      startWordGeneration(); // Start word generation
       generatorToggle.textContent = 'Stop generator';
       generatorToggle.style.backgroundColor = 'limegreen';
     })
@@ -119,25 +129,43 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
+  // Generate a random word from the filtered list
   function generateRandomWord() {
     var filteredWords = words;
+
+    // Filter words based on selected syllables
+    var selectedSyllables = syllablesSelect.value;
+    if (selectedSyllables !== '0') {
+      filteredWords = filteredWords.filter(function(word) {
+        return word.s == selectedSyllables;
+      });
+    }
+
+    // Filter words based on obscure words checkbox
+    if (!obscureWordsToggle.checked) {
+      filteredWords = filteredWords.filter(function(word) {
+        return word.c == 1;
+      });
+    }
 
     // Generate a random word from the filtered list
     if (filteredWords.length > 0) {
       var randomNumber = Math.floor(Math.random() * filteredWords.length);
       var randomWord = filteredWords[randomNumber].w;
+      var definitions = filteredWords[randomNumber].d;
 
       if (!isProgressUpdating) {
         wordDisplay.textContent = randomWord;
+        definitionsDisplay.value = definitions;
         startProgressIndicator();      
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
+      definitionsDisplay.value = '';
     }
   }
 
-
-
+  // Start word generation
   function startWordGeneration() {
     var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
     generateRandomWord(); // Generate the first word immediately
@@ -145,6 +173,7 @@ window.addEventListener('DOMContentLoaded', function() {
     isWordGenerationRunning = true;
   }
 
+  // Stop word generation
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
     wordIntervalId = null;
@@ -152,6 +181,7 @@ window.addEventListener('DOMContentLoaded', function() {
     resetProgressIndicator();
   }
 
+  // Toggle word generation on button click
   function toggleWordGeneration() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
@@ -166,20 +196,33 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function toggleDefinitions() {
+    if (definitionsDisplay.style.display === 'none') {
+      // Show the definitions display and update the button text
+      definitionsDisplay.style.display = 'block';
+    } else {
+      // Hide the definitions display and update the button text
+      definitionsDisplay.style.display = 'none';
+    }
+  }
+
+
+  // Handle change of interval selection
   function handleOptionChange() {
     if (isWordGenerationRunning) {
       intervalSelectValue = intervalSelect.value;
     }
   }
 
+  // Handle input of interval selection
   function handleOptionInput() {
     var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
 
     if (!intervalSelect.checkValidity()) {
-        intervalSelect.reportValidity(); // Display the warning message
+      intervalSelect.reportValidity(); // Display the warning message
     
-        // Revert the value after a short delay
-        setTimeout(function() {
+      // Revert the value after a short delay
+      setTimeout(function() {
         intervalSelect.value = previousValue; // Restore the previous value
       }, 2500);
     } else {
@@ -188,6 +231,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Start the progress indicator
   function startProgressIndicator() {
     progressWidth = 100;
     progressIteration = intervalSelectValue;
@@ -196,40 +240,28 @@ window.addEventListener('DOMContentLoaded', function() {
     isProgressUpdating = true;
   }
 
+  // Stop the progress indicator
   function stopProgressIndicator() {
     clearInterval(progressIntervalId);
     progressIntervalId = null;
     isProgressUpdating = false;
   }
 
-function updateProgressIndicator() {
-  var stepWidth = Math.ceil(100 / intervalSelectValue);
-
-  progressIteration -= 1;
-  progressWidth = Math.max(progressWidth - stepWidth, 0);  // Ensure progressWidth doesn't go below 0
-  progressIndicator.style.width = progressWidth + '%';
-
-  if (progressIteration < 0) {
-    stopProgressIndicator();
-    generateRandomWord();
-  }
-}
-
-
-/*
+  // Update the progress indicator
   function updateProgressIndicator() {
     var stepWidth = Math.ceil(100 / intervalSelectValue);
 
-    progressWidth -= stepWidth;
+    progressIteration -= 1;
+    progressWidth = Math.max(progressWidth - stepWidth, 0);  // Ensure progressWidth doesn't go below 0
     progressIndicator.style.width = progressWidth + '%';
 
-    if (progressWidth < 0) {
+    if (progressIteration < 0) {
       stopProgressIndicator();
       generateRandomWord();
     }
   }
-*/
 
+  // Reset the progress indicator
   function resetProgressIndicator() {
     stopProgressIndicator();
     progressWidth = 0;
@@ -237,7 +269,7 @@ function updateProgressIndicator() {
   }
 
 });
-
 </script>
+
 </body>
 </html>
