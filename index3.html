@@ -93,6 +93,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var wordIntervalId;
   var progressIntervalId;
   var progressWidth = 0;
+  var progressIteration;
   var isProgressUpdating = false;
   var isWordGenerationRunning = false;
   var intervalSelectValue = intervalSelect.value;
@@ -189,6 +190,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function startProgressIndicator() {
     progressWidth = 100;
+    progressIteration = 100;
     progressIndicator.style.width = progressWidth + '%';
     progressIntervalId = setInterval(updateProgressIndicator, 1000);
     isProgressUpdating = true;
@@ -203,11 +205,12 @@ window.addEventListener('DOMContentLoaded', function() {
 function updateProgressIndicator() {
   var stepWidth = Math.ceil(100 / intervalSelectValue);
 
-  progressWidth = Math.max(progressWidth - stepWidth, 0);
+  progressIteration = progressIteration - stepWidth;
+  progressWidth = Math.max(progressWidth - stepWidth, 0);  // Ensure progressWidth doesn't go below 0
   progressIndicator.style.width = progressWidth + '%';
 
-  if (progressWidth === 0) {
-    setTimeout(updateProgressIndicator, 5000);
+  if (progressIteration < 0) {
+    setTimeout(updateProgressIndicator, 1000);
     stopProgressIndicator();
     generateRandomWord();
   }
