@@ -1,20 +1,58 @@
 // script.js
 
 window.addEventListener('DOMContentLoaded', function() {
+  // Get references to HTML elements
   var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
-  var intervalId;
-  var generatorToggle = document.getElementById('generator-toggle');
-  var isWordGenerationRunning = false;
-  var definitionToggle = document.getElementById('definition-toggle');
-  var definitionDisplay = document.getElementById('definition-display');
+  var generatorToggle = document.getElementById('generator-toggle-button');
+  var iconSpan = generatorToggle.querySelector('.green-play-icon');
+  var textSpan = generatorToggle.querySelector('.generator-toggle-button-text');
+  var progressIndicator = document.getElementById('progress-indicator');
+  var definitionsToggle = document.getElementById('definitions-toggle');
+  var definitionsDisplay = document.getElementById('definitions-display');
   var syllablesSelect = document.getElementById('syllables-select');
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
-  var progressBar = document.getElementById('progress-bar');
-  var progressBlocks = progressBar.getElementsByClassName('progress-block');
-  
-  var words = []; // Array to store the word entries from the JSON file
+  var playlistFrame = document.getElementById('playlist-frame');
+  var loadPlaylistInput = document.getElementById('load-playlist-input');
+  var loadPlaylistButton = document.getElementById('load-playlist-button');
 
+  // Declare variables
+  var wordIntervalId; // ID for the word generation interval
+  var progressIntervalId; // ID for the progress indicator interval
+  var progressWidth; // Current width of the progress indicator
+  var progressIteration; // Current iteration of the progress indicator
+  var isProgressUpdating = false; // Flag to track if progress indicator is updating
+  var isWordGenerationRunning = false; // Flag to track if word generation is running
+  var intervalSelectValue = intervalSelect.value; // Selected value of the interval
+
+  // Store the previous value of the interval select
+  intervalSelect.dataset.previousValue = intervalSelectValue;
+
+  // Event listeners
+  generatorToggle.addEventListener('click', toggleWordGeneration);
+  intervalSelect.addEventListener('change', handleOptionChange);
+  intervalSelect.addEventListener('input', handleOptionInput);
+  definitionsToggle.addEventListener('change', toggleDefinitions);
+  syllablesSelect.addEventListener('change', handleOptionChange);
+  obscureWordsToggle.addEventListener('change', handleOptionChange);
+  loadPlaylistInput.addEventListener('input', handlePlaylistInput);
+  loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
+
+  // Fetch the word data from a JSON file
+  fetch('words-temp.json')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      words = data; // Store the fetched word entries in the 'words' array
+      startWordGeneration(); // Start word generation
+      displayStartGenerator(false);
+    })
+    .catch(function(error) {
+      console.error('Error fetching words:', error);
+    });
+
+  // Generate a random word from the filtered list
   function generateRandomWord() {
     var filteredWords = words;
 
@@ -37,108 +75,112 @@ window.addEventListener('DOMContentLoaded', function() {
     if (filteredWords.length > 0) {
       var randomNumber = Math.floor(Math.random() * filteredWords.length);
       var randomWord = filteredWords[randomNumber].w;
-      var definition = filteredWords[randomNumber].d;
+      var definitions = filteredWords[randomNumber].d;
 
-      wordDisplay.textContent = randomWord;
-      definitionDisplay.value = definition;
-      
-      updateProgressBar(); // Update the progress bar
+      if (!isProgressUpdating) {
+        wordDisplay.textContent = randomWord;
+        definitionsDisplay.value = definitions;
+        startProgressIndicator();      
+      }
     } else {
       wordDisplay.textContent = 'No matching words found.';
-      definitionDisplay.value = '';
+      definitionsDisplay.value = '';
     }
   }
 
+  // Start word generation with the selected interval
   function startWordGeneration() {
-    var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
     generateRandomWord();
-    intervalId = setInterval(generateRandomWord, interval);
-    isWordGenerationRunning = true;
+    var intervalValue = parseInt(intervalSelect.value);
+
+    if (isNaN(intervalValue) || intervalValue <= 0) {
+      stopWordGeneration();
+    } else {
+      wordIntervalId = setInterval(generateRandomWord, intervalValue * 1000);
+      isWordGenerationRunning = true;
+      displayStartGenerator(true);
+    }
   }
 
+  // Stop word generation
   function stopWordGeneration() {
-    clearInterval(intervalId);
-    intervalId = null;
+    clearInterval(wordIntervalId);
     isWordGenerationRunning = false;
+    displayStartGenerator(false);
   }
 
+  // Toggle word generation
   function toggleWordGeneration() {
     if (isWordGenerationRunning) {
-      // Word generation is currently running, stop it
       stopWordGeneration();
-      generatorToggle.textContent = 'Start generator';
-      generatorToggle.style.backgroundColor = 'red';
     } else {
-      // Word generation is currently stopped, start it
       startWordGeneration();
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'green';
     }
   }
 
-  function toggleDefinition() {
-    if (definitionDisplay.style.display === 'none') {
-      // Show the definition display and update the button text
-      definitionDisplay.style.display = 'block';
-      definitionToggle.textContent = 'Hide definition';
-    } else {
-      // Hide the definition display and update the button text
-      definitionDisplay.style.display = 'none';
-      definitionToggle.textContent = 'Show definition';
-    }
-  }
-
-  function handleOptionChange() {
+  // Handle option change event for interval and syllables select elements
+  function handleOptionChange(event) {
     if (isWordGenerationRunning) {
-      // Word generation is currently running, update the interval duration
-      var interval = intervalSelect.value * 1000; // Convert selected value to milliseconds
-      clearInterval(intervalId);
-      intervalId = setInterval(generateRandomWord, interval);
-    }
-  }
-
-  function updateProgressBar() {
-    var progress = 0;
-
-    // Calculate the progress based on the displayed word
-    if (wordDisplay.textContent !== 'No matching words found.') {
-      progress = Math.floor((wordDisplay.textContent.length / 10) * progressBlocks.length);
-    }
-
-    // Reset all progress blocks to empty
-    for (var i = 0; i < progressBlocks.length; i++) {
-      progressBlocks[i].classList.remove('filled');
-    }
-
-    // Fill the progress blocks based on the calculated progress
-    for (var j = 0; j < progress; j++) {
-      progressBlocks[j].classList.add('filled');
-    }
-  }
-
-  fetch('words-temp.json')
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      words = data;
+      stopWordGeneration();
       startWordGeneration();
-    })
-    .catch(function(error) {
-      console.error('Error fetching words:', error);
-    });
+    }
+  }
 
-  // Dynamically adjust the width of the generator toggle button to match the definition toggle button
-  window.addEventListener('resize', function() {
-    generatorToggle.style.width = definitionToggle.offsetWidth + 'px';
-  });
+  // Handle input event for interval select element
+  function handleOptionInput(event) {
+    var inputValue = parseInt(event.target.value);
+    if (isNaN(inputValue) || inputValue <= 0) {
+      event.target.value = intervalSelect.dataset.previousValue;
+    } else {
+      intervalSelect.dataset.previousValue = event.target.value;
+    }
+  }
 
-  // Hide the definition display on page load
-  definitionDisplay.style.display = 'none';
+  // Toggle definitions display
+  function toggleDefinitions() {
+    definitionsDisplay.classList.toggle('hidden');
+  }
 
-  generatorToggle.addEventListener('click', toggleWordGeneration);
-  definitionToggle.addEventListener('click', toggleDefinition);
-  syllablesSelect.addEventListener('change', handleOptionChange);
-  obscureWordsToggle.addEventListener('change', handleOptionChange);
-  intervalSelect.addEventListener('change', handleOptionChange);
+  // Start progress indicator animation
+  function startProgressIndicator() {
+    progressWidth = 0;
+    progressIteration = 0;
+    isProgressUpdating = true;
+    progressIndicator.style.width = progressWidth + '%';
+    progressIndicator.classList.remove('hidden');
+    progressIntervalId = setInterval(updateProgressIndicator, 100);
+  }
+
+  // Update progress indicator
+  function updateProgressIndicator() {
+    progressIteration++;
+    progressWidth = progressIteration * 10;
+
+    if (progressWidth > 100) {
+      stopProgressIndicator();
+    } else {
+      progressIndicator.style.width = progressWidth + '%';
+    }
+  }
+
+  // Stop progress indicator
+  function stopProgressIndicator() {
+    clearInterval(progressIntervalId);
+    isProgressUpdating = false;
+    progressIndicator.classList.add('hidden');
+  }
+
+  // Handle playlist input event
+  function handlePlaylistInput() {
+    var playlistUrl = loadPlaylistInput.value;
+    playlistFrame.src = playlistUrl;
+  }
+
+  // Handle load playlist button click event
+  function handleLoadPlaylistButtonClick() {
+    var playlistUrl = loadPlaylistInput.value;
+    if (playlistUrl) {
+      window.open(playlistUrl);
+    }
+  }
 });
