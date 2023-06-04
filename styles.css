@@ -164,7 +164,6 @@ td {
 
 .load-playlist-button {
   background-color: #993399;
-  border-style: solid;
   border-width: thin;
   color: white;
   flex-shrink: 0;
@@ -180,7 +179,6 @@ td {
 
 .generator-toggle-button {
   background-color: LimeGreen;
-  border-style: solid;
   border-width: thin;
   color: white;
   font-size: 16px;
