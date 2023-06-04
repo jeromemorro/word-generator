@@ -190,8 +190,7 @@ window.addEventListener('DOMContentLoaded', function() {
   function startProgressIndicator() {
     progressWidth = 100;
     progressIndicator.style.width = progressWidth + '%';
-    //progressIntervalId = setInterval(updateProgressIndicator, 1000);
-    progressIntervalId = setInterval(updateProgressIndicator, intervalSelectValue * 1000);
+    progressIntervalId = setInterval(updateProgressIndicator, 1000);
     isProgressUpdating = true;
   }
 
