@@ -178,7 +178,7 @@ td {
 }
 
 .generator-toggle-button {
-  background-color: LimeGreen;
+  background-color: red;
   border-width: thin;
   color: white;
   font-size: 16px;
