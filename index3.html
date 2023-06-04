@@ -23,7 +23,7 @@
   background-color: black;
   border: 1px solid white;
   color: white;
-  display: none; 
+  display: none;  
   flex: 1;
   font-family: inherit;
   font-size: 16px;
@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function() {
       if (!isProgressUpdating) {
         wordDisplay.textContent = randomWord;
         definitionsDisplay.value = definitions;
-        startProgressIndicator();
+        startProgressIndicator();      
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
@@ -196,13 +196,13 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Toggle the display of definitions
+  // Toggle definitions display
   function toggleDefinitions() {
     if (definitionsDisplay.style.display === 'none') {
-      // Show the definitions display and update the button text
+      // Show the definitions display 
       definitionsDisplay.style.display = 'block';
     } else {
-      // Hide the definitions display and update the button text
+      // Hide the definitions display 
       definitionsDisplay.style.display = 'none';
     }
   }
@@ -220,7 +220,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     if (!intervalSelect.checkValidity()) {
       intervalSelect.reportValidity(); // Display the warning message
-
+    
       // Revert the value after a short delay
       setTimeout(function() {
         intervalSelect.value = previousValue; // Restore the previous value
@@ -270,6 +270,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
 
 </body>
 </html>
