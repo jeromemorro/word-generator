@@ -212,7 +212,7 @@ window.addEventListener('DOMContentLoaded', function() {
 */
 
 function updateProgressIndicator() {
-  var intervalDuration = intervalSelectValue * 1000; // Convert interval value to milliseconds
+  var intervalDuration = intervalSelectValue; // Convert interval value to milliseconds
   var stepWidth = 100 / intervalDuration; // Calculate the width for each step
   
   progressWidth -= stepWidth;
