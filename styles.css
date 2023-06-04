@@ -171,18 +171,61 @@ td {
   font-weight: bold;
 }
 
+.load-playlist-button:disabled {
+  /* Styles for the disabled state */
+  opacity: 0.5;
+}
+
 #generator-toggle-container {
   align-items: center;
   display: flex;  
   justify-content: center;  
 }
 
+/*
 .generator-toggle-button {
   background-color: red;
   border-width: thin;
   color: white;
   font-size: 16px;
   font-weight: bold;
+}
+*/
+
+.generator-toggle-button {
+  background-color: red;
+  border-width: thin;
+  padding: 0px 5px;
+}
+
+.generator-toggle-button-text {
+  color: white;
+  font-size: 16px;
+  font-weight: bold; 
+  left: -3px;
+  position: relative;
+  top: 1px;
+  vertical-align: middle;
+}
+
+.green-play-icon {
+  display: inline-block;
+  width: 0px;
+  height: 0px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid lime;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.red-stop-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
 #definitions-display-container {
