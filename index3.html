@@ -200,18 +200,18 @@ window.addEventListener('DOMContentLoaded', function() {
     isProgressUpdating = false;
   }
 
-function updateProgressIndicator() {
-  var intervalDuration = intervalSelectValue;
-  var stepWidth = parseInt(100 / intervalDuration, 10);
+  function updateProgressIndicator() {
+    var intervalDuration = intervalSelectValue;
+    var stepWidth = Math.ceil(100 / intervalDuration);
 
-  progressWidth -= stepWidth;
-  progressIndicator.style.width = progressWidth + '%';
+    progressWidth -= stepWidth;
+    progressIndicator.style.width = progressWidth + '%';
 
-  if (progressWidth < 0) {
-    stopProgressIndicator();
-    generateRandomWord();
+    if (progressWidth < 0) {
+      stopProgressIndicator();
+      generateRandomWord();
+    }
   }
-}
 
 /*
   function updateProgressIndicator() {
