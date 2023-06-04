@@ -208,6 +208,7 @@ function updateProgressIndicator() {
   progressIndicator.style.width = progressWidth + '%';
 
   if (progressWidth === 0) {
+    setTimeout(updateProgressIndicator, 1000);
     stopProgressIndicator();
     generateRandomWord();
   }
