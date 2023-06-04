@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', function() {
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
-  definitionsToggle.addEventListener('click', toggleDefinitions);
+  definitionsToggle.addEventListener('change', toggleDefinitions);
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
 
@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function() {
       if (!isProgressUpdating) {
         wordDisplay.textContent = randomWord;
         definitionsDisplay.value = definitions;
-        startProgressIndicator();      
+        startProgressIndicator();
       }
     } else {
       wordDisplay.textContent = 'No matching words found.';
@@ -196,6 +196,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Toggle the display of definitions
   function toggleDefinitions() {
     if (definitionsDisplay.style.display === 'none') {
       // Show the definitions display and update the button text
@@ -205,7 +206,6 @@ window.addEventListener('DOMContentLoaded', function() {
       definitionsDisplay.style.display = 'none';
     }
   }
-
 
   // Handle change of interval selection
   function handleOptionChange() {
@@ -220,7 +220,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     if (!intervalSelect.checkValidity()) {
       intervalSelect.reportValidity(); // Display the warning message
-    
+
       // Revert the value after a short delay
       setTimeout(function() {
         intervalSelect.value = previousValue; // Restore the previous value
