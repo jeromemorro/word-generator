@@ -152,6 +152,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var definitionsDisplay = document.getElementById('definitions-display');
   var syllablesSelect = document.getElementById('syllables-select');
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
+  var playlistFrame = document.getElementById('playlist-frame');
   var loadPlaylistInput = document.getElementById('load-playlist-input');
   var loadPlaylistButton = document.getElementById('load-playlist-button');
 
@@ -331,6 +332,26 @@ window.addEventListener('DOMContentLoaded', function() {
       loadPlaylistButton.disabled = true; // Disable the button
     }
   }
+
+  function handleLoadPlaylistButtonClick() {
+    var inputValue = loadPlaylistInput.value.trim();
+    var isUrl = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(inputValue);
+
+    if (isUrl) {
+      playlistFrame.src = inputValue;
+    } else {
+      playlistFrame.src = 'https://www.youtube.com/embed/videoseries?list=' + inputValue;
+    }
+
+    playlistFrame.onerror = function() {
+      playlistFrame.style.backgroundImage = 'url("error-graphic.png")';
+      // Or, you can set a custom text message
+      // playlistFrame.textContent = 'Error loading playlist';
+    };
+
+    loadPlaylistButton.disabled = true;
+}
+
 
   // Start the progress indicator
   function startProgressIndicator() {
