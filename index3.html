@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', function() {
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
-  definitionsToggle.addEventListener('click', toggleDefinitions);
+  definitionsToggle.addEventListener('change', toggleDefinitions);
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
 
@@ -196,6 +196,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+/*
   // Toggle definitions display
   function toggleDefinitions() {
     if (definitionsDisplay.style.display === 'none') {
@@ -206,6 +207,21 @@ window.addEventListener('DOMContentLoaded', function() {
       definitionsDisplay.style.display = 'none';
     }
   }
+*/
+
+function toggleDefinitions() {
+  var computedStyles = window.getComputedStyle(definitionsDisplay);
+  var display = computedStyles.getPropertyValue('display');
+
+  if (display === 'none') {
+    // Show the definitions display 
+    definitionsDisplay.style.display = 'block';
+  } else {
+    // Hide the definitions display 
+    definitionsDisplay.style.display = 'none';
+  }
+}
+
 
   // Handle change of interval selection
   function handleOptionChange() {
