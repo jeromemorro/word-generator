@@ -25,9 +25,6 @@ window.addEventListener('DOMContentLoaded', function() {
   var isWordGenerationRunning = false; // Flag to track if word generation is running
   var intervalSelectValue = intervalSelect.value; // Selected value of the interval
 
-  // Store the previous value of the interval select
-  intervalSelect.dataset.previousValue = intervalSelectValue;
-
   // Event listeners
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
@@ -37,6 +34,9 @@ window.addEventListener('DOMContentLoaded', function() {
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
+
+  // Store the previous value of the interval select
+  intervalSelect.dataset.previousValue = intervalSelectValue;
 
   // Fetch the word data from a JSON file
   fetch('words-temp.json')
@@ -88,99 +88,157 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Start word generation with the selected interval
+  // Start word generation
   function startWordGeneration() {
-    generateRandomWord();
-    var intervalValue = parseInt(intervalSelect.value);
-
-    if (isNaN(intervalValue) || intervalValue <= 0) {
-      stopWordGeneration();
-    } else {
-      wordIntervalId = setInterval(generateRandomWord, intervalValue * 1000);
-      isWordGenerationRunning = true;
-      displayStartGenerator(true);
-    }
+    var interval = intervalSelectValue * 1000; // Convert selected value to milliseconds
+    generateRandomWord(); // Generate the first word immediately
+    wordIntervalId = setInterval(generateRandomWord, interval);
+    isWordGenerationRunning = true;
   }
 
   // Stop word generation
   function stopWordGeneration() {
     clearInterval(wordIntervalId);
+    wordIntervalId = null;
     isWordGenerationRunning = false;
-    displayStartGenerator(false);
+    resetProgressIndicator();
   }
 
-  // Toggle word generation
+  // Toggle word generation on button click
   function toggleWordGeneration() {
     if (isWordGenerationRunning) {
+      // Word generation is currently running, stop it
       stopWordGeneration();
+      displayStartGenerator(true);
     } else {
+      // Word generation is currently stopped, start it
       startWordGeneration();
+      displayStartGenerator(false);
     }
   }
-
-  // Handle option change event for interval and syllables select elements
-  function handleOptionChange(event) {
-    if (isWordGenerationRunning) {
-      stopWordGeneration();
-      startWordGeneration();
-    }
-  }
-
-  // Handle input event for interval select element
-  function handleOptionInput(event) {
-    var inputValue = parseInt(event.target.value);
-    if (isNaN(inputValue) || inputValue <= 0) {
-      event.target.value = intervalSelect.dataset.previousValue;
+  
+  // Toggle start generator display
+  function displayStartGenerator(isTrue) {
+    if (isTrue) {
+      iconSpan.classList.remove('red-stop-icon');
+      iconSpan.classList.add('green-play-icon');
+      textSpan.textContent = 'Start generator';
+      generatorToggle.style.backgroundColor = 'red';
     } else {
-      intervalSelect.dataset.previousValue = event.target.value;
+      iconSpan.classList.remove('green-play-icon');
+      iconSpan.classList.add('red-stop-icon');
+      textSpan.textContent = 'Stop generator';
+      generatorToggle.style.backgroundColor = 'limegreen';
     }
   }
 
   // Toggle definitions display
   function toggleDefinitions() {
-    definitionsDisplay.classList.toggle('hidden');
-  }
+    var computedStyles = window.getComputedStyle(definitionsDisplay);
+    var display = computedStyles.getPropertyValue('display');
 
-  // Start progress indicator animation
-  function startProgressIndicator() {
-    progressWidth = 0;
-    progressIteration = 0;
-    isProgressUpdating = true;
-    progressIndicator.style.width = progressWidth + '%';
-    progressIndicator.classList.remove('hidden');
-    progressIntervalId = setInterval(updateProgressIndicator, 100);
-  }
-
-  // Update progress indicator
-  function updateProgressIndicator() {
-    progressIteration++;
-    progressWidth = progressIteration * 10;
-
-    if (progressWidth > 100) {
-      stopProgressIndicator();
+    if (display === 'none') {
+      // Show the definitions display 
+      definitionsDisplay.style.display = 'block';
     } else {
-      progressIndicator.style.width = progressWidth + '%';
+      // Hide the definitions display 
+      definitionsDisplay.style.display = 'none';
     }
   }
 
-  // Stop progress indicator
-  function stopProgressIndicator() {
-    clearInterval(progressIntervalId);
-    isProgressUpdating = false;
-    progressIndicator.classList.add('hidden');
+  // Update the interval duration
+  function handleOptionChange() {
+    if (isWordGenerationRunning) {
+      intervalSelectValue = intervalSelect.value;
+    }
+  }
+
+  // Handle input of interval selection
+  function handleOptionInput() {
+    var previousValue = intervalSelect.dataset.previousValue || intervalSelectValue; // Store the previous value
+
+    if (!intervalSelect.checkValidity()) {
+      intervalSelect.reportValidity(); // Display the warning message
+    
+      // Revert the value after a short delay
+      setTimeout(function() {
+        intervalSelect.value = previousValue; // Restore the previous value
+      }, 2500);
+    } else {
+      intervalSelect.dataset.previousValue = intervalSelect.value; // Update the previous value
+      intervalSelectValue = intervalSelect.value;
+    }
   }
 
   // Handle playlist input event
   function handlePlaylistInput() {
-    var playlistUrl = loadPlaylistInput.value;
-    playlistFrame.src = playlistUrl;
+    var inputValue = loadPlaylistInput.value.trim(); // Trim whitespace
+
+    if (inputValue.length > 0) {
+      loadPlaylistButton.disabled = false; // Enable the button
+    } else {
+      loadPlaylistButton.disabled = true; // Disable the button
+    }
   }
 
   // Handle load playlist button click event
   function handleLoadPlaylistButtonClick() {
-    var playlistUrl = loadPlaylistInput.value;
-    if (playlistUrl) {
-      window.open(playlistUrl);
+    var inputValue = loadPlaylistInput.value.trim();
+    var isUrl = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(inputValue);
+
+    if (isUrl) {
+      playlistFrame.src = inputValue;
+    } else {
+      playlistFrame.src = 'https://www.youtube.com/embed/videoseries?list=' + inputValue;
     }
+
+    playlistFrame.onerror = function() {
+      playlistFrame.style.backgroundImage = 'url("error-graphic.png")';
+      // Or, you can set a custom text message
+      // playlistFrame.textContent = 'Error loading playlist';
+    };
+
+    playlistFrame.onload = function() {
+      playlistFrame.style.backgroundImage = 'none';
+    };
+
+    loadPlaylistButton.disabled = true;
+  }
+
+  // Start the progress indicator
+  function startProgressIndicator() {
+    progressWidth = 100;
+    progressIteration = intervalSelectValue;
+    progressIndicator.style.width = progressWidth + '%';
+    progressIntervalId = setInterval(updateProgressIndicator, 1000);
+    isProgressUpdating = true;
+  }
+
+  // Stop the progress indicator
+  function stopProgressIndicator() {
+    clearInterval(progressIntervalId);
+    progressIntervalId = null;
+    isProgressUpdating = false;
+  }
+
+  // Update the progress indicator
+  function updateProgressIndicator() {
+    var stepWidth = Math.ceil(100 / intervalSelectValue);
+
+    progressIteration -= 1;
+    progressWidth = Math.max(progressWidth - stepWidth, 0);  // Ensure progressWidth doesn't go below 0
+    progressIndicator.style.width = progressWidth + '%';
+
+    if (progressIteration < 0) {
+      stopProgressIndicator();
+      generateRandomWord();
+    }
+  }
+
+  // Reset the progress indicator
+  function resetProgressIndicator() {
+    stopProgressIndicator();
+    progressWidth = 0;
+    progressIndicator.style.width = progressWidth + '%';
   }
 });
