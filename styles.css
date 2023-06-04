@@ -183,7 +183,7 @@ td {
   font-weight: bold;
 }
 
-#definition-display-container {
+#definitions-display-container {
   align-items: center; 
   color: white;
   display: flex;
@@ -191,7 +191,7 @@ td {
   margin-top: 10px;
 }
 
-.definition-display {
+.definitions-display {
   background-color: black;
   border: 1px solid white;
   color: white;
