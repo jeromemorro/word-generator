@@ -175,6 +175,7 @@ window.addEventListener('DOMContentLoaded', function() {
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
+  loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
 
   // Fetch the word data from a JSON file
   fetch('words-temp.json')
