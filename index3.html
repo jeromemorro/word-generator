@@ -202,12 +202,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
 function updateProgressIndicator() {
   var intervalDuration = intervalSelectValue;
-  var stepWidth = 100 / intervalDuration;
+  var stepWidth = parseInt(100 / intervalDuration, 10);
 
   progressWidth -= stepWidth;
   progressIndicator.style.width = progressWidth + '%';
 
-  if (progressWidth <= 0) {
+  if (progressWidth < 0) {
     stopProgressIndicator();
     generateRandomWord();
   }
