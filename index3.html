@@ -145,6 +145,8 @@ window.addEventListener('DOMContentLoaded', function() {
   var wordDisplay = document.getElementById('word-display');
   var intervalSelect = document.getElementById('interval-select');
   var generatorToggle = document.getElementById('generator-toggle-button');
+  var iconSpan = generatorToggle.querySelector('.green-play-icon');
+  var textSpan = generatorToggle.querySelector('.generator-toggle-button-text');
   var progressIndicator = document.getElementById('progress-indicator');
   var definitionsToggle = document.getElementById('definitions-toggle');
   var definitionsDisplay = document.getElementById('definitions-display');
@@ -152,7 +154,6 @@ window.addEventListener('DOMContentLoaded', function() {
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
   var loadPlaylistInput = document.getElementById('load-playlist-input');
   var loadPlaylistButton = document.getElementById('load-playlist-button');
-
 
   // Declare variables
   var wordIntervalId; // ID for the word generation interval
@@ -256,10 +257,14 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function displayStartGenerator(isTrue) {
     if (isTrue) {
-      generatorToggle.textContent = 'Start generator';
+      iconSpan.classList.remove('red-stop-icon');
+      iconSpan.classList.add('green-play-icon');
+      textSpan.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
     } else {
-      generatorToggle.textContent = 'Stop generator';
+      iconSpan.classList.remove('green-play-icon');
+      iconSpan.classList.add('red-stop-icon');
+      textSpan.textContent = 'Stop generator';
       generatorToggle.style.backgroundColor = 'limegreen';
     }
   }
