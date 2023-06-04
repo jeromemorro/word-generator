@@ -183,8 +183,7 @@ window.addEventListener('DOMContentLoaded', function() {
     .then(function(data) {
       words = data; // Store the fetched word entries in the 'words' array
       startWordGeneration(); // Start word generation
-      generatorToggle.textContent = 'Stop generator';
-      generatorToggle.style.backgroundColor = 'limegreen';
+      displayStartGenerator(false);
     })
     .catch(function(error) {
       console.error('Error fetching words:', error);
@@ -247,15 +246,24 @@ window.addEventListener('DOMContentLoaded', function() {
     if (isWordGenerationRunning) {
       // Word generation is currently running, stop it
       stopWordGeneration();
-      generatorToggle.textContent = 'Start generator';
-      generatorToggle.style.backgroundColor = 'red';
+      displayStartGenerator(true);
     } else {
       // Word generation is currently stopped, start it
       startWordGeneration();
+      displayStartGenerator(false);
+    }
+  }
+
+  function displayStartGenerator(isTrue) {
+    if (isTrue) {
+      generatorToggle.textContent = 'Start generator';
+      generatorToggle.style.backgroundColor = 'red';
+    } else {
       generatorToggle.textContent = 'Stop generator';
       generatorToggle.style.backgroundColor = 'limegreen';
     }
   }
+
 
 /*
   // Toggle definitions display
@@ -270,6 +278,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 */
 
+  // Toggle definitions display
   function toggleDefinitions() {
     var computedStyles = window.getComputedStyle(definitionsDisplay);
     var display = computedStyles.getPropertyValue('display');
@@ -308,15 +317,15 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
 
-function handlePlaylistInput() {
-  var inputValue = loadPlaylistInput.value.trim(); // Trim whitespace
+  function handlePlaylistInput() {
+    var inputValue = loadPlaylistInput.value.trim(); // Trim whitespace
 
-  if (inputValue.length > 0) {
-    loadPlaylistButton.disabled = false; // Enable the button
-  } else {
-    loadPlaylistButton.disabled = true; // Disable the button
+    if (inputValue.length > 0) {
+      loadPlaylistButton.disabled = false; // Enable the button
+    } else {
+      loadPlaylistButton.disabled = true; // Disable the button
+    }
   }
-}
 
   // Start the progress indicator
   function startProgressIndicator() {
