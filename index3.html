@@ -24,7 +24,6 @@
 .load-playlist-button:disabled {
   /* Styles for the disabled state */
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /*
@@ -270,20 +269,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-
-/*
-  // Toggle definitions display
-  function toggleDefinitions() {
-    if (definitionsDisplay.style.display === 'none') {
-      // Show the definitions display 
-      definitionsDisplay.style.display = 'block';
-    } else {
-      // Hide the definitions display 
-      definitionsDisplay.style.display = 'none';
-    }
-  }
-*/
-
   // Toggle definitions display
   function toggleDefinitions() {
     var computedStyles = window.getComputedStyle(definitionsDisplay);
@@ -322,7 +307,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-
   function handlePlaylistInput() {
     var inputValue = loadPlaylistInput.value.trim(); // Trim whitespace
 
@@ -350,8 +334,7 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     loadPlaylistButton.disabled = true;
-}
-
+  }
 
   // Start the progress indicator
   function startProgressIndicator() {
