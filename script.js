@@ -22,9 +22,9 @@ window.addEventListener('DOMContentLoaded', function() {
   var progressIntervalId; // ID for the progress indicator interval
   var progressWidth; // Current width of the progress indicator
   var progressIteration; // Current iteration of the progress indicator
+  var isFullscreen = false; // Flag to track fullscreen state
   var isProgressUpdating = false; // Flag to track if progress indicator is updating
   var isWordGenerationRunning = false; // Flag to track if word generation is running
-  var isFullscreen = false; // Flag to track fullscreen state
   var intervalSelectValue = intervalSelect.value; // Selected value of the interval
     
   // Event listeners
