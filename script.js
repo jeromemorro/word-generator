@@ -34,6 +34,10 @@ window.addEventListener('DOMContentLoaded', function() {
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
+  window.addEventListener('resize', adjustGeneratorToggleButtonHeight);
+
+  // Adjust generator toggle button height on page load
+  adjustGeneratorToggleButtonHeight();
 
   // Store the previous value of the interval select
   intervalSelect.dataset.previousValue = intervalSelectValue;
@@ -52,10 +56,10 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
-  // Dynamically adjust the height of the generator toggle button to match the load playlist button
-  window.addEventListener('resize', function() {
+  // Function to adjust generator toggle button height
+  function adjustGeneratorToggleButtonHeight() {
     generatorToggle.style.height = loadPlaylistButton.offsetHeight + 'px';
-  });
+  }
 
   // Generate a random word from the filtered list
   function generateRandomWord() {
