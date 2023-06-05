@@ -15,6 +15,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var playlistFrame = document.getElementById('playlist-frame');
   var loadPlaylistInput = document.getElementById('load-playlist-input');
   var loadPlaylistButton = document.getElementById('load-playlist-button');
+  var fullscreenToggle = document.getElementById('fullscreen-toggle'); 
 
   // Declare variables
   var wordIntervalId; // ID for the word generation interval
@@ -23,17 +24,19 @@ window.addEventListener('DOMContentLoaded', function() {
   var progressIteration; // Current iteration of the progress indicator
   var isProgressUpdating = false; // Flag to track if progress indicator is updating
   var isWordGenerationRunning = false; // Flag to track if word generation is running
+  var isFullscreen = false; // Flag to track fullscreen state
   var intervalSelectValue = intervalSelect.value; // Selected value of the interval
-
+    
   // Event listeners
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
-  definitionsToggle.addEventListener('change', toggleDefinitions);
+  definitionsToggle.addEventListener('change', handleDefinitionsToggle);
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
+  fullscreenToggle.addEventListener('click', handleFullScreenToggle);
   window.addEventListener('resize', adjustGeneratorToggleButtonHeight);
 
   // Adjust generator toggle button height on page load
@@ -141,7 +144,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   // Toggle definitions display
-  function toggleDefinitions() {
+  function handleDefinitionsToggle() {
     var computedStyles = window.getComputedStyle(definitionsDisplay);
     var display = computedStyles.getPropertyValue('display');
 
@@ -251,5 +254,54 @@ window.addEventListener('DOMContentLoaded', function() {
     stopProgressIndicator();
     progressWidth = 0;
     progressIndicator.style.width = progressWidth + '%';
+  }
+  
+  // Handle fullscreen toggle button click event
+  function handleFullScreenToggle() {
+    if (!isFullscreen) {
+      // If not in fullscreen, enter fullscreen mode
+      enterFullscreen();
+    } else {
+      // If already in fullscreen, exit fullscreen mode
+      exitFullscreen();
+    }
+  }
+  
+   // Function to enter fullscreen mode
+  function enterFullscreen() {
+    // Request fullscreen based on browser compatibility
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    }
+
+    // Update state and button properties for fullscreen mode
+    isFullscreen = true;
+    fullscreenToggle.title = 'Exit full screen';
+    fullscreenToggle.querySelector('img').src = 'min.png';
+  }
+
+  // Function to exit fullscreen mode
+  function exitFullscreen() {
+    // Exit fullscreen based on browser compatibility
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+
+    // Update state and button properties for exiting fullscreen mode
+    isFullscreen = false;
+    fullscreenToggle.title = 'Enter full screen';
+    fullscreenToggle.querySelector('img').src = 'max.png';
   }
 });
