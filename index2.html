@@ -6,68 +6,80 @@
 </head>
 <body>
   <table>
-    <tr class="row1">
-      <td colspan="4">
+    <tr>
+      <td class="row1" colspan="5">
         <div id="word-container">
-          <div id="word" class="word-text">Let's Goooo!</div>
+          <div id="word-display" class="word-display">Let's Goooo!</div>
         </div>
       </td>
     </tr>
     <tr>
-      <td class="row2"></td>
-      <td class="row3">
-        <div id="seconds-container">
-          <label for="seconds-select" class="label-text">Seconds between generated words:</label>
-          <select id="seconds-select">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5" selected>5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-          </select>
-        </div>
-        <div id="syllables-container">
-          <label for="syllables-select" class="label-text">Syllables per word:</label>
-          <select id="syllables-select">
-            <option value="0" selected>Any</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4 or more</option>
-          </select>
-        </div>
-        <div id="obscure-words-container">
-          <label for="obscure-words-checkbox" class="label-text">Show obscure words:</label>
-          <input type="checkbox" id="obscure-words-checkbox">
+      <td class="row2" colspan="5">
+        <div id="#progress-bar">
+          <div id="progress-indicator"></div>
         </div>
       </td>
-      <td class="row4">
-        <div id="toggle-container">
-          <button id="toggle-button" class="toggle-button">Stop generator</button>
-        </div>
-        <div id="definition-container">
-          <button id="definition-button" class="definition-button">Show definition</button>
-        </div>
-        <div id="text-container">
-          <div id="text-control" class="text-control"></div>
+    </tr>
+    <tr>
+      <td class="row3-col1" rowspan="2"></td>
+      <td class="row3-col2-1">
+        <div id="playlist-container">
+          <iframe id="playlist-frame" src="https://www.youtube.com/embed/videoseries?list=PLCSL5JAg7difkLp4Rl_QNXHgW06rkB2tc"></iframe>
         </div>
       </td>
-      <td class="row5"></td>
+      <td class="row3-col3-1">
+        <div id="parent-center">
+        	<div id="child-left">      
+        		<div id="interval-container">
+          			<label for="interval-select" class="label-text">Seconds between words:</label>
+          			<input type="number" id="interval-select" min="1" max="30" value="5" required>
+        		</div>
+        		<div id="syllables-container">
+          			<label for="syllables-select" class="label-text">Syllables per word:</label>
+          			<select id="syllables-select">
+            			<option value="0" selected>Any</option>
+            			<option value="1">1</option>
+            			<option value="2">2</option>
+            			<option value="3">3</option>
+            			<option value="4">4 or more</option>
+          			</select>
+        		</div>
+        		<div id="obscure-words-toggle-container">
+          			<label for="obscure-words-toggle" class="label-text">Show obscure words:</label>
+          			<input type="checkbox" id="obscure-words-toggle">
+        		</div>
+        		<div id="definitions-toggle-container">
+          			<label for="definitions-toggle" class="label-text">Show definitions:</label>
+          			<input type="checkbox" id="definitions-toggle">
+        		</div>
+        	</div>
+        </div>
+      </td>
+      <td class="row3-col4" rowspan="2">
+        <div id="definitions-display-container">
+           <textarea id="definitions-display" class="definitions-display" readonly rows="8"></textarea>
+        </div>    
+      </td>
+      <td class="row3-col5" rowspan="2"></td>
+    </tr>
+    <tr>
+      <td class="row3-col2-2">
+        <div id="load-playlist-container">
+          <input type="text" id="load-playlist-input" placeholder="Enter YouTube playlist ID">
+          <button id="load-playlist-button" class="load-playlist-button" disabled>Load Playlist</button>
+        </div>
+      </td>
+      <td class="row3-col3-2">
+        <div id="generator-toggle-container">
+          <button id="generator-toggle-button" class="generator-toggle-button">
+            <span class="green-play-icon"></span>
+            <span class="generator-toggle-button-text">Start generator</span>
+          </button>
+        </div>    
+      </td>
+    </tr>
+    <tr>
+      <td class="row4" colspan="5"></td>
     </tr>
   </table>
   <script src="script2.js"></script>
