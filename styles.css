@@ -109,7 +109,7 @@ td {
   outline: none;
   padding: 0;
   cursor: pointer;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
 }
 
 .fullscreen-toggle:hover {
