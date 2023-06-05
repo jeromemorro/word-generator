@@ -37,10 +37,10 @@ window.addEventListener('DOMContentLoaded', function() {
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
   fullscreenToggle.addEventListener('click', handleFullScreenToggle);
-  window.addEventListener('resize', adjustGeneratorToggleButtonHeight);
+  //window.addEventListener('resize', adjustGeneratorToggleButtonHeight);
 
   // Adjust generator toggle button height on page load
-  adjustGeneratorToggleButtonHeight();
+  //adjustGeneratorToggleButtonHeight();
 
   // Store the previous value of the interval select
   intervalSelect.dataset.previousValue = intervalSelectValue;
@@ -58,12 +58,14 @@ window.addEventListener('DOMContentLoaded', function() {
     .catch(function(error) {
       console.error('Error fetching words:', error);
     });
-
+  
+/*
   // Function to adjust generator toggle button height
   function adjustGeneratorToggleButtonHeight() {
     generatorToggle.style.height = loadPlaylistButton.offsetHeight + 'px';
   }
-
+*/
+  
   // Generate a random word from the filtered list
   function generateRandomWord() {
     var filteredWords = words;
