@@ -143,7 +143,8 @@ td {
 #interval-container, 
 #syllables-container, 
 #obscure-words-toggle-container, 
-#definitions-toggle-container {
+#definitions-toggle-container,
+#animation-toggle-container {
   align-items: flex-start;
   color: white;
   margin-top: 10px;
@@ -152,7 +153,8 @@ td {
 #interval-select,
 #syllables-select,
 #obscure-words-toggle,
-#definitions-toggle {
+#definitions-toggle,
+#animation-toggle {
   color: black;
   font-size: 16px;
 }
