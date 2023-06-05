@@ -182,16 +182,6 @@ td {
   justify-content: center;  
 }
 
-/*
-.generator-toggle-button {
-  background-color: red;
-  border-width: thin;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-*/
-
 .generator-toggle-button {
   background-color: red;
   border-width: thin;
