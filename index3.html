@@ -164,9 +164,6 @@ window.addEventListener('DOMContentLoaded', function() {
   var isWordGenerationRunning = false; // Flag to track if word generation is running
   var intervalSelectValue = intervalSelect.value; // Selected value of the interval
 
-  // Store the previous value of the interval select
-  intervalSelect.dataset.previousValue = intervalSelectValue;
-
   // Event listeners
   generatorToggle.addEventListener('click', toggleWordGeneration);
   intervalSelect.addEventListener('change', handleOptionChange);
@@ -176,6 +173,9 @@ window.addEventListener('DOMContentLoaded', function() {
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
+
+  // Store the previous value of the interval select
+  intervalSelect.dataset.previousValue = intervalSelectValue;
 
   // Fetch the word data from a JSON file
   fetch('words-temp.json')
@@ -190,6 +190,11 @@ window.addEventListener('DOMContentLoaded', function() {
     .catch(function(error) {
       console.error('Error fetching words:', error);
     });
+
+  // Dynamically adjust the height of the generator toggle button to match the load playlist button
+  window.addEventListener('resize', function() {
+    generatorToggle.style.height = loadPlaylistButton.offsetHeight + 'px';
+  });
 
   // Generate a random word from the filtered list
   function generateRandomWord() {
@@ -308,6 +313,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Handle playlist input event
   function handlePlaylistInput() {
     var inputValue = loadPlaylistInput.value.trim(); // Trim whitespace
 
@@ -318,6 +324,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Handle load playlist button click event
   function handleLoadPlaylistButtonClick() {
     var inputValue = loadPlaylistInput.value.trim();
     var isUrl = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(inputValue);
@@ -332,6 +339,10 @@ window.addEventListener('DOMContentLoaded', function() {
       playlistFrame.style.backgroundImage = 'url("error-graphic.png")';
       // Or, you can set a custom text message
       // playlistFrame.textContent = 'Error loading playlist';
+    };
+
+    playlistFrame.onload = function() {
+      playlistFrame.style.backgroundImage = 'none';
     };
 
     loadPlaylistButton.disabled = true;
