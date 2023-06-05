@@ -52,6 +52,11 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
 
+  // Dynamically adjust the height of the generator toggle button to match the load playlist button
+  window.addEventListener('resize', function() {
+    generatorToggle.style.height = loadPlaylistButton.offsetHeight + 'px';
+  });
+
   // Generate a random word from the filtered list
   function generateRandomWord() {
     var filteredWords = words;
@@ -116,8 +121,7 @@ window.addEventListener('DOMContentLoaded', function() {
       displayStartGenerator(false);
     }
   }
-  
-  // Toggle start generator display
+
   function displayStartGenerator(isTrue) {
     if (isTrue) {
       iconSpan.classList.remove('red-stop-icon');
