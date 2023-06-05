@@ -15,7 +15,8 @@ window.addEventListener('DOMContentLoaded', function() {
   var playlistFrame = document.getElementById('playlist-frame');
   var loadPlaylistInput = document.getElementById('load-playlist-input');
   var loadPlaylistButton = document.getElementById('load-playlist-button');
-  var fullscreenToggle = document.getElementById('fullscreen-toggle'); 
+  var fullscreenToggle = document.getElementById('fullscreen-toggle');
+  var animationToggle = document.getElementById('animation-toggle');
 
   // Declare variables
   var wordIntervalId; // ID for the word generation interval
@@ -34,6 +35,7 @@ window.addEventListener('DOMContentLoaded', function() {
   definitionsToggle.addEventListener('change', handleDefinitionsToggle);
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
+  animationToggle.addEventListener('change', handleAnimationToggle);
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
   fullscreenToggle.addEventListener('click', handleFullScreenToggle);
@@ -158,7 +160,19 @@ window.addEventListener('DOMContentLoaded', function() {
       definitionsDisplay.style.display = 'none';
     }
   }
-
+  
+  // Toggle the progress bar animation
+  function handleAnimationToggle() {
+    // Check if the checkbox is checked
+    if (animationToggle.checked) {
+      // Hide the progress indicator
+      progressIndicator.style.display = 'none';
+    } else {
+      // Show the progress indicator
+      progressIndicator.style.display = 'block';
+    }
+  }
+  
   // Update the interval duration
   function handleOptionChange() {
     if (isWordGenerationRunning) {
