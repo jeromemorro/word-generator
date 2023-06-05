@@ -97,6 +97,25 @@ td {
   font-weight: bold;
 }
 
+.transparent-button-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.transparent-button {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.transparent-button:hover {
+  border-color: DimGray;
+}
+
 #progress-bar {
   width: 100%;
   background-color: DimGray;
