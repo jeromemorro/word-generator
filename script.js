@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', function() {
   intervalSelect.dataset.previousValue = intervalSelectValue;
 
   // Fetch the word data from a JSON file
-  fetch('words.json')
+  fetch('words-temp.json')
     .then(function(response) {
       return response.json();
     })
