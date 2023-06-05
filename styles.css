@@ -110,11 +110,11 @@ td {
   padding: 0;
   cursor: pointer;
   border: 2px solid transparent;
-  border-radius: 25px; 
 }
 
 .fullscreen-toggle:hover {
   border-color: DimGray;
+  border-radius: 25px; 
 }
 
 #progress-bar {
