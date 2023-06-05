@@ -200,7 +200,10 @@ window.addEventListener('DOMContentLoaded', function() {
       playlistFrame.src = 'https://www.youtube.com/embed/videoseries?list=' + inputValue;
     }
 
+    loadPlaylistInput.value = '';
+
     playlistFrame.onerror = function() {
+      loadPlaylistInput.value = inputValue;
       playlistFrame.style.backgroundImage = 'url("error-graphic.png")';
       // Or, you can set a custom text message
       // playlistFrame.textContent = 'Error loading playlist';
