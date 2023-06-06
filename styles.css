@@ -84,7 +84,7 @@ td {
   font-size: 18px;
 }
 
-.fullscreen-toggle-wrapper {
+.fullscreen-toggle-container {
   position: absolute;
   top: 20px;
   right: 15px;
@@ -151,7 +151,7 @@ td {
 */
 
 
-.control-toggle-wrapper {
+.control-toggle-container {
   position: absolute;
   bottom: 20px;
   right: 15px;
