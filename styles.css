@@ -118,15 +118,34 @@ td {
 }
 
     .button-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .button-container button {
       position: absolute;
       bottom: 0;
       right: 0;
-    }
-
-    .button-container img {
       width: 48px;
       height: 48px;
       cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .button-container button:focus {
+      outline: none;
+    }
+
+    .button-container button::before {
+      content: url("down.png");
+    }
+
+    .button-container button:hover {
+      border: 1px solid dimgray; /* Set the desired border color and style */
     }
 
 
