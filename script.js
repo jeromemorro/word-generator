@@ -225,6 +225,7 @@ window.addEventListener('DOMContentLoaded', function() {
     playlistFrame.onerror = function() {
       loadPlaylistInput.value = inputValue;
       playlistFrame.style.backgroundImage = 'url("error.png")';
+      playlistFrame.style.backgroundSize = 'cover';
       playlistFrame.textContent = 'Error loading playlist';
       playlistFrame.style.color = 'white';
       playlistFrame.style.fontWeight = 'bold';
