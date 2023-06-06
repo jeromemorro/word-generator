@@ -117,14 +117,14 @@ td {
   font-weight: bold;
 }
 
-.control-toggle-container {
+.hide-controls-container {
   align-items: flex-end;
   display: flex;
   height: 6%; 
   justify-content: flex-end;
 }
 
-.control-toggle {
+.hide-controls {
   background: none;
   border: none;
   outline: none;
@@ -134,7 +134,7 @@ td {
   border: 2.5px solid transparent;
 }
 
-.control-toggle:hover {
+.hide-controls:hover {
   border-color: DimGray;
   border-radius: 5px; 
 }
