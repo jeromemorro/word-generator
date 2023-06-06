@@ -224,9 +224,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
     playlistFrame.onerror = function() {
       loadPlaylistInput.value = inputValue;
-      playlistFrame.style.backgroundImage = 'url("error-graphic.png")';
-      // Or, you can set a custom text message
-      // playlistFrame.textContent = 'Error loading playlist';
+      playlistFrame.style.backgroundImage = 'url("error.png")';
+      playlistFrame.textContent = 'Error loading playlist';
+      playlistFrame.style.color = 'white';
+      playlistFrame.style.fontWeight = 'bold';
     };
 
     playlistFrame.onload = function() {
