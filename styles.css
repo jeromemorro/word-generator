@@ -117,6 +117,7 @@ td {
   font-weight: bold;
 }
 
+/*
     .button-container {
       position: relative;
       width: 100%;
@@ -147,9 +148,9 @@ td {
     .button-container button:hover {
       border: 1px solid dimgray; /* Set the desired border color and style */
     }
+*/
 
 
-/*
 .control-toggle-wrapper {
   position: absolute;
   bottom: 20px;
@@ -169,7 +170,7 @@ td {
   border-color: DimGray;
   border-radius: 5px; 
 }
-*/
+
 
 #progress-bar {
   width: 100%;
