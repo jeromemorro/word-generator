@@ -158,6 +158,7 @@ td {
 }
 
 .control-toggle {
+  position: absolute;
   background: none;
   border: none;
   outline: none;
