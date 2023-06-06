@@ -227,8 +227,11 @@ window.addEventListener('DOMContentLoaded', function() {
       playlistFrame.style.backgroundImage = 'url("error.png")';
       playlistFrame.style.backgroundSize = 'cover';
       playlistFrame.textContent = 'Error loading playlist';
-      playlistFrame.style.color = 'white';
-      playlistFrame.style.fontWeight = 'bold';
+      playlistFrame.style.color = 'white'; // Set the font color to white
+      playlistFrame.style.fontWeight = 'bold'; // Set the font style to bold
+      playlistFrame.style.fontSize = '20px'; // Set the font size to 20 pixels
+      playlistFrame.style.textAlign = 'center'; // Horizontally center the text
+      playlistFrame.style.verticalAlign = 'top'; // Align the text to the top of the iframe
     };
 
     playlistFrame.onload = function() {
