@@ -21,10 +21,13 @@ window.addEventListener('DOMContentLoaded', function() {
   var hideControlsImage = hideControlsButton.querySelector('img');
   var hideControlsTitle = hideControlsButton.getAttribute('title');
   var row1 = document.querySelector('.row1');
+  var row3Col1 = document.querySelector('.row3-col1');
   var row3Col2_1 = document.querySelector('.row3-col2-1');
   var row3Col2_2 = document.querySelector('.row3-col2-2');
   var row3Col3_1 = document.querySelector('.row3-col3-1');
   var row3Col3_2 = document.querySelector('.row3-col3-2');
+  var row3Col4 = document.querySelector('.row3-col4');
+  var row3Col5 = document.querySelector('.row3-col5');
 
   // Declare variables
   var wordIntervalId; // ID for the word generation interval
@@ -331,19 +334,25 @@ window.addEventListener('DOMContentLoaded', function() {
   function toggleRow3() {
     if (row3Col2_1.style.display === 'none') {
       // Expand row 3
+      row3Col1.style.display = 'table-cell';
       row3Col2_1.style.display = 'table-cell';
       row3Col2_2.style.display = 'table-cell';
       row3Col3_1.style.display = 'table-cell';
       row3Col3_2.style.display = 'table-cell';
+      row3Col4.style.display = 'table-cell';
+      row3Col5.style.display = 'table-cell';
       row1.style.height = '50vh';
       hideControlsImage.src = 'hide.png';
       hideControlsButton.setAttribute('title', 'Hide controls');
     } else {
       // Collapse row 3
+      row3Col1.style.display = 'none';
       row3Col2_1.style.display = 'none';
       row3Col2_2.style.display = 'none';
       row3Col3_1.style.display = 'none';
       row3Col3_2.style.display = 'none';
+      row3Col4.style.display = 'none';
+      row3Col5.style.display = 'none';
       row1.style.height = '82vh';
       hideControlsImage.src = 'show.png';
       hideControlsButton.setAttribute('title', 'Show controls');
