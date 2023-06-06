@@ -153,8 +153,8 @@ td {
 
 .control-toggle-container {
   position: relative;
-  bottom: 20px;
-  right: 15px;
+  bottom: 0;
+  right: 0;
 }
 
 .control-toggle {
