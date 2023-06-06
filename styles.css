@@ -117,6 +117,7 @@ td {
   font-weight: bold;
 }
 
+/*
 .hide-controls-container {
   align-items: flex-end;
   display: flex;
@@ -132,6 +133,27 @@ td {
   margin: 0;
   cursor: pointer;
   border: 2.5px solid transparent;
+}
+*/
+
+.hide-controls-container {
+  align-items: flex-end;
+  display: flex;
+  height: 0%; 
+  justify-content: flex-end;
+  position: relative; 
+}
+
+.hide-controls {
+  background: none;
+  border: 2.5px solid transparent;
+  border: none;
+  cursor: pointer;
+  margin-top: 0; 
+  outline: none;
+  padding: 0;  
+  position: relative; 
+  top: 0px;
 }
 
 .hide-controls:hover {
