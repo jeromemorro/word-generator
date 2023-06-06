@@ -17,6 +17,12 @@ window.addEventListener('DOMContentLoaded', function() {
   var loadPlaylistButton = document.getElementById('load-playlist-button');
   var fullscreenToggle = document.getElementById('fullscreen-toggle');
   var animationToggle = document.getElementById('animation-toggle');
+  var hideControlsButton = document.getElementById('hide-controls');
+  var hideControlsImage = hideControlsButton.querySelector('img');
+  var hideControlsTitle = hideControlsButton.getAttribute('title');
+  var row1 = document.querySelector('.row1');
+  var row3Col2 = document.querySelector('.row3-col2-1');
+  var row3Col3 = document.querySelector('.row3-col3-1');  
 
   // Declare variables
   var wordIntervalId; // ID for the word generation interval
@@ -39,10 +45,7 @@ window.addEventListener('DOMContentLoaded', function() {
   loadPlaylistInput.addEventListener('input', handlePlaylistInput);
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
   fullscreenToggle.addEventListener('click', handleFullScreenToggle);
-  //window.addEventListener('resize', adjustGeneratorToggleButtonHeight);
-
-  // Adjust generator toggle button height on page load
-  //adjustGeneratorToggleButtonHeight();
+  hideControlsButton.addEventListener('click', toggleRow3);
 
   // Store the previous value of the interval select
   intervalSelect.dataset.previousValue = intervalSelectValue;
@@ -61,12 +64,6 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
   
-/*
-  // Function to adjust generator toggle button height
-  function adjustGeneratorToggleButtonHeight() {
-    generatorToggle.style.height = loadPlaylistButton.offsetHeight + 'px';
-  }
-*/
   
   // Generate a random word from the filtered list
   function generateRandomWord() {
@@ -321,5 +318,24 @@ window.addEventListener('DOMContentLoaded', function() {
     isFullscreen = false;
     fullscreenToggle.title = 'Enter full screen';
     fullscreenToggle.querySelector('img').src = 'max.png';
+  }
+  
+  // Function to collapse and expand the row containing the controls
+  function toggleRow3() {
+    if (row3Col2.style.display === 'none') {
+      // Expand row 3
+      row3Col2.style.display = 'table-cell';
+      row3Col3.style.display = 'table-cell';
+      row1.style.height = '50vh';
+      hideControlsImage.src = 'hide.png';
+      hideControlsButton.setAttribute('title', 'Hide controls');
+    } else {
+      // Collapse row 3
+      row3Col2.style.display = 'none';
+      row3Col3.style.display = 'none';
+      row1.style.height = '82vh';
+      hideControlsImage.src = 'show.png';
+      hideControlsButton.setAttribute('title', 'Show controls');
+    }
   }
 });
