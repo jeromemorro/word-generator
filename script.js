@@ -139,11 +139,13 @@ window.addEventListener('DOMContentLoaded', function() {
       iconSpan.classList.add('green-play-icon');
       textSpan.textContent = 'Start generator';
       generatorToggle.style.backgroundColor = 'red';
+      generatorToggle.title = 'Generator is not running';
     } else {
       iconSpan.classList.remove('green-play-icon');
       iconSpan.classList.add('red-stop-icon');
       textSpan.textContent = 'Stop generator';
       generatorToggle.style.backgroundColor = 'limegreen';
+      generatorToggle.title = 'Generator is running';
     }
   }
 
