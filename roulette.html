@@ -98,10 +98,26 @@
   </div>
 
   <script>
-    let interval;
-    let timer;
-    let secondsLeft;
-    let previousPattern = null;
+    var timer;
+    var secondsLeft;
+    var previousPattern = null;
+
+    function startTimer() {
+      changePattern();
+      secondsLeft = parseInt(document.getElementById('interval-input').value) || 10;
+      document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft; 
+      timer = setInterval(updateTimer, secondsLeft * 100);
+
+      function updateTimer() {
+        secondsLeft--;
+        document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft;   
+        
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          startTimer();
+        }
+      }
+    }
 
     function changePattern() {
       const patterns = [
@@ -159,53 +175,32 @@
       return patterns[generatedPatternIndex];
     }
 
-    function startTimer() {
-      clearInterval(timer);
-      timer = setInterval(() => {
-        secondsLeft--;
-        document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft;
-        if (secondsLeft <= 0) {
-          clearInterval(timer);
-          updateInterval();
-        }
-      }, 1000);
-    }
-
-    function resetTimer() {
+    function handleIntervalChange() {
       secondsLeft = parseInt(document.getElementById('interval-input').value) || 10;
-      document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft;
     }
 
-    function updateInterval() {
-      resetTimer();
-      clearInterval(interval);
-      interval = setInterval(changePattern, secondsLeft * 1000);
+    function handleButtonClick() {
+      clearInterval(timer);
       startTimer();
     }
 
-    window.onload = function() {
-      document.getElementById('interval-input').addEventListener('change', updateInterval);
-      document.getElementById('change-button').addEventListener('click', () => {
-        changePattern();
-        resetTimer();
-      });
-
-      updateInterval();
+    function handleKeyDown(event) {
+      if (event.key === 'Enter') {
+        handleButtonClick();
+      }
+    }
       
+    window.onload = function() {
+      document.getElementById('interval-input').addEventListener('change', handleIntervalChange);
+      document.getElementById('change-button').addEventListener('click', handleButtonClick);
+      document.addEventListener('keydown', handleKeyDown);
+      startTimer();          
       // Dynamically calculate and set the width of the pattern-next container
       const patternNextContainer = document.getElementById('pattern-next');
       const timerContainer = document.getElementById('timer');
       const timerWidth = timerContainer.clientWidth;
-      patternNextContainer.style.fontSize = `${timerWidth / 4}px`; // Divide by the number of letters in pattern-next
+      patternNextContainer.style.fontSize = `${timerWidth / 4}px`; // Divide by the number of letters in pattern-next         
     };
-    
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-      changePattern();
-      resetTimer();
-    }
-});
-
   </script>
 </body>
 </html>
