@@ -60,6 +60,10 @@ td {
   width: 35%;
 }
 
+.label-text {
+  font-size: 18px;
+}
+
 #word-container {
   align-items: center;
   display: flex;
@@ -81,6 +85,17 @@ td {
   height: 100%;
 }
 
+
+#remove-checkbox-container {
+  align-items: flex-start;
+  color: red;
+}
+
+#obscure-checkbox-container {
+  align-items: flex-start;
+  color: blue;
+}
+
 #definitions-display-container {
   align-items: center; 
   color: white;
@@ -91,21 +106,13 @@ td {
 
 .previous-button:disabled,
 .next-button:disabled {
-  opacity: 0.9;
-}
-
-.obscure-button {
-  background-color: Blue;
-  color: white;
-  font-size: 26px;
-  font-weight: bold;
-  width: 100%;
-  height: 100%;
+  opacity: 0.6;
 }
 
 .previous-button {
   background-color: Gray;
   color: white;
+  flex-shrink: 0;
   font-size: 26px;
   font-weight: bold;
   width: 100%;
@@ -115,6 +122,7 @@ td {
 .next-button {
   background-color: Green;
   color: white;
+  flex-shrink: 0;
   font-size: 26px;
   font-weight: bold;
   width: 100%;
@@ -124,10 +132,31 @@ td {
 .remove-button {
   background-color: Red;
   color: white;
+  flex-shrink: 0;
   font-size: 26px;
   font-weight: bold;
   width: 100%;
   height: 100%;
+}
+
+#remove-checkbox {
+  color: black;
+  font-size: 16px;
+}
+
+.obscure-button {
+  background-color: Blue;
+  color: white;
+  flex-shrink: 0;
+  font-size: 26px;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+}
+
+#obscure-checkbox {
+  color: black;
+  font-size: 16px;
 }
 
 #save-button-container
@@ -188,7 +217,7 @@ td {
     </td>
     <td class="row2-col4" rowspan="2">
         <div id="definitions-display-container">
-           <textarea id="definitions-display" class="definitions-display" readonly rows="6"></textarea>
+           <textarea id="definitions-display" class="definitions-display" readonly rows="8"></textarea>
         </div> 
     </td>
   </tr>
@@ -197,10 +226,18 @@ td {
         <div id="remove-button-container">
     		<button id="remove-button" class="remove-button">Remove</button>
         </div>
+        <div id="remove-checkbox-container">
+          	<input type="checkbox" id="remove-checkbox">         
+            <label for="remove-checkbox" class="label-text">Remove</label>       
+        </div>        
     </td>
     <td class="row2-col3-2">
     	<div id="obscure-button-container">
     		<button id="obscure-button" class="obscure-button">Obscure</button>
+        </div>
+        <div id="obscure-checkbox-container">
+          	<input type="checkbox" id="obscure-checkbox">          
+            <label for="obscure-checkbox" class="label-text">Obscure</label>   
         </div>
     </td>
   </tr>
@@ -218,18 +255,18 @@ window.addEventListener('DOMContentLoaded', function() {
   var saveButton = document.getElementById('save-button');
   var wordDisplay = document.getElementById('word-display');
   var definitionsDisplay = document.getElementById('definitions-display');
+  var words;  
   var wordsIndex = 0;
-  var words;
 
   // Event listeners
   previousButton.addEventListener('click', previousButton_Click);
   nextButton.addEventListener('click', nextButton_Click);
-  removeButton.addEventListener('click', removeButton_Click);
-  obscureButton.addEventListener('click', obscureButton_Click);
-  saveButton.addEventListener('click', saveButton_Click);
+  //removeButton.addEventListener('click', removeButton_Click);
+  //obscureButton.addEventListener('click', obscureButton_Click);
+  //saveButton.addEventListener('click', saveButton_Click);
 
   // Fetch the word data from a JSON file
-  fetch('words-temp.json')
+  fetch('words.json')
     .then(function(response) {
       return response.json();
     })
@@ -257,9 +294,12 @@ window.addEventListener('DOMContentLoaded', function() {
      nextButton.disabled = false;
      previousButton.disabled = (wordsIndex == 0);
   }
-    
+
+  function previousButton_Click() {
+     displayPreviousWord();
+  }
+  
   function nextButton_Click() {
-     alert('Hi');
      displayNextWord();
   }
 
