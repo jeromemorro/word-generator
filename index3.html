@@ -278,7 +278,7 @@ window.addEventListener('DOMContentLoaded', function() {
   obscureCheckbox.addEventListener('click', obscureCheckbox_Click);
 
   // Fetch the word data from a JSON file
-  fetch('https://jeromemorro.github.io/word-generator/words.json')
+  fetch('words.json')
     .then(function(response) {
       return response.json();
     })
