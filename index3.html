@@ -267,7 +267,7 @@ window.addEventListener('DOMContentLoaded', function() {
   nextButton.addEventListener('click', nextButton_Click);
   removeButton.addEventListener('click', removeButton_Click);
   obscureButton.addEventListener('click', obscureButton_Click);
-  //saveButton.addEventListener('click', saveButton_Click);
+  saveButton.addEventListener('click', saveButton_Click);
   removeCheckbox.addEventListener('click', removeCheckbox_Click);
   obscureCheckbox.addEventListener('click', obscureCheckbox_Click);
 
@@ -337,6 +337,30 @@ window.addEventListener('DOMContentLoaded', function() {
      displayNextWord();  
   }    
   
+  function removeCheckbox_Click() {
+     if (removeCheckbox.checked) { obscureCheckbox.checked = false; }
+  }
+  
+  function obscureCheckbox_Click() {
+     if (obscureCheckbox.checked) { removeCheckbox.checked = false; }
+  }
+  
+  function saveButton_Click() {
+     // Convert data array to JSON string
+     var jsonData = JSON.stringify(wordsToSave);
+
+     // Create a Blob with the JSON data
+     var blob = new Blob([jsonData], { type: 'application/json' });
+
+     // Create a download link
+     var downloadLink = document.createElement('a');
+     downloadLink.href = URL.createObjectURL(blob);
+     downloadLink.download = 'words.json';
+
+     // Simulate a click on the download link to trigger the download
+     downloadLink.click();
+  }
+  
   function saveCurrentWord_Next() {
      var newEntry = {
        "w": words[wordsIndex].w,
@@ -380,15 +404,6 @@ window.addEventListener('DOMContentLoaded', function() {
         wordsToSave[wordsIndex].d = newEntry.d;
      }
   }
-  
-  function removeCheckbox_Click() {
-     if (removeCheckbox.checked) { obscureCheckbox.checked = false; }
-  }
-  
-  function obscureCheckbox_Click() {
-     if (obscureCheckbox.checked) { removeCheckbox.checked = false; }
-  }
-  
  }); 
 </script>
 
