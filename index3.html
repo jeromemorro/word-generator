@@ -253,20 +253,26 @@ window.addEventListener('DOMContentLoaded', function() {
   var removeButton = document.getElementById('remove-button');
   var obscureButton = document.getElementById('obscure-button');
   var saveButton = document.getElementById('save-button');
+  var removeCheckbox = document.getElementById('remove-checkbox');
+  var obscureCheckbox = document.getElementById('obscure-checkbox');
   var wordDisplay = document.getElementById('word-display');
   var definitionsDisplay = document.getElementById('definitions-display');
-  var words;  
+  var words = [];  
   var wordsIndex = 0;
+  var wordsToSave = [];
+
 
   // Event listeners
   previousButton.addEventListener('click', previousButton_Click);
   nextButton.addEventListener('click', nextButton_Click);
-  //removeButton.addEventListener('click', removeButton_Click);
-  //obscureButton.addEventListener('click', obscureButton_Click);
+  removeButton.addEventListener('click', removeButton_Click);
+  obscureButton.addEventListener('click', obscureButton_Click);
   //saveButton.addEventListener('click', saveButton_Click);
+  removeCheckbox.addEventListener('click', removeCheckbox_Click);
+  obscureCheckbox.addEventListener('click', obscureCheckbox_Click);
 
   // Fetch the word data from a JSON file
-  fetch('words.json')
+  fetch('https://jeromemorro.github.io/word-generator/words-temp.json')
     .then(function(response) {
       return response.json();
     })
@@ -280,19 +286,36 @@ window.addEventListener('DOMContentLoaded', function() {
     });
     
   function displayNextWord() {
+     removeCheckbox.checked = false;
+     obscureCheckbox.checked = false;
+     
      wordsIndex++;
      wordDisplay.textContent = words[wordsIndex].w;
      definitionsDisplay.value = words[wordsIndex].d;
-     nextButton.disabled = (wordsIndex == words.length - 1);
+     nextButton.disabled = (wordsIndex === words.length - 1);
      previousButton.disabled = false;
+     
+     if (wordsIndex < wordsToSave.length) { 
+        // Update Checkboxes
+        removeCheckbox.checked = (wordsToSave[wordsIndex].c === "2");
+        obscureCheckbox.checked = (wordsToSave[wordsIndex].c === "0");
+     }   
   }
   
   function displayPreviousWord() {
+     removeCheckbox.checked = false;
+     obscureCheckbox.checked = false;
      wordsIndex--;
      wordDisplay.textContent = words[wordsIndex].w;
      definitionsDisplay.value = words[wordsIndex].d;
      nextButton.disabled = false;
-     previousButton.disabled = (wordsIndex == 0);
+     previousButton.disabled = (wordsIndex === 0);
+     
+     if (wordsIndex < wordsToSave.length) { 
+        // Update Checkboxes
+        removeCheckbox.checked = (wordsToSave[wordsIndex].c === "2");
+        obscureCheckbox.checked = (wordsToSave[wordsIndex].c === "0");
+     }        
   }
 
   function previousButton_Click() {
@@ -300,9 +323,72 @@ window.addEventListener('DOMContentLoaded', function() {
   }
   
   function nextButton_Click() {
+     saveCurrentWord_Next();
      displayNextWord();
   }
-
+  
+  function removeButton_Click() {
+     saveCurrentWord_Remove();  
+     displayNextWord();  
+  }
+  
+  function obscureButton_Click() {
+     saveCurrentWord_Obscure();  
+     displayNextWord();  
+  }    
+  
+  function saveCurrentWord_Next() {
+     var newEntry = {
+       "w": words[wordsIndex].w,
+       "c": removeCheckbox.checked ? "2" : (obscureCheckbox.checked ? "0" : "1"),
+       "s": words[wordsIndex].s,
+       "d": words[wordsIndex].d
+     };
+     
+     saveCurrentWord(newEntry);     
+  }
+  
+  function saveCurrentWord_Remove() {
+     var newEntry = {
+       "w": words[wordsIndex].w,
+       "c": "2",
+       "s": words[wordsIndex].s,
+       "d": words[wordsIndex].d
+     };
+     
+     saveCurrentWord(newEntry);
+  }  
+  
+    function saveCurrentWord_Obscure() {
+     var newEntry = {
+       "w": words[wordsIndex].w,
+       "c": "0",
+       "s": words[wordsIndex].s,
+       "d": words[wordsIndex].d
+     };
+     
+     saveCurrentWord(newEntry);
+  }  
+  
+  function saveCurrentWord(newEntry) {
+     if (wordsIndex === wordsToSave.length) { 
+        wordsToSave.push(newEntry);
+     } else {
+        wordsToSave[wordsIndex].w = newEntry.w;
+        wordsToSave[wordsIndex].c = newEntry.c;
+        wordsToSave[wordsIndex].s = newEntry.s;
+        wordsToSave[wordsIndex].d = newEntry.d;
+     }
+  }
+  
+  function removeCheckbox_Click() {
+     if (removeCheckbox.checked) { obscureCheckbox.checked = false; }
+  }
+  
+  function obscureCheckbox_Click() {
+     if (obscureCheckbox.checked) { removeCheckbox.checked = false; }
+  }
+  
  }); 
 </script>
 
