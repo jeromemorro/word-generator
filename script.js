@@ -214,13 +214,20 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Handle load playlist button click event
   function handleLoadPlaylistButtonClick() {
+    var match;
     var inputValue = loadPlaylistInput.value.trim();
     var isUrl = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(inputValue);
+    var regex = /^https:\/\/www\.youtube\.com\/playlist\?list=(.*)$/;
 
-    if (isUrl) {
-      playlistFrame.src = inputValue;
-    } else {
+    if (!isUrl) {
       playlistFrame.src = 'https://www.youtube.com/embed/videoseries?list=' + inputValue;
+    } else {
+      match = inputValue.match(regex);
+      if (!match) {
+         playlistFrame.src = inputValue;
+      } else {
+         playlistFrame.src = 'https://www.youtube.com/embed/videoseries?list=' + match[1];
+      }
     }
 
     loadPlaylistInput.value = '';
