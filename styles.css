@@ -61,8 +61,16 @@ td {
   width: 30%;
 }
 
-.row3-col4 {
-  height: 32vh;
+.row3-col4-1 {
+  height: 30vh;
+  vertical-align: top;
+  width: 30%;
+}
+
+.row3-col4-2 {
+  height: 2vh;
+  padding-bottom: 0;  
+  padding-top: 0;  
   vertical-align: top;
   width: 30%;
 }
@@ -116,25 +124,6 @@ td {
   font-size: 175px;
   font-weight: bold;
 }
-
-/*
-.hide-controls-container {
-  align-items: flex-end;
-  display: flex;
-  height: 6%; 
-  justify-content: flex-end;
-}
-
-.hide-controls {
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  border: 2.5px solid transparent;
-}
-*/
 
 .hide-controls-container {
   align-items: flex-end;
@@ -198,7 +187,8 @@ td {
 #syllables-select,
 #obscure-words-toggle,
 #definitions-toggle,
-#animation-toggle {
+#animation-toggle,
+#voice-select {
   color: black;
   font-size: 16px;
 }
@@ -294,13 +284,40 @@ td {
 .definitions-display {
   background-color: black;
   border: 1px solid white;
-  color: white;
-  display: none; 
+  color: transparent;
   flex: 1;
   font-family: inherit;
   font-size: 16px;
+  overflow: hidden;
   padding: 10px;
   resize: none;
   tab-size: 1;
   width: 100%;
+}
+
+#speech-control-container {
+  align-items: center;
+  color: white;
+  display: flex;  
+  justify-content: left;   
+}
+
+#speech-control-container select {
+  flex: 1; 
+  width: 100%;  
+}
+
+.hear-word-button {
+  background-color: #993399;
+  border-width: thin;
+  color: white;
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 4px;  
+}
+
+.hear-word-button:disabled {
+  /* Styles for the disabled state */
+  opacity: 0.5;
 }
