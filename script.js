@@ -366,11 +366,12 @@ window.addEventListener('DOMContentLoaded', function() {
       document.documentElement.requestFullscreen();
     } else if (document.documentElement.mozRequestFullScreen) {
       document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
     } else if (document.documentElement.msRequestFullscreen) {
       document.documentElement.msRequestFullscreen();
-    } else if (document.documentElement.webkitEnterFullscreen) {
-      document.documentElement.webkitEnterFullscreen();
     }
+
     // Update state and button properties for fullscreen mode
     isFullscreen = true;
     fullscreenToggle.title = 'Exit full screen';
