@@ -111,9 +111,12 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function createVoiceOption(voice) {
+    var givenName;
     var option = document.createElement('option');
+
     option.value = voice.name;
-    option.text = voice.name.split(' ')[1] !== '' ? voice.name.split(' ')[1] : voice.name; // Extract the given name from the voice name
+    givenName = voice.name.split(' ');
+    option.text = givenName.length > 1 ? givenName[1] : voice.name; // Extract the given name from the voice name
     voiceSelect.appendChild(option);
   }  
 
