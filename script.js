@@ -355,7 +355,8 @@ window.addEventListener('DOMContentLoaded', function() {
       exitFullscreen();
     }
   }
-  
+
+  /*
    // Function to enter fullscreen mode
   function enterFullscreen() {
     // Request fullscreen based on browser compatibility
@@ -374,7 +375,35 @@ window.addEventListener('DOMContentLoaded', function() {
     fullscreenToggle.title = 'Exit full screen';
     fullscreenToggle.querySelector('img').src = 'min.png';
   }
+*/
+  
+// Function to enter fullscreen mode
+function enterFullscreen() {
+  var element = document.documentElement;
 
+  if (element.webkitEnterFullscreen) {
+    // Enter fullscreen mode on iOS
+    element.webkitEnterFullscreen();
+  } else {
+    // Fallback for other browsers
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    }
+  }
+
+  // Update state and button properties for fullscreen mode
+  isFullscreen = true;
+  fullscreenToggle.title = 'Exit full screen';
+  fullscreenToggle.querySelector('img').src = 'https://jeromemorro.github.io/word-generator/min.png';
+}
+
+  
   // Function to exit fullscreen mode
   function exitFullscreen() {
     // Exit fullscreen based on browser compatibility
