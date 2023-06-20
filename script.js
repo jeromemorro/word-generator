@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', function() {
   function createVoiceOption(voice) {
     var option = document.createElement('option');
     option.value = voice.name;
-    option.text = voice.name.split(' ')[1]; // Extract the given name from the voice name
+    option.text = voice.name.split(' ')[1] !== '' ? voice.name.split(' ')[1] : voice.name; // Extract the given name from the voice name
     voiceSelect.appendChild(option);
   }  
 
