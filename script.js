@@ -95,7 +95,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function handleVoices(voices) {
     // Select only the voices with 'English (United States)' language
-    var englishVoices = voices.filter(voice => voice.lang.startsWith('en-US'));
+    var englishVoices = voices.filter(voice => voice.lang.startsWith('en-US') || voice.lang.startsWith('nl-NL'));
     
     // Sort the englishVoices array alphabetically
     englishVoices.sort((a, b) => a.name.localeCompare(b.name));    
