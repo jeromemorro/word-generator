@@ -69,7 +69,7 @@
         	</div>
         </div>
       </td>
-      <td class="row3-col4" rowspan="2">
+      <td class="row3-col4-1">
         <div id="definitions-display-container">
            <textarea id="definitions-display" class="definitions-display" readonly rows="8"></textarea>
         </div>    
@@ -80,7 +80,7 @@
       <td class="row3-col2-2">
         <div id="load-playlist-container">
           <input type="text" id="load-playlist-input" placeholder="Enter YouTube playlist ID">
-          <button id="load-playlist-button" class="load-playlist-button" title="Load a YouTube video or playlist" disabled>Load Playlist</button>
+          <button id="load-playlist-button" class="load-playlist-button" title="Load a YouTube video or playlist" disabled>Load playlist</button>
         </div>
       </td>
       <td class="row3-col3-2">
@@ -90,6 +90,13 @@
             <span class="generator-toggle-button-text">Start generator</span>
           </button>
         </div>    
+      </td>
+      <td class="row3-col4-2">
+        <div id="speech-control-container">
+          <button id="hear-word-button" class="hear-word-button" title="Listen to the word spoken aloud" disabled>Hear word</button>
+          <label for="voice-select" class="label-text">Select voice:</label>
+          <select id="voice-select"></select>
+        </div>
       </td>
     </tr>
     <tr>
