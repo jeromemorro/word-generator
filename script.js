@@ -377,33 +377,55 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 */
   
-// Function to enter fullscreen mode
-function enterFullscreen() {
-  var element = document.documentElement;
+  // Function to enter fullscreen mode
+  function enterFullscreen() {
+    var element = document.documentElement;
 
-  if (element.webkitEnterFullscreen) {
-    // Enter fullscreen mode on iOS
-    element.webkitEnterFullscreen();
-  } else {
-    // Fallback for other browsers
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
+    if (element.webkitEnterFullscreen) {
+      // Enter fullscreen mode on iOS
+      element.webkitEnterFullscreen();
+    } else {
+      // Fallback for other browsers
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      }
     }
+
+    // Update state and button properties for fullscreen mode
+    isFullscreen = true;
+    fullscreenToggle.title = 'Exit full screen';
+    fullscreenToggle.querySelector('img').src = 'min.png';
   }
 
-  // Update state and button properties for fullscreen mode
-  isFullscreen = true;
-  fullscreenToggle.title = 'Exit full screen';
-  fullscreenToggle.querySelector('img').src = 'https://jeromemorro.github.io/word-generator/min.png';
-}
+  // Function to exit fullscreen mode
+  function exitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      // Exit fullscreen mode on iOS
+      document.webkitExitFullscreen();
+    }
+
+    // Update state and button properties for exiting fullscreen mode
+    isFullscreen = false;
+    fullscreenToggle.title = 'Enter full screen';
+    fullscreenToggle.querySelector('img').src = 'max.png';
+  }
 
   
+/*  
   // Function to exit fullscreen mode
   function exitFullscreen() {
     // Exit fullscreen based on browser compatibility
@@ -422,7 +444,7 @@ function enterFullscreen() {
     fullscreenToggle.title = 'Enter full screen';
     fullscreenToggle.querySelector('img').src = 'max.png';
   }
-  
+*/  
   // Function to collapse and expand the row containing the controls
   function toggleRow3() {
     if (row3Col2_1.style.display === 'none') {
