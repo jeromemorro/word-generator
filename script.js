@@ -10,6 +10,8 @@ window.addEventListener('DOMContentLoaded', function() {
   var progressIndicator = document.getElementById('progress-indicator');
   var definitionsToggle = document.getElementById('definitions-toggle');
   var definitionsDisplay = document.getElementById('definitions-display');
+  var hearWordButton = document.getElementById('hear-word-button');
+  var voiceSelect = document.getElementById('voice-select');
   var syllablesSelect = document.getElementById('syllables-select');
   var obscureWordsToggle = document.getElementById('obscure-words-toggle');
   var playlistFrame = document.getElementById('playlist-frame');
@@ -26,10 +28,12 @@ window.addEventListener('DOMContentLoaded', function() {
   var row3Col2_2 = document.querySelector('.row3-col2-2');
   var row3Col3_1 = document.querySelector('.row3-col3-1');
   var row3Col3_2 = document.querySelector('.row3-col3-2');
-  var row3Col4 = document.querySelector('.row3-col4');
+  var row3Col4_1 = document.querySelector('.row3-col4-1');
+  var row3Col4_2 = document.querySelector('.row3-col4-2');
   var row3Col5 = document.querySelector('.row3-col5');
 
   // Declare variables
+  var promise; // Used to asynchronously load the speech synthesis voices
   var wordIntervalId; // ID for the word generation interval
   var progressIntervalId; // ID for the progress indicator interval
   var progressWidth; // Current width of the progress indicator
@@ -44,6 +48,7 @@ window.addEventListener('DOMContentLoaded', function() {
   intervalSelect.addEventListener('change', handleOptionChange);
   intervalSelect.addEventListener('input', handleOptionInput);
   definitionsToggle.addEventListener('change', handleDefinitionsToggle);
+  hearWordButton.addEventListener('click', handleHearWordButtonClick);
   syllablesSelect.addEventListener('change', handleOptionChange);
   obscureWordsToggle.addEventListener('change', handleOptionChange);
   animationToggle.addEventListener('change', handleAnimationToggle);
@@ -51,6 +56,10 @@ window.addEventListener('DOMContentLoaded', function() {
   loadPlaylistButton.addEventListener('click', handleLoadPlaylistButtonClick);
   fullscreenToggle.addEventListener('click', handleFullScreenToggle);
   hideControlsButton.addEventListener('click', toggleRow3);
+
+  // Load the speech synthesis voices
+  promise = new Promise(loadVoices);
+  promise.then(handleVoices);
 
   // Store the previous value of the interval select
   intervalSelect.dataset.previousValue = intervalSelectValue;
@@ -69,7 +78,45 @@ window.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching words:', error);
     });
   
-  
+  function loadVoices(resolve) {
+    // Check if voices are already available
+    if (window.speechSynthesis.getVoices().length > 0) {
+      resolve(window.speechSynthesis.getVoices());
+    } else {
+      // Wait for the voiceschanged event
+      window.speechSynthesis.addEventListener('voiceschanged', voicesChangedListener);
+    }
+
+    function voicesChangedListener() {
+      window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedListener);
+      resolve(window.speechSynthesis.getVoices());
+    }
+  }
+
+  function handleVoices(voices) {
+    // Select only the voices with 'English (United States)' language
+    var englishVoices = voices.filter(voice => voice.lang.startsWith('en-US'));
+    
+    // Sort the englishVoices array alphabetically
+    englishVoices.sort((a, b) => a.name.localeCompare(b.name));    
+    
+    // Clear any existing options
+    voiceSelect.innerHTML = '';
+    
+    // Assign voices to the select-voices drop-down element
+    englishVoices.forEach(createVoiceOption);
+
+    // Enable the hearWord button
+    hearWordButton.disabled = false; // Enable the button
+  }
+
+  function createVoiceOption(voice) {
+    var option = document.createElement('option');
+    option.value = voice.name;
+    option.text = voice.name.split(' ')[1]; // Extract the given name from the voice name
+    voiceSelect.appendChild(option);
+  }  
+
   // Generate a random word from the filtered list
   function generateRandomWord() {
     var filteredWords = words;
@@ -154,17 +201,19 @@ window.addEventListener('DOMContentLoaded', function() {
   // Toggle definitions display
   function handleDefinitionsToggle() {
     var computedStyles = window.getComputedStyle(definitionsDisplay);
-    var display = computedStyles.getPropertyValue('display');
+    var color = computedStyles.getPropertyValue('color');
 
-    if (display === 'none') {
-      // Show the definitions display 
-      definitionsDisplay.style.display = 'block';
+    if (color === 'rgb(255, 255, 255)' || color === 'white') {
+      // Hide the contents of the element
+      definitionsDisplay.style.color = 'transparent';
+      definitionsDisplay.style.overflow = 'hidden';
     } else {
-      // Hide the definitions display 
-      definitionsDisplay.style.display = 'none';
+      // Show the contents of the element
+      definitionsDisplay.style.color = 'white';
+      definitionsDisplay.style.overflow = 'auto';
     }
   }
-  
+
   // Toggle the progress bar animation
   function handleAnimationToggle() {
     // Check if the checkbox is checked
@@ -249,6 +298,14 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     loadPlaylistButton.disabled = true;
+  }
+
+  function handleHearWordButtonClick() {
+    var voices = window.speechSynthesis.getVoices();
+    var utterance = new SpeechSynthesisUtterance(wordDisplay.textContent);
+    var voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+    utterance.voice = voiceToUse;
+    window.speechSynthesis.speak(utterance);
   }
 
   // Start the progress indicator
@@ -346,7 +403,8 @@ window.addEventListener('DOMContentLoaded', function() {
       row3Col2_2.style.display = 'table-cell';
       row3Col3_1.style.display = 'table-cell';
       row3Col3_2.style.display = 'table-cell';
-      row3Col4.style.display = 'table-cell';
+      row3Col4_1.style.display = 'table-cell';
+      row3Col4_2.style.display = 'table-cell';
       row3Col5.style.display = 'table-cell';
       row1.style.height = '50vh';
       hideControlsImage.src = 'hide.png';
@@ -358,7 +416,8 @@ window.addEventListener('DOMContentLoaded', function() {
       row3Col2_2.style.display = 'none';
       row3Col3_1.style.display = 'none';
       row3Col3_2.style.display = 'none';
-      row3Col4.style.display = 'none';
+      row3Col4_1.style.display = 'none';
+      row3Col4_2.style.display = 'none';
       row3Col5.style.display = 'none';
       row1.style.height = '82vh';
       hideControlsImage.src = 'show.png';
