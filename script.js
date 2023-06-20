@@ -370,8 +370,9 @@ window.addEventListener('DOMContentLoaded', function() {
       document.documentElement.webkitRequestFullscreen();
     } else if (document.documentElement.msRequestFullscreen) {
       document.documentElement.msRequestFullscreen();
+    } else if (document.documentElement.webkitEnterFullscreen) {
+      document.documentElement.webkitEnterFullscreen();
     }
-
     // Update state and button properties for fullscreen mode
     isFullscreen = true;
     fullscreenToggle.title = 'Exit full screen';
@@ -389,7 +390,7 @@ window.addEventListener('DOMContentLoaded', function() {
       document.webkitExitFullscreen();
     } else if (document.msExitFullscreen) {
       document.msExitFullscreen();
-    }
+    } 
 
     // Update state and button properties for exiting fullscreen mode
     isFullscreen = false;
