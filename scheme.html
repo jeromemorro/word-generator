@@ -68,7 +68,7 @@
   <button id="buttonFive" onclick="repeatFifthWord()" class="repeat-word" disabled>5</button>
   <button id="buttonSix" onclick="repeatSixthWord()" class="repeat-word" disabled>6</button>
   <br><br>  
-  <textarea id="word" readonly rows="15"></textarea>
+  <textarea id="word" readonly rows="18"></textarea>
   <script>
     let buttonOne = document.getElementById('buttonOne');
     let buttonTwo = document.getElementById('buttonTwo');
@@ -182,27 +182,45 @@
       switch (buttonCount) {
         case 1:
           buttonOne.disabled = false;
+          buttonOne.title = "Repeat the first word only."
           buttonTwo.disabled = true;
+          buttonTwo.title = ""
           buttonThree.disabled = true;
+          buttonThree.title = ""
           buttonFour.disabled = true;
+          buttonFour.title = ""
           buttonFive.disabled = true;
-          buttonSix.disabled = true;          
+          buttonFive.title = ""
+          buttonSix.disabled = true;
+          buttonSix.title = ""
           break;
         case 3:
           buttonOne.disabled = false;
+          buttonOne.title = "Repeat the first word only."
           buttonTwo.disabled = false;
+          buttonTwo.title = "Repeat the second word only."
           buttonThree.disabled = false;
+          buttonThree.title = "Repeat the third word only."
           buttonFour.disabled = true;
+          buttonFour.title = ""
           buttonFive.disabled = true;
-          buttonSix.disabled = true;   
+          buttonFive.title = ""
+          buttonSix.disabled = true;
+          buttonSix.title = "" 
           break;
         case 6:
           buttonOne.disabled = false;
+          buttonOne.title = "Repeat the first word only."
           buttonTwo.disabled = false;
+          buttonTwo.title = "Repeat the second word only."
           buttonThree.disabled = false;
+          buttonThree.title = "Repeat the third word only."
           buttonFour.disabled = false;
+          buttonFour.title = "Repeat the fourth word only."         
           buttonFive.disabled = false;
-          buttonSix.disabled = false;   
+          buttonFive.title = "Repeat the fifth word only."          
+          buttonSix.disabled = false;
+          buttonSix.title = "Repeat the sixth word only."          
           break;
       }
     }
