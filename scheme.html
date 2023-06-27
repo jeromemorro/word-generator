@@ -36,6 +36,7 @@
     
     #word {
       opacity: 0;
+      width: 50%;
     }
     
     option {
@@ -51,7 +52,7 @@
 </head>
 
 <body>
-  <button onclick="say1RandomWord()" class="generate-word">Generate A Random Word</button>
+  <button onclick="say1RandomWord()" class="generate-word">Generate Random Word</button>
   <button onclick="say3RandomWords()" class="generate-word">Generate 3 Random Words</button>
   <button onclick="say6RandomWords()" class="generate-word">Generate 6 Random Words</button>
   <br><br><br>
@@ -66,7 +67,8 @@
   <button id="buttonFour" onclick="repeatFourthWord()" class="repeat-word" disabled>4</button>
   <button id="buttonFive" onclick="repeatFifthWord()" class="repeat-word" disabled>5</button>
   <button id="buttonSix" onclick="repeatSixthWord()" class="repeat-word" disabled>6</button>
-  <p id="word" ></p>
+  <br><br>  
+  <textarea id="word" readonly rows="15"></textarea>
   <script>
     let buttonOne = document.getElementById('buttonOne');
     let buttonTwo = document.getElementById('buttonTwo');
@@ -87,7 +89,7 @@
           let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
           utterance.voice = voiceToUse;
           speechSynthesis.speak(utterance);
-          document.getElementById("word").innerHTML += data[0] + "&nbsp;&nbsp;";
+          document.getElementById("word").value += data[0] + "  ";
 
           return data[0];
         });
@@ -107,7 +109,7 @@
     let lastWord = [];
     function say3RandomWords() {
       lastWord = [];
-      document.getElementById("word").innerText += "\n\n";
+      document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
         sayRandomWord().then(data => lastWord.push(data));
       }
@@ -116,7 +118,7 @@
 
     function say6RandomWords() {
       lastWord = [];
-      document.getElementById("word").innerText += "\n\n";
+      document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
         sayRandomWord().then(data => lastWord.push(data));
       }
@@ -125,7 +127,7 @@
 
     function say1RandomWord() {
       lastWord = [];
-      document.getElementById("word").innerText += "\n\n";
+      document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       sayRandomWord().then(data => lastWord.push(data));
       adjustButtonState(1);
     }
