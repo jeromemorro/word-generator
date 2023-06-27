@@ -204,15 +204,15 @@ window.addEventListener('DOMContentLoaded', function() {
   // Toggle definitions display
   function handleDefinitionsToggle() {
     var computedStyles = window.getComputedStyle(definitionsDisplay);
-    var color = computedStyles.getPropertyValue('color');
+    var opacity = computedStyles.getPropertyValue('opacity');
 
-    if (color === 'rgb(255, 255, 255)' || color === 'white') {
+    if (opacity === '1') {
       // Hide the contents of the element
-      definitionsDisplay.style.color = 'transparent';
+      definitionsDisplay.style.opacity = '0';
       definitionsDisplay.style.overflow = 'hidden';
     } else {
       // Show the contents of the element
-      definitionsDisplay.style.color = 'white';
+      definitionsDisplay.style.opacity = '1';
       definitionsDisplay.style.overflow = 'auto';
     }
   }
