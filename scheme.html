@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    html {
+      height: 100%;
+      width: 100%;    
+    }
+
+    body, body button, label, select, #word {
+      background-color: Gainsboro;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+    }
+    
+    .generate-word {
+      background-color: #ff8080;    
+      padding: 3px;       
+    }
+
+    .show-hide-word {
+      background-color: #ffffb3;     
+      padding: 3px;           
+    }
+
+    .repeat-word {
+      background-color: MediumSpringGreen; 
+      margin-right: 10px;
+      padding: 3px;           
+    }
+    
+    #word {
+      opacity: 0;
+    }
+    
+    option {
+      background-color: White;  
+    }
+    
+    select {
+      background-color: White; 
+      margin-right: 10px;
+    }    
+
+  </style>
+</head>
+
+<body>
+  <button onclick="say1RandomWord()" class="generate-word">Generate Random Word</button>
+  <button onclick="say3RandomWords()" class="generate-word">Generate 3 Random Words</button>
+  <button onclick="say6RandomWords()" class="generate-word">Generate 6 Random Words</button>
+  <br><br><br>
+  <button onclick="hideShowWords()" class="show-hide-word">Hide/Show Last few Words</button>
+  <button onclick="repeatLastWords()" class="repeat-word">Repeat Last Batch of Words</button>
+  <br><br>  
+  <label for="selected-voice">Selected voice:</label>
+  <select id="selected-voice"></select>
+  <button id="buttonOne" onclick="repeatFirstWord()" class="repeat-word" disabled>1</button>
+  <button id="buttonTwo" onclick="repeatSecondWord()" class="repeat-word" disabled>2</button>
+  <button id="buttonThree" onclick="repeatThirdWord()" class="repeat-word" disabled>3</button>
+  <button id="buttonFour" onclick="repeatFourthWord()" class="repeat-word" disabled>4</button>
+  <button id="buttonFive" onclick="repeatFifthWord()" class="repeat-word" disabled>5</button>
+  <button id="buttonSix" onclick="repeatSixthWord()" class="repeat-word" disabled>6</button>
+  <p id="word" ></p>
+  <script>
+    let buttonOne = document.getElementById('buttonOne');
+    let buttonTwo = document.getElementById('buttonTwo');
+    let buttonThree = document.getElementById('buttonThree');
+    let buttonFour = document.getElementById('buttonFour');    
+    let buttonFive = document.getElementById('buttonFive');
+    let buttonSix = document.getElementById('buttonSix');  
+    let voiceSelect = document.getElementById('selected-voice');  
+    let promise = new Promise(loadVoices);
+    promise.then(handleVoices);
+    
+    function sayRandomWord() {
+      return fetch("https://random-word-api.vercel.app/api?words=1")
+        .then((response) => response.json())
+        .then(data => {
+          let utterance = new SpeechSynthesisUtterance(data[0]);
+          let voices = window.speechSynthesis.getVoices();
+          let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+          utterance.voice = voiceToUse;
+          speechSynthesis.speak(utterance);
+          document.getElementById("word").innerHTML += data[0] + "&nbsp;&nbsp;";
+
+          return data[0];
+        });
+    }
+
+    let buttonPress = 0;
+    function hideShowWords() {
+      if (buttonPress == 0) {
+        document.getElementById("word").style.opacity = "100%";
+        buttonPress++;
+      } else {
+        document.getElementById("word").style.opacity = "0%";
+        buttonPress = 0;
+      }
+    }
+
+    let lastWord = [];
+    function say3RandomWords() {
+      lastWord = [];
+      document.getElementById("word").innerText += "\n\n";
+      for(let i=0; i<3; i++) {
+        sayRandomWord().then(data => lastWord.push(data));
+      }
+      adjustButtonState(3);      
+    }
+
+    function say6RandomWords() {
+      lastWord = [];
+      document.getElementById("word").innerText += "\n\n";
+      for(let i=0; i<6; i++) {
+        sayRandomWord().then(data => lastWord.push(data));
+      }
+      adjustButtonState(6);      
+    }
+
+    function say1RandomWord() {
+      lastWord = [];
+      document.getElementById("word").innerText += "\n\n";
+      sayRandomWord().then(data => lastWord.push(data));
+      adjustButtonState(1);
+    }
+
+    function repeatLastWords() {
+      for(let i=0; i<lastWord.length; i++) {
+        repeatWord(i);
+      }
+    }
+    
+    function repeatWord(i) {
+      let utterance = new SpeechSynthesisUtterance(lastWord[i]);
+      let voices = window.speechSynthesis.getVoices();
+      let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+      utterance.voice = voiceToUse;
+      speechSynthesis.speak(utterance);    
+    }
+    
+    function repeatFirstWord() {
+      repeatWord(0);
+    }
+    
+    function repeatSecondWord() {
+      repeatWord(1);    
+    }
+    
+    function repeatThirdWord() {
+      repeatWord(2);    
+    }
+    
+    function repeatFourthWord() {
+      repeatWord(3);    
+    }
+    
+    function repeatFifthWord() {
+      repeatWord(4);    
+    }    
+    
+    function repeatSixthWord() {
+      repeatWord(5);    
+    }
+    
+    function adjustButtonState(buttonCount) {
+      switch (buttonCount) {
+        case 1:
+          buttonOne.disabled = false;
+          buttonTwo.disabled = true;
+          buttonThree.disabled = true;
+          buttonFour.disabled = true;
+          buttonFive.disabled = true;
+          buttonSix.disabled = true;          
+          break;
+        case 3:
+          buttonOne.disabled = false;
+          buttonTwo.disabled = false;
+          buttonThree.disabled = false;
+          buttonFour.disabled = true;
+          buttonFive.disabled = true;
+          buttonSix.disabled = true;   
+          break;
+        case 6:
+          buttonOne.disabled = false;
+          buttonTwo.disabled = false;
+          buttonThree.disabled = false;
+          buttonFour.disabled = false;
+          buttonFive.disabled = false;
+          buttonSix.disabled = false;   
+          break;
+      }
+    }
+
+    function loadVoices(resolve) {
+      if (window.speechSynthesis.getVoices().length > 0) {
+        resolve(window.speechSynthesis.getVoices());
+      } else {
+        window.speechSynthesis.addEventListener('voiceschanged', function voicesChangedListener() {
+          window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedListener);
+          resolve(window.speechSynthesis.getVoices());
+        });
+      }
+    }
+
+    function handleVoices(voices) {
+      let englishVoices = voices.filter(function(voice) {
+        return voice.lang.startsWith('en-US');
+      });
+  
+      englishVoices.sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+      });
+  
+      voiceSelect.innerHTML = '';
+      englishVoices.forEach(function(voice) {
+        let givenName = voice.name.split(' ');
+        let option = document.createElement('option');
+        option.value = voice.name;
+        option.text = givenName.length > 1 ? givenName[1] : voice.name;
+        voiceSelect.appendChild(option);
+        voiceSelect.selectedIndex = 2; //select the 3 item as the default option
+      });
+    }
+  </script>
+</body>
+</html>
