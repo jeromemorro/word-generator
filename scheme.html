@@ -115,10 +115,10 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       //sayRandomWord().then(data => lastWord.push(data));
       let data = await getRandomWord();
-      lastWord.push(data);      
-      await repeatLastWords();
-      scrollToBottom();      
-      adjustButtonState(1);
+      lastWord.push(data);
+      scrollToBottom();           
+      adjustButtonState(1);      
+      await repeatLastWords(); 
     }
     
     async function say3RandomWords() {
@@ -129,9 +129,9 @@
         let data = await getRandomWord();
         lastWord.push(data);
       }
-      await repeatLastWords();
-      scrollToBottom();      
-      adjustButtonState(3);      
+      scrollToBottom();          
+      adjustButtonState(3);   
+      await repeatLastWords();      
     }
 
     async function say6RandomWords() {
@@ -141,10 +141,10 @@
         //sayRandomWord().then(data => lastWord.push(data));
         let data = await getRandomWord();
         lastWord.push(data);
-      }
-      await repeatLastWords();      
+      }  
       scrollToBottom();
-      adjustButtonState(6);      
+      adjustButtonState(6);
+      await repeatLastWords();          
     }
 
     async function repeatWord(i) {
