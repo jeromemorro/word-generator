@@ -83,7 +83,7 @@
     let promise = new Promise(loadVoices);
     promise.then(handleVoices);
     
-    function sayRandomWord() {
+    function getRandomWord() {
       return fetch("https://random-word-api.vercel.app/api?words=1")
         .then((response) => response.json())
         .then(data => {
@@ -115,7 +115,7 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
         //sayRandomWord().then(data => lastWord.push(data));
-        const data = await sayRandomWord();
+        const data = await getRandomWord();
         lastWord.push(data);
       }
       await repeatLastWords();
@@ -128,7 +128,7 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
         //sayRandomWord().then(data => lastWord.push(data));
-        const data = await sayRandomWord();
+        const data = await getRandomWord();
         lastWord.push(data);
       }
       await repeatLastWords();      
@@ -140,7 +140,7 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       //sayRandomWord().then(data => lastWord.push(data));
-      const data = await sayRandomWord();
+      const data = await getRandomWord();
       lastWord.push(data);      
       await repeatLastWords();
       scrollToBottom();      
