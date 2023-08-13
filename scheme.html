@@ -118,7 +118,7 @@
         const data = await sayRandomWord();
         lastWord.push(data);
       }
-      repeatLastWords();
+      await repeatLastWords();
       scrollToBottom();      
       adjustButtonState(3);      
     }
@@ -143,9 +143,9 @@
       adjustButtonState(1);
     }
 
-    function repeatLastWords() {
+    async function repeatLastWords() {
       for(let i=0; i<lastWord.length; i++) {
-        repeatWord(i);
+        await repeatWord(i);
       }
     }
     
@@ -172,7 +172,8 @@
     function repeatSixthWord() {
       repeatWord(5);    
     }
-    
+
+    /*
     function repeatWord(i) {
       document.getElementById("debug").value = lastWord[i]; //debug
       let utterance = new SpeechSynthesisUtterance(lastWord[i]);
@@ -181,6 +182,20 @@
       utterance.voice = voiceToUse;
       speechSynthesis.speak(utterance);    
     }
+    */
+    
+    async function repeatWord(i) {
+      document.getElementById("debug").value = lastWord[i]; // Debug
+      let utterance = new SpeechSynthesisUtterance(lastWord[i]);
+      let voices = englishVoices;
+      let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+      utterance.voice = voiceToUse;
+  
+      await new Promise(resolve => {
+        utterance.onend = resolve;
+        speechSynthesis.speak(utterance);
+      });
+    }    
     
     function scrollToBottom() {
       let textarea = document.getElementById("word");
