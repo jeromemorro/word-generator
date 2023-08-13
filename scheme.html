@@ -68,7 +68,7 @@
   <button id="buttonFive" onclick="repeatFifthWord()" class="repeat-word" disabled>5</button>
   <button id="buttonSix" onclick="repeatSixthWord()" class="repeat-word" disabled>6</button>
   <br><br>
-  <textarea id="debug" readonly rows="18"></textarea>
+  <!-- <textarea id="debug" readonly rows="18"></textarea> -->
   <textarea id="word" readonly rows="18"></textarea>
   <script>
     let buttonOne = document.getElementById('buttonOne');
@@ -154,7 +154,7 @@
       utterance.voice = voiceToUse;
   
       await new Promise(resolve => {
-        document.getElementById("debug").value = utterance.voice.voiceURI // Debug
+        //document.getElementById("debug").value = utterance.voice.voiceURI // Debug
         utterance.onend = resolve;
         speechSynthesis.speak(utterance);
       });
@@ -280,7 +280,7 @@
         option.value = voice.voiceURI;
         option.text = givenName.length > 1 ? givenName[1] : voice.name;
         voiceSelect.appendChild(option);
-        voiceSelect.selectedIndex = 0; //select the 3 item as the default option
+        voiceSelect.selectedIndex = 1; //select the 3 item as the default option
       });
     }
   </script>
