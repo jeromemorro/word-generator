@@ -110,12 +110,23 @@
     }
 
     let lastWord = [];
+    async function say1RandomWord() {
+      lastWord = [];
+      document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
+      //sayRandomWord().then(data => lastWord.push(data));
+      let data = await getRandomWord();
+      lastWord.push(data);      
+      await repeatLastWords();
+      scrollToBottom();      
+      adjustButtonState(1);
+    }
+    
     async function say3RandomWords() {
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
         //sayRandomWord().then(data => lastWord.push(data));
-        const data = await getRandomWord();
+        let data = await getRandomWord();
         lastWord.push(data);
       }
       await repeatLastWords();
@@ -128,23 +139,12 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
         //sayRandomWord().then(data => lastWord.push(data));
-        const data = await getRandomWord();
+        let data = await getRandomWord();
         lastWord.push(data);
       }
       await repeatLastWords();      
       scrollToBottom();
       adjustButtonState(6);      
-    }
-
-    async function say1RandomWord() {
-      lastWord = [];
-      document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
-      //sayRandomWord().then(data => lastWord.push(data));
-      const data = await getRandomWord();
-      lastWord.push(data);      
-      await repeatLastWords();
-      scrollToBottom();      
-      adjustButtonState(1);
     }
 
     async function repeatWord(i) {
