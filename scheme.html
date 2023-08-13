@@ -114,8 +114,10 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
-        sayRandomWord().then(data => lastWord.push(data));
-        repeatWord(i);
+        //sayRandomWord().then(data => lastWord.push(data));      
+        const data = await sayRandomWord(); // Wait for the promise to resolve
+        lastWord.push(data);
+        repeatWord(i);  
       }
       scrollToBottom();      
       adjustButtonState(3);      
