@@ -172,7 +172,7 @@
     }
     
     function repeatWord(i) {
-      document.getElementById("debug").value = voiceSelect.value; //debug
+      document.getElementById("debug").value = lastWord[i]; //debug
       let utterance = new SpeechSynthesisUtterance(lastWord[i]);
       let voices = englishVoices;
       let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
