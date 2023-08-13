@@ -154,7 +154,7 @@
       utterance.voice = voiceToUse;
   
       await new Promise(resolve => {
-        document.getElementById("debug").value = utterance.voice // Debug
+        document.getElementById("debug").value = utterance.voice.name // Debug
         utterance.onend = resolve;
         speechSynthesis.speak(utterance);
       });
