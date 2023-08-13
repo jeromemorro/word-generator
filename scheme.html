@@ -123,13 +123,15 @@
       adjustButtonState(3);      
     }
 
-    function say6RandomWords() {
+    async function say6RandomWords() {
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
-        sayRandomWord().then(data => lastWord.push(data));
+        //sayRandomWord().then(data => lastWord.push(data));
+        const data = await sayRandomWord();
+        lastWord.push(data);
       }
-      repeatLastWords();      
+      await repeatLastWords();      
       scrollToBottom();
       adjustButtonState(6);      
     }
@@ -137,12 +139,27 @@
     function say1RandomWord() {
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
-      sayRandomWord().then(data => lastWord.push(data));
-      repeatLastWords();
+      //sayRandomWord().then(data => lastWord.push(data));
+      const data = await sayRandomWord();
+      lastWord.push(data);      
+      await repeatLastWords();
       scrollToBottom();      
       adjustButtonState(1);
     }
 
+    async function repeatWord(i) {
+      document.getElementById("debug").value = lastWord[i]; // Debug
+      let utterance = new SpeechSynthesisUtterance(lastWord[i]);
+      let voices = englishVoices;
+      let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+      utterance.voice = voiceToUse;
+  
+      await new Promise(resolve => {
+        utterance.onend = resolve;
+        speechSynthesis.speak(utterance);
+      });
+    }   
+    
     async function repeatLastWords() {
       for(let i=0; i<lastWord.length; i++) {
         await repeatWord(i);
@@ -182,20 +199,7 @@
       utterance.voice = voiceToUse;
       speechSynthesis.speak(utterance);    
     }
-    */
-    
-    async function repeatWord(i) {
-      document.getElementById("debug").value = lastWord[i]; // Debug
-      let utterance = new SpeechSynthesisUtterance(lastWord[i]);
-      let voices = englishVoices;
-      let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
-      utterance.voice = voiceToUse;
-  
-      await new Promise(resolve => {
-        utterance.onend = resolve;
-        speechSynthesis.speak(utterance);
-      });
-    }    
+    */ 
     
     function scrollToBottom() {
       let textarea = document.getElementById("word");
