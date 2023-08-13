@@ -118,7 +118,7 @@
         const data = await sayRandomWord();
         lastWord.push(data);
       }
-      repeatLastWords;
+      repeatLastWords();
       scrollToBottom();      
       adjustButtonState(3);      
     }
@@ -129,7 +129,7 @@
       for(let i=0; i<6; i++) {
         sayRandomWord().then(data => lastWord.push(data));
       }
-      repeatLastWords;      
+      repeatLastWords();      
       scrollToBottom();
       adjustButtonState(6);      
     }
@@ -138,7 +138,7 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       sayRandomWord().then(data => lastWord.push(data));
-      repeatLastWords;
+      repeatLastWords();
       scrollToBottom();      
       adjustButtonState(1);
     }
