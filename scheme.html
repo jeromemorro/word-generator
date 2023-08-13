@@ -136,7 +136,7 @@
       adjustButtonState(6);      
     }
 
-    function say1RandomWord() {
+    async function say1RandomWord() {
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       //sayRandomWord().then(data => lastWord.push(data));
