@@ -110,7 +110,7 @@
     }
 
     let lastWord = [];
-    function say3RandomWords() {
+    async function say3RandomWords() {
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
