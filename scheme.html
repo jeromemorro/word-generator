@@ -67,7 +67,8 @@
   <button id="buttonFour" onclick="repeatFourthWord()" class="repeat-word" disabled>4</button>
   <button id="buttonFive" onclick="repeatFifthWord()" class="repeat-word" disabled>5</button>
   <button id="buttonSix" onclick="repeatSixthWord()" class="repeat-word" disabled>6</button>
-  <br><br>  
+  <br><br>
+  <textarea id="debug" readonly rows="18"></textarea>
   <textarea id="word" readonly rows="18"></textarea>
   <script>
     let buttonOne = document.getElementById('buttonOne');
@@ -86,11 +87,11 @@
       return fetch("https://random-word-api.vercel.app/api?words=1")
         .then((response) => response.json())
         .then(data => {
-          let utterance = new SpeechSynthesisUtterance(data[0]);
-          let voices = englishVoices;
-          let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
-          utterance.voice = voiceToUse;
-          speechSynthesis.speak(utterance);
+          //let utterance = new SpeechSynthesisUtterance(data[0]);
+          //let voices = englishVoices;
+          //let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
+          //utterance.voice = voiceToUse;
+          //speechSynthesis.speak(utterance);
           document.getElementById("word").value += data[0] + "  ";
 
           return data[0];
@@ -114,6 +115,7 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
         sayRandomWord().then(data => lastWord.push(data));
+        repeatWord(i);
       }
       scrollToBottom();      
       adjustButtonState(3);      
@@ -124,6 +126,7 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
         sayRandomWord().then(data => lastWord.push(data));
+        repeatWord(i);
       }
       scrollToBottom();
       adjustButtonState(6);      
@@ -133,6 +136,7 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       sayRandomWord().then(data => lastWord.push(data));
+      repeatWord(0);
       scrollToBottom();      
       adjustButtonState(1);
     }
@@ -168,6 +172,7 @@
     }
     
     function repeatWord(i) {
+      document.getElementById("debug").value = voiceSelect.value; //debug
       let utterance = new SpeechSynthesisUtterance(lastWord[i]);
       let voices = englishVoices;
       let voiceToUse = voices.find(voice => voice.name === voiceSelect.value);
