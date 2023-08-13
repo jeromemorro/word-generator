@@ -114,11 +114,11 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<3; i++) {
-        //sayRandomWord().then(data => lastWord.push(data));      
-        const data = await sayRandomWord(); // Wait for the promise to resolve
+        //sayRandomWord().then(data => lastWord.push(data));
+        const data = await sayRandomWord();
         lastWord.push(data);
-        repeatWord(i);  
       }
+      repeatLastWords;
       scrollToBottom();      
       adjustButtonState(3);      
     }
@@ -128,8 +128,8 @@
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       for(let i=0; i<6; i++) {
         sayRandomWord().then(data => lastWord.push(data));
-        repeatWord(i);
       }
+      repeatLastWords;      
       scrollToBottom();
       adjustButtonState(6);      
     }
@@ -138,7 +138,7 @@
       lastWord = [];
       document.getElementById("word").value = document.getElementById("word").value === "" ? document.getElementById("word").value : document.getElementById("word").value + "\n\n";
       sayRandomWord().then(data => lastWord.push(data));
-      repeatWord(0);
+      repeatLastWords;
       scrollToBottom();      
       adjustButtonState(1);
     }
