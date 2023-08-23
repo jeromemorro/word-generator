@@ -106,7 +106,7 @@
       changePattern();
       secondsLeft = parseInt(document.getElementById('interval-input').value) || 10;
       document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft; 
-      timer = setInterval(updateTimer, secondsLeft * 100);
+      timer = setInterval(updateTimer, 1000);
 
       function updateTimer() {
         secondsLeft--;
