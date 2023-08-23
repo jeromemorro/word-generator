@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pattern Roulette</title>
+  <style>
+    :root {
+      --size: 1;
+    }
+    
+    body {
+      background-color: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: top;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #pattern-container {
+      align-items: center;
+      display: flex;     
+      font-size: calc(100px * var(--size));
+      justify-content: center;          
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    #pattern {
+      border-radius: calc(5px * var(--size));    
+      color: black;
+      font-weight: bold;
+      margin-right: calc(10px * var(--size)); 
+      padding: calc(10px * var(--size));
+    }
+   
+    #timer {
+      border-radius: calc(5px * var(--size));    
+      padding: calc(10px * var(--size));
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+    }
+
+    .control {
+      margin-right: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+    }
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    input {
+      font-size: 30px; /* Change this value to adjust the font size as needed */
+      width: 50px;
+    }
+
+    button {
+      background-color: grey;
+      color: white;
+      font-size: 24px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="pattern-container">
+    <div id="pattern"></div>
+    <div id="timer"></div>
+  </div>
+  <div id="controls">
+    <div class="control">
+      <label for="interval-input" style="font-size: 24px;">Interval</label>
+      <input type="number" id="interval-input" value="10" min="1" max="60">
+    </div>
+    <div class="control">
+      <button id="change-button">Change pattern</button>
+    </div>
+  </div>
+
+  <script>
+    var timer;
+    var secondsLeft;
+    var previousPattern = null;
+
+    function startTimer() {
+      changePattern();
+      secondsLeft = parseInt(document.getElementById('interval-input').value) || 10;
+      document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft; 
+      timer = setInterval(updateTimer, secondsLeft * 100);
+
+      function updateTimer() {
+        secondsLeft--;
+        document.getElementById('timer').innerHTML = (secondsLeft < 10 ? '0' : '') + secondsLeft;   
+        
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          startTimer();
+        }
+      }
+    }
+
+    function changePattern() {
+      const patterns = [
+        { pattern: 'AAAA', color: 'green' },
+        { pattern: 'ABAB', color: 'blue' },
+        { pattern: 'ABBA', color: 'red' },        
+        { pattern: 'FREE', color: 'yellow' }
+      ];
+
+      // Define the variables used to display the selected pattern and color
+      var selectedPatternDisplay;
+      var selectedTimerPattern;
+  
+      // Assign pattern and color to elements
+      if (!previousPattern) {
+        selectedPatternDisplay = patterns[Math.floor(Math.random() * patterns.length)];
+        selectedTimerPattern = preventDuplicates(patterns, patterns[Math.floor(Math.random() * patterns.length)], selectedPatternDisplay);
+        
+        document.getElementById('pattern').innerHTML = selectedPatternDisplay.pattern;
+        document.getElementById('pattern').style.backgroundColor = selectedPatternDisplay.color;
+        document.getElementById('timer').style.color = 'black';    
+        document.getElementById('timer').style.backgroundColor = selectedPatternDisplay.color;
+           } else {
+        selectedTimerPattern = preventDuplicates(patterns, patterns[Math.floor(Math.random() * patterns.length)], previousPattern);
+        
+        document.getElementById('pattern').innerHTML = previousPattern.pattern;
+        document.getElementById('pattern').style.backgroundColor = previousPattern.color;
+        document.getElementById('timer').style.color = 'black';  
+        document.getElementById('timer').style.backgroundColor = previousPattern.color; 
+       }
+
+      // Update previousPattern
+      previousPattern = selectedTimerPattern;
+    }
+    
+    function preventDuplicates(patterns, generatedPattern, priorPattern) {
+      var generatedPatternIndex = patterns.findIndex(pattern => pattern.pattern === generatedPattern.pattern);
+      var priorPatternIndex = patterns.findIndex(pattern => pattern.pattern === priorPattern.pattern);
+
+      if (generatedPatternIndex === priorPatternIndex) {
+          if (generatedPatternIndex === (patterns.length - 1)) {
+              generatedPatternIndex = 0;
+          } else {
+              generatedPatternIndex++;
+          }
+      }
+
+      return patterns[generatedPatternIndex];
+    }
+
+    function handleIntervalChange() {
+      secondsLeft = parseInt(document.getElementById('interval-input').value) || 10;
+    }
+
+    function handleButtonClick() {
+      clearInterval(timer);
+      startTimer();
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Enter') {
+        handleButtonClick();
+      }
+    }
+
+    window.onload = function() {
+      document.getElementById('interval-input').addEventListener('change', handleIntervalChange);
+      document.getElementById('change-button').addEventListener('click', handleButtonClick);
+      document.addEventListener('keydown', handleKeyDown);
+
+      startTimer();    
+    };
+  </script>
+</body>
+</html>
