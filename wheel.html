@@ -66,16 +66,25 @@
     }
     #arrow {
       position: absolute;
-      backface-visibility: hidden;
       top: 49%;
-      left: 96%; /* Keep it on the right edge of the wheel */
-      transform: rotate(180deg);
+      left: 96%;
       width: 0;
       height: 0;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
       border-left: 20px solid red;
       z-index: 10;
+    }
+
+    #arrow::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 22px solid black;
+      z-index: -1;
     }
   </style>
 </head>
