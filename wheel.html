@@ -7,219 +7,277 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      text-align: center;
+      background-color: #f7f7f7;
+      margin: 0;
       padding: 20px;
     }
 
-    #wheelContainer {
+    #canvasContainer {
       position: relative;
-      width: 400px;
-      height: 400px;
+      width: 500px;
+      height: 500px;
+      margin: 20px auto;
     }
 
-    #wheel {
+    canvas {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
     }
 
-    #arrow {
-      position: absolute;
-      top: 50%;
-      right: -20px;
-      transform: translateY(-50%) rotate(0deg);
-      width: 0;
-      height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 20px solid black;
-    }
-
-    .controls {
+    .button-row {
       margin-top: 20px;
-      display: flex;
-      gap: 10px;
     }
 
     button {
       padding: 10px 20px;
+      margin: 0 10px;
       font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.3s ease;
     }
 
-    #editContainer {
-      margin-top: 20px;
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 400px;
-    }
-
-    #editBox {
-      width: 100%;
-      height: 200px;
-    }
-
-    #saveCancel {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-start;
-    }
-
-    /* Spin button enabled */
-    #spinBtn:enabled {
-      background-color: #50c878; /* Emerald green */
+    #spinBtn {
+      background-color: #50c878; /* emerald green */
       color: white;
     }
 
-    /* Spin button disabled uses default disabled styles */
     #spinBtn:disabled {
       background-color: #e9e9e9;
       color: #a8a8b2;
       cursor: default;
     }
+
+    #randomizeBtn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    #editBtn {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    #entryEditor {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #entryList {
+      width: 300px;
+      margin: 10px auto;
+      padding: 10px;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    #entryList input {
+      width: calc(100% - 30px);
+      padding: 5px;
+      margin: 5px 0;
+    }
+
+    .entryRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .entryRow button {
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: #f44336;
+      color: white;
+    }
+
+    .edit-controls {
+      margin-top: 10px;
+    }
+
+    .edit-controls button {
+      margin: 0 5px;
+    }
   </style>
 </head>
 <body>
   <h1>Color Wheel Utility</h1>
-  <div id="wheelContainer">
-    <canvas id="wheel" width="400" height="400"></canvas>
-    <div id="arrow"></div>
+  <div id="canvasContainer">
+    <canvas id="wheelCanvas" width="500" height="500"></canvas>
   </div>
-  <div class="controls">
+
+  <div class="button-row">
     <button id="spinBtn" disabled>Spin</button>
-    <button id="randomizeBtn" disabled>Randomize Entries</button>
+    <button id="randomizeBtn">Randomize Entries</button>
     <button id="editBtn">Edit Entries</button>
   </div>
-  <div id="editContainer">
-    <textarea id="editBox"></textarea>
-    <div id="saveCancel">
+
+  <div id="entryEditor">
+    <div id="entryList"></div>
+    <div class="edit-controls">
       <button id="saveBtn">Save</button>
       <button id="cancelBtn">Cancel</button>
     </div>
   </div>
 
   <script>
-    const wheel = document.getElementById("wheel");
-    const ctx = wheel.getContext("2d");
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    let entries = ["Apple", "Banana", "Cherry", "Date"];
+    let colors = [];
+    let spinning = false;
+    let angle = 0;
+    let spinStart = 0;
+    let spinRequest;
+
     const spinBtn = document.getElementById("spinBtn");
     const randomizeBtn = document.getElementById("randomizeBtn");
     const editBtn = document.getElementById("editBtn");
-    const editContainer = document.getElementById("editContainer");
-    const editBox = document.getElementById("editBox");
+    const entryEditor = document.getElementById("entryEditor");
+    const entryList = document.getElementById("entryList");
     const saveBtn = document.getElementById("saveBtn");
     const cancelBtn = document.getElementById("cancelBtn");
 
-    let entries = ["Entry 1", "Entry 2"];
-    let colors = [];
-    let isSpinning = false;
-    let angle = 0;
-    let spinStart = 0;
-    let spinDuration = 0;
-    let spinVelocity = 0;
+    function generateColors(n) {
+      const result = [];
+      const hueStep = 360 / n;
+      for (let i = 0; i < n; i++) {
+        result.push(`hsl(${i * hueStep}, 70%, 60%)`);
+      }
+      return result;
+    }
 
     function drawWheel() {
-      const numEntries = entries.length;
-      const anglePerSlice = (2 * Math.PI) / numEntries;
-      ctx.clearRect(0, 0, wheel.width, wheel.height);
-      entries.forEach((entry, i) => {
-        const startAngle = i * anglePerSlice + angle;
-        const endAngle = startAngle + anglePerSlice;
+      const radius = canvas.width / 2;
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const arc = (2 * Math.PI) / entries.length;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < entries.length; i++) {
+        const start = angle + i * arc;
+        const end = start + arc;
         ctx.beginPath();
-        ctx.moveTo(200, 200);
-        ctx.arc(200, 200, 200, startAngle, endAngle);
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
         ctx.fillStyle = colors[i];
         ctx.fill();
         ctx.save();
-        ctx.translate(200, 200);
-        ctx.rotate(startAngle + anglePerSlice / 2);
+        ctx.translate(cx, cy);
+        ctx.rotate(start + arc / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = "black";
-        ctx.font = "16px Arial";
-        ctx.fillText(entry, 180, 5);
+        ctx.fillStyle = "#000";
+        ctx.font = "16px sans-serif";
+        ctx.fillText(entries[i], radius - 10, 10);
         ctx.restore();
-      });
-    }
-
-    function generateColors() {
-      colors = entries.map((_, i) => {
-        const hue = (i * 360) / entries.length;
-        return `hsl(${hue}, 70%, 60%)`;
-      });
+      }
     }
 
     function spinWheel() {
-      isSpinning = true;
+      if (entries.length < 2 || spinning) return;
+      spinning = true;
       spinBtn.disabled = true;
-      randomizeBtn.disabled = true;
-      editBtn.disabled = true;
       spinStart = performance.now();
-      spinDuration = 6000; // 6 seconds
-      spinVelocity = Math.random() * 0.2 + 0.3;
-      requestAnimationFrame(animateSpin);
+      animateSpin();
     }
 
-    function animateSpin(timestamp) {
-      const elapsed = timestamp - spinStart;
+    function animateSpin() {
+      const now = performance.now();
+      const elapsed = now - spinStart;
+      let duration = 6000;
+
       if (elapsed < 2000) {
-        angle += spinVelocity;
-      } else if (elapsed < spinDuration) {
-        const progress = (elapsed - 2000) / (spinDuration - 2000);
-        angle += spinVelocity * (1 - progress);
+        angle += 0.3;
+      } else if (elapsed < duration) {
+        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
       } else {
-        isSpinning = false;
-        angle %= 2 * Math.PI;
-        updateButtons();
+        spinning = false;
+        cancelAnimationFrame(spinRequest);
         return;
       }
+
       drawWheel();
-      requestAnimationFrame(animateSpin);
+      spinRequest = requestAnimationFrame(animateSpin);
     }
 
-    function updateButtons() {
-      const hasEnoughEntries = entries.length >= 2;
-      spinBtn.disabled = !hasEnoughEntries || isSpinning;
-      randomizeBtn.disabled = !hasEnoughEntries || isSpinning;
-      editBtn.disabled = isSpinning;
+    function updateEditor() {
+      entryList.innerHTML = "";
+      entries.forEach((entry, i) => {
+        const div = document.createElement("div");
+        div.className = "entryRow";
+        const input = document.createElement("input");
+        input.value = entry;
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "X";
+        delBtn.onclick = () => {
+          entries.splice(i, 1);
+          updateEditor();
+        };
+        div.appendChild(input);
+        div.appendChild(delBtn);
+        entryList.appendChild(div);
+      });
+
+      const newDiv = document.createElement("div");
+      const newInput = document.createElement("input");
+      newInput.placeholder = "Add new entry";
+      newInput.onkeydown = (e) => {
+        if (e.key === "Enter" && newInput.value.trim()) {
+          entries.push(newInput.value.trim());
+          updateEditor();
+        }
+      };
+      newDiv.appendChild(newInput);
+      entryList.appendChild(newDiv);
     }
 
-    spinBtn.addEventListener("click", spinWheel);
+    function showEditor(show) {
+      entryEditor.style.display = show ? "block" : "none";
+    }
 
-    randomizeBtn.addEventListener("click", () => {
+    function saveEntries() {
+      const inputs = entryList.querySelectorAll("input");
+      const newEntries = [];
+      inputs.forEach((input) => {
+        const val = input.value.trim();
+        if (val) newEntries.push(val);
+      });
+      entries = newEntries;
+      colors = generateColors(entries.length);
+      drawWheel();
+      spinBtn.disabled = entries.length < 2;
+      showEditor(false);
+    }
+
+    spinBtn.onclick = spinWheel;
+
+    randomizeBtn.onclick = () => {
       for (let i = entries.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [entries[i], entries[j]] = [entries[j], entries[i]];
       }
-      generateColors();
+      colors = generateColors(entries.length);
       drawWheel();
-    });
+    };
 
-    editBtn.addEventListener("click", () => {
-      editContainer.style.display = "flex";
-      editBox.value = entries.join("\n");
-      spinBtn.disabled = true;
-      randomizeBtn.disabled = true;
-      editBtn.disabled = true;
-    });
+    editBtn.onclick = () => {
+      updateEditor();
+      showEditor(true);
+    };
 
-    cancelBtn.addEventListener("click", () => {
-      editContainer.style.display = "none";
-      updateButtons();
-    });
+    saveBtn.onclick = saveEntries;
+    cancelBtn.onclick = () => showEditor(false);
 
-    saveBtn.addEventListener("click", () => {
-      const newEntries = editBox.value
-        .split("\n")
-        .map(e => e.trim())
-        .filter(e => e);
-      if (newEntries.length >= 1) {
-        entries = newEntries;
-        generateColors();
-        drawWheel();
-        editContainer.style.display = "none";
-        updateButtons();
-      } else {
-        alert("Please enter
+    window.onload = () => {
+      colors = generateColors(entries.length);
+      drawWheel();
+      spinBtn.disabled = entries.length < 2;
+    };
+  </script>
+</body>
+</html>
