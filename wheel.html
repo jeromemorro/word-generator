@@ -27,21 +27,6 @@
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      /* Add a smooth background color transition */
-      transition: background-color 0.3s ease;
-    }
-    /* Spin button enabled style */
-    #spinBtn:enabled {
-      background-color: #50c878; /* light emerald green */
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    /* Spin button disabled uses default disabled styles */
-    #spinBtn:disabled {
-      background-color: #e9e9e9;
-      color: #a8a8b2;
-      cursor: default;
     }
     .entry-editor {
       display: flex;
@@ -157,7 +142,7 @@
       spinning = true;
       updateUI();
       let startTime = null;
-      let duration = 5000;
+      let duration = 6000; // changed from 5000 to 6000
 
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
@@ -166,7 +151,7 @@
         if (elapsed < 2000) {
           angle += 0.3;
         } else if (elapsed < duration) {
-          angle += 0.3 * (1 - (elapsed - 2000) / 3000);
+          angle += 0.3 * (1 - (elapsed - 2000) / 4000); // adjusted deceleration for 4s
         }
 
         drawWheel();
