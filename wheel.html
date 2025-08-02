@@ -67,24 +67,24 @@
     #arrow {
       position: absolute;
       top: 49%;
-      left: 96%; /* Keep it on the right edge of the wheel */
+      left: 96%;
       transform: rotate(180deg);
       width: 0;
       height: 0;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
-      border-left: 22px solid black;
+      border-top: 14px solid transparent;    /* red arrow top border (10px) + 4px */
+      border-bottom: 14px solid transparent; /* red arrow bottom border (10px) + 4px */
+      border-left: 28px solid black;         /* red arrow left border (20px) + 8px */
       z-index: 10;
     }
 
     #arrow::before {
       content: '';
       position: absolute;
-      top: -10px;
-      left: -21px;
+      top: -14px;    /* negative of black border thickness */
+      left: -28px;   /* negative of black border thickness */
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
-      border-left: 20px solid red;
+      border-left: 20px solid red;           /* unchanged */
       z-index: -1;
     }
   </style>
