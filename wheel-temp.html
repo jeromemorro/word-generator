@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Color Wheel Spinner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Color Wheel Utility</title>
   <style>
+
     body {
       font-family: sans-serif;
       margin: 0;
@@ -27,65 +28,20 @@
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      /* Add a smooth background color transition */
       transition: background-color 0.3s ease;
     }
-    /* Spin button enabled style */
     #spinBtn:enabled {
       background-color: #50c878; /* light emerald green */
       color: white;
       border: none;
       cursor: pointer;
     }
-    /* Spin button disabled uses default disabled styles */
     #spinBtn:disabled {
       background-color: #e9e9e9;
       color: #a8a8b2;
       cursor: default;
     }
-    .entry-editor {
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-top: 45px; /* aligns top of editor with top of wheel */
-    }
-    #entryList {
-      width: 300px;
-      margin: 10px auto;
-      padding: 10px;
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      text-align: left;
-    }
-    #entryList input {
-      width: calc(100% - 30px);
-      padding: 5px;
-      margin: 5px 0;
-    }
-    .entryRow {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .entryRow button {
-      padding: 5px 10px;
-      font-size: 12px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .edit-controls {
-      margin-top: 10px;
-    }
-    .edit-controls button {
-      margin: 0 5px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+    /* Your arrow styles */
     #arrow {
       position: absolute;
       top: 48%;
@@ -93,21 +49,75 @@
       transform: rotate(180deg);
       width: 0;
       height: 0;
-      border-top: 14px solid transparent;    /* border thickness (top) */
-      border-bottom: 14px solid transparent; /* border thickness (bottom) */
-      border-left: 28px solid black;         /* border thickness (left) */
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 28px solid black;
       z-index: 10;
     }
     #arrow::before {
       content: '';
       position: absolute;
-      top: -10px;    /* negative of red arrow top border thickness */
-      left: -26px;   /* negative of red arrow left border thickness */
+      top: -10px;
+      left: -26px;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
       border-left: 20px solid red;
       z-index: -1;
     }
+
+    /* Entry editor styles */
+    #entryEditor {
+      display: none;
+      margin-top: 45px; /* aligns top of editor with top of wheel */
+      width: 300px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: left;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    #entryList {
+      margin: 10px 0;
+    }
+
+    #entryList input {
+      width: calc(100% - 40px);
+      padding: 5px;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .entryRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .entryRow button {
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 3px;
+      margin-left: 5px;
+    }
+
+    .edit-controls {
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .edit-controls button {
+      margin: 0 5px;
+      padding: 6px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -116,14 +126,13 @@
     <div id="arrow"></div>
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
     <div class="controls">
-      <button id="spinBtn">Spin Wheel</button>
+      <button id="spinBtn" disabled>Spin</button>
       <button id="shuffleBtn">Randomize Entries</button>
       <button id="editBtn">Edit Entries</button>
     </div>
   </div>
 
-  <!-- New interactive entry editor -->
-  <div class="entry-editor" id="entryEditor">
+  <div id="entryEditor">
     <div id="entryList"></div>
     <div class="edit-controls">
       <button id="saveBtn">Save</button>
@@ -189,7 +198,7 @@
       spinning = true;
       updateUI();
       let startTime = null;
-      let duration = 6000;  // 6 seconds spin duration
+      let duration = 6000;
 
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
@@ -221,35 +230,36 @@
       editBtn.disabled = spinning || entryEditor.style.display !== 'none';
     }
 
-    // New editor functions:
     function updateEditor() {
       entryList.innerHTML = "";
       entries.forEach((entry, i) => {
         const div = document.createElement("div");
         div.className = "entryRow";
+
         const input = document.createElement("input");
         input.value = entry;
-        input.oninput = () => {
-          entries[i] = input.value;
-        };
+        input.type = "text";
+
         const delBtn = document.createElement("button");
         delBtn.textContent = "X";
         delBtn.onclick = () => {
           entries.splice(i, 1);
           updateEditor();
         };
+
         div.appendChild(input);
         div.appendChild(delBtn);
         entryList.appendChild(div);
       });
 
+      // Input to add new entries
       const newDiv = document.createElement("div");
       const newInput = document.createElement("input");
       newInput.placeholder = "Add new entry";
+      newInput.type = "text";
       newInput.onkeydown = (e) => {
         if (e.key === "Enter" && newInput.value.trim()) {
           entries.push(newInput.value.trim());
-          newInput.value = "";
           updateEditor();
         }
       };
@@ -258,54 +268,40 @@
     }
 
     function showEditor(show) {
-      entryEditor.style.display = show ? "flex" : "none";
+      entryEditor.style.display = show ? "block" : "none";
     }
 
     function saveEntries() {
-      entries = entries.filter(e => e.trim());
+      // Get updated values from inputs
+      const inputs = entryList.querySelectorAll("input[type='text']");
+      const newEntries = [];
+      inputs.forEach((input) => {
+        const val = input.value.trim();
+        if (val) newEntries.push(val);
+      });
+      entries = newEntries;
       colors = generateColors(entries.length);
       drawWheel();
       spinBtn.disabled = entries.length < 2;
       showEditor(false);
-      shuffleBtn.disabled = false;
-      editBtn.disabled = false;
+      updateUI();
     }
 
     editBtn.onclick = () => {
       updateEditor();
       showEditor(true);
-      spinBtn.disabled = true;
-      shuffleBtn.disabled = true;
-      editBtn.disabled = true;
+      updateUI();
     };
 
     saveBtn.onclick = saveEntries;
-
     cancelBtn.onclick = () => {
       showEditor(false);
-      spinBtn.disabled = entries.length < 2;
-      shuffleBtn.disabled = false;
-      editBtn.disabled = false;
-    };
-
-    function shuffleEntries() {
-      for (let i = entries.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [entries[i], entries[j]] = [entries[j], entries[i]];
-      }
-      colors = generateColors(entries.length);
-      drawWheel();
-    }
-
-    shuffleBtn.addEventListener('click', () => {
-      shuffleEntries();
       updateUI();
-    });
-
-    spinBtn.addEventListener('click', spinWheel);
+    };
 
     colors = generateColors(entries.length);
     drawWheel();
+    spinBtn.disabled = entries.length < 2;  // Fix: set initial spin button enabled state
     updateUI();
   </script>
 </body>
