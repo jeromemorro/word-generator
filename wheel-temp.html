@@ -222,11 +222,15 @@
       requestAnimationFrame(animate);
     }
 
+    function isEditorVisible() {
+      return window.getComputedStyle(editor).display !== "none";
+    }
+    
     function updateUI() {
-      const enable = !spinning && entries.length >= 2 && entryEditor.style.display === 'none';
+      const enable = !spinning && entries.length >= 2 && !isEditorVisible();
       spinBtn.disabled = !enable;
       shuffleBtn.disabled = !enable;
-      editBtn.disabled = spinning || entryEditor.style.display !== 'none';
+      editBtn.disabled = spinning || isEditorVisible();
     }
 
     function updateEditor() {
