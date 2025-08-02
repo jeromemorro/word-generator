@@ -1,191 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Color Wheel Spinner</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f5f5f5;
       display: flex;
+      flex-direction: row;
       justify-content: center;
       align-items: flex-start;
-      padding: 30px;
-      gap: 40px;
+      gap: 2rem;
     }
-
-    #wheelCanvas {
-      width: 400px;
-      height: 400px;
+    .main-panel {
+      text-align: center;
+      position: relative;
     }
-
-    .controls {
+    canvas {
+      margin-bottom: 1rem;
+    }
+    .controls button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+    .entry-editor {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    #arrow {
-      width: 0; 
-      height: 0; 
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-right: 30px solid black;
-      position: absolute;
-      left: calc(50% + 200px); /* Right edge of the wheel */
-      top: calc(50% - 20px);
-      transform: translateY(-50%) rotate(180deg);
-    }
-
-    #editorBox {
-      display: none;
       flex-direction: column;
       align-items: flex-start;
-      gap: 10px;
-      min-width: 200px;
+      margin-top: 45px; /* aligns top of editor with top of wheel */
     }
-
-    #entryList {
-      width: 200px;
-      height: 300px;
+    .entry-editor textarea {
+      width: 300px;
+      height: 150px;
     }
-
-    #editorButtons {
+    #saveBtn, #cancelBtn {
+      display: none;
+      margin-top: 0.5rem;
+    }
+    #cancelBtn {
+      margin-left: 0.5rem;
+    }
+    .button-row {
       display: flex;
-      gap: 10px;
+      flex-direction: row;
     }
-
-    .button {
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #spinButton {
-      background-color: #50C878; /* Light emerald green */
-      color: white;
-      border: none;
+    #arrow {
+      position: absolute;
+      top: 200px;
+      left: 400px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 20px solid red;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
-  <div style="position: relative;">
-    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+  <div class="main-panel">
+    <h1>Color Wheel Spinner</h1>
     <div id="arrow"></div>
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
     <div class="controls">
-      <button id="spinButton" class="button" disabled>Spin</button>
-      <button id="randomButton" class="button" disabled>Randomize Entries</button>
-      <button id="editButton" class="button">Edit Entries</button>
+      <button id="spinBtn" disabled>Spin</button>
+      <button id="shuffleBtn">Ensure Randomness</button>
+      <button id="editBtn">Edit Entries</button>
     </div>
   </div>
 
-  <div id="editorBox">
-    <textarea id="entryList" placeholder="One entry per line..."></textarea>
-    <div id="editorButtons">
-      <button id="saveButton" class="button">Save</button>
-      <button id="cancelButton" class="button">Cancel</button>
+  <div class="entry-editor" id="editor" style="display: none">
+    <p>One entry per line:</p>
+    <textarea id="entryInput"></textarea>
+    <div class="button-row">
+      <button id="saveBtn">Save</button>
+      <button id="cancelBtn">Cancel</button>
     </div>
   </div>
 
   <script>
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
-    const spinButton = document.getElementById('spinButton');
-    const randomButton = document.getElementById('randomButton');
-    const editButton = document.getElementById('editButton');
-    const editorBox = document.getElementById('editorBox');
-    const entryList = document.getElementById('entryList');
-    const saveButton = document.getElementById('saveButton');
-    const cancelButton = document.getElementById('cancelButton');
+    const spinBtn = document.getElementById('spinBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const editor = document.getElementById('editor');
+    const entryInput = document.getElementById('entryInput');
 
-    let entries = ['Apple', 'Banana'];
-    let isSpinning = false;
+    let entries = ["Apple", "Banana", "Cherry"];
+    let colors = [];
     let angle = 0;
-    let spinSpeed = 0;
+    let spinning = false;
+
+    function generateColors(count) {
+      const result = [];
+      const hueStep = 360 / count;
+      for (let i = 0; i < count; i++) {
+        result.push(`hsl(${i * hueStep}, 70%, 60%)`);
+      }
+      return result;
+    }
 
     function drawWheel() {
-      const numEntries = entries.length;
-      const angleStep = (2 * Math.PI) / numEntries;
+      const count = entries.length;
+      const arc = (2 * Math.PI) / count;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const radius = canvas.width / 2;
 
-      for (let i = 0; i < numEntries; i++) {
-        const start = angle + i * angleStep;
-        const end = start + angleStep;
+      for (let i = 0; i < count; i++) {
+        const start = angle + i * arc;
+        const end = start + arc;
         ctx.beginPath();
-        ctx.moveTo(200, 200);
-        ctx.arc(200, 200, 200, start, end);
-        ctx.fillStyle = `hsl(${(i * 360) / numEntries}, 80%, 60%)`;
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius, start, end);
+        ctx.fillStyle = colors[i];
         ctx.fill();
         ctx.stroke();
 
+        const textAngle = start + arc / 2;
         ctx.save();
-        ctx.translate(200, 200);
-        ctx.rotate(start + angleStep / 2);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = 'black';
-        ctx.font = '16px sans-serif';
-        ctx.fillText(entries[i], 180, 5);
+        ctx.translate(radius, radius);
+        ctx.rotate(textAngle);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#000";
+        ctx.font = "16px sans-serif";
+        ctx.fillText(entries[i], radius - 10, 5);
         ctx.restore();
       }
     }
 
-    function updateButtons() {
-      const canSpin = entries.length >= 2 && !editorBox.style.display.includes('block');
-      spinButton.disabled = !canSpin || isSpinning;
-      randomButton.disabled = !canSpin || isSpinning;
-      editButton.disabled = isSpinning;
-    }
-
     function spinWheel() {
-      isSpinning = true;
-      updateButtons();
-      let duration = 0;
-      spinSpeed = Math.random() * 0.2 + 0.3; // Initial speed
-      const spinInterval = setInterval(() => {
-        duration += 50;
-        angle += spinSpeed;
-        if (duration >= 2000) {  // Start slowing after 2s
-          spinSpeed *= 0.97;
+      if (spinning || entries.length < 2) return;
+      spinning = true;
+      updateUI();
+      let startTime = null;
+      let duration = 5000;
+
+      function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let elapsed = timestamp - startTime;
+
+        if (elapsed < 3000) {
+          angle += 0.3;
+        } else if (elapsed < duration) {
+          angle += 0.3 * (1 - (elapsed - 3000) / 2000);
         }
+
         drawWheel();
-        if (spinSpeed < 0.002) {
-          clearInterval(spinInterval);
-          isSpinning = false;
-          updateButtons();
+
+        if (elapsed < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          spinning = false;
+          updateUI();
         }
-      }, 50);
+      }
+
+      requestAnimationFrame(animate);
     }
 
-    spinButton.addEventListener('click', spinWheel);
+    function updateUI() {
+      const enable = !spinning && entries.length >= 2 && editor.style.display === 'none';
+      spinBtn.disabled = !enable;
+      shuffleBtn.disabled = !enable;
+      editBtn.disabled = spinning || editor.style.display !== 'none';
+    }
 
-    randomButton.addEventListener('click', () => {
+    function enterEditMode() {
+      editor.style.display = 'flex';
+      saveBtn.style.display = 'inline-block';
+      cancelBtn.style.display = 'inline-block';
+      entryInput.value = entries.join('\n');
+      spinBtn.disabled = true;
+      shuffleBtn.disabled = true;
+      editBtn.disabled = true;
+    }
+
+    function exitEditMode() {
+      editor.style.display = 'none';
+      saveBtn.style.display = 'none';
+      cancelBtn.style.display = 'none';
+      updateUI();
+    }
+
+    function saveChanges() {
+      const lines = entryInput.value.split(/\n+/).map(x => x.trim()).filter(x => x);
+      entries = [...new Set(lines)];
+      colors = generateColors(entries.length);
+      drawWheel();
+      exitEditMode();
+    }
+
+    function shuffleEntries() {
       for (let i = entries.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [entries[i], entries[j]] = [entries[j], entries[i]];
       }
+      colors = generateColors(entries.length);
       drawWheel();
-    });
+    }
 
-    editButton.addEventListener('click', () => {
-      editorBox.style.display = 'flex';
-      entryList.value = entries.join('\n');
-      updateButtons();
+    spinBtn.addEventListener('click', spinWheel);
+    shuffleBtn.addEventListener('click', () => {
+      shuffleEntries();
+      updateUI();
     });
+    editBtn.addEventListener('click', enterEditMode);
+    saveBtn.addEventListener('click', saveChanges);
+    cancelBtn.addEventListener('click', exitEditMode);
 
-    saveButton.addEventListener('click', () => {
-      entries = entryList.value.split('\n').map(e => e.trim()).filter(e => e);
-      editorBox.style.display = 'none';
-      drawWheel();
-      updateButtons();
-    });
-
-    cancelButton.addEventListener('click', () => {
-      editorBox.style.display = 'none';
-      updateButtons();
-    });
-
+    colors = generateColors(entries.length);
     drawWheel();
-    updateButtons();
+    updateUI();
   </script>
 </body>
 </html>
