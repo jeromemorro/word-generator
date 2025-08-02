@@ -27,6 +27,21 @@
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
+      /* Add a smooth background color transition */
+      transition: background-color 0.3s ease;
+    }
+    /* Spin button enabled style */
+    #spinBtn:enabled {
+      background-color: #50c878; /* light emerald green */
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    /* Spin button disabled uses default disabled styles */
+    #spinBtn:disabled {
+      background-color: initial;
+      color: initial;
+      cursor: default;
     }
     .entry-editor {
       display: flex;
