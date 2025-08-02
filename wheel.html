@@ -157,7 +157,7 @@
       spinning = true;
       updateUI();
       let startTime = null;
-      let duration = 5000;
+      let duration = 6000;  // <-- Changed from 5000 to 6000
 
       function animate(timestamp) {
         if (!startTime) startTime = timestamp;
@@ -166,7 +166,7 @@
         if (elapsed < 2000) {
           angle += 0.3;
         } else if (elapsed < duration) {
-          angle += 0.3 * (1 - (elapsed - 2000) / 3000);
+          angle += 0.3 * (1 - (elapsed - 2000) / 4000);  // adjusted deceleration for 4 seconds
         }
 
         drawWheel();
