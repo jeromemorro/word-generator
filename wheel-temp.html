@@ -229,6 +229,7 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
+  let lastArrowLabelText = "";
 
   editTitleBtn.onclick = () => {
     titleInput.value = wheelTitle.textContent;
@@ -432,10 +433,16 @@
   
   function updateArrowLabel(text = "") {
     arrowLabel.textContent = text;
+    if (text) {
+      lastArrowLabelText = text;
+      arrowLabel.style.visibility = "visible";
+    } else {
+      arrowLabel.style.visibility = "hidden";
+    }
   }
   
   editBtn.onclick = () => {
-    updateArrowLabel(); // Clear label on shuffle
+    arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
     tempEntries = JSON.parse(JSON.stringify(entries));
     updateEditor();
     showEditor(true);
@@ -445,12 +452,14 @@
     entries = tempEntries.filter(e => e.name.trim() !== "");
     drawWheel();
     showEditor(false);
+    updateArrowLabel(); // Clear the label text completely
     updateUI();
   };
 
   cancelBtn.onclick = () => {
     tempEntries = [];
     showEditor(false);
+    updateArrowLabel(lastArrowLabelText); // Restore the previous label text
     updateUI();
   };
 
