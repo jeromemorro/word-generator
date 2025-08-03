@@ -8,7 +8,7 @@
     body {
       font-family: sans-serif;
       margin: 0;
-      padding: 5rem 2rem 2rem 2rem; /* Top padding increased for fixed title */
+      padding: 5rem 2rem 2rem 2rem;
       background: #f5f5f5;
       overflow-x: auto;
       overflow-y: hidden;
@@ -82,9 +82,9 @@
     }
     #arrow {
       position: absolute;
-      top: 50%;
-      left: 100%;
-      transform: translateY(-50%) rotate(180deg);
+      top: 200px;
+      left: 400px;
+      transform: translate(-50%, -50%) rotate(180deg);
       width: 0;
       height: 0;
       border-top: 14px solid transparent;
@@ -130,6 +130,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 5px;
+      padding: 2px;
     }
     .entryRow input[type="text"] {
       flex-grow: 1;
@@ -215,7 +216,10 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
-
+  
+  // DRAG-AND-DROP REORDERING USING NATIVE API
+  let draggedItem = null;
+  
   editTitleBtn.onclick = () => {
     titleInput.value = wheelTitle.textContent;
     titleInput.style.width = (titleInput.value.length + 1) + 'ch'; // Dynamically size width
@@ -420,6 +424,38 @@
     drawWheel();
     updateUI();
   };
+
+  entryList.addEventListener('dragstart', function (e) {
+    if (e.target.classList.contains('entryRow')) {
+      draggedItem = e.target;
+      e.dataTransfer.effectAllowed = 'move';
+    }
+  });
+
+  entryList.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    const target = e.target.closest('.entryRow');
+    if (target && target !== draggedItem) {
+      const bounding = target.getBoundingClientRect();
+      const offset = e.clientY - bounding.top;
+      const middle = bounding.height / 2;
+      if (offset > middle) {
+        target.after(draggedItem);
+      } else {
+        target.before(draggedItem);
+      }
+    }
+  });
+
+  entryList.addEventListener('drop', function () {
+      const newOrder = Array.from(entryList.querySelectorAll('.entryRow input[type="text"]')).map(input => {
+      const name = input.value.trim();
+      const colorInput = input.parentElement.querySelector('input[type="color"]');
+      const color = colorInput.value;
+      return { name, color };
+    });
+    tempEntries = newOrder;
+  });
 
   spinBtn.onclick = spinWheel;
   drawWheel();
