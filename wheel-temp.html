@@ -636,7 +636,7 @@
         for (let line of lines) {
           const [rawName, rawColor] = line.split(",");
           const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
-          const color = rawColor?.trim();
+          const color = rawColor?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
           if (name && /^#[0-9a-f]{6}$/i.test(color)) {
             tempEntries.push({ name, color });
           }
