@@ -547,7 +547,7 @@
       const lines = event.target.result.split(/\r?\n/);
       for (let line of lines) {
         const [rawName, rawColor] = line.split(",");
-        const name = rawName?.trim();
+        const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
         const color = rawColor?.trim();
         if (name && /^#[0-9a-f]{6}$/i.test(color)) {
           tempEntries.push({ name, color });
