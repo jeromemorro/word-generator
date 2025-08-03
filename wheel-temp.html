@@ -231,10 +231,12 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
+  let originalTitle = wheelTitle.textContent;
   let lastArrowLabelText = "";
 
   editTitleBtn.onclick = () => {
-    titleInput.value = wheelTitle.textContent;
+    originalTitle = wheelTitle.textContent; // Save current title before editing
+    titleInput.value = originalTitle;
     titleInput.style.width = (titleInput.value.length + 1) + 'ch';
     wheelTitle.style.display = "none";
     editTitleBtn.style.display = "none";
@@ -248,6 +250,12 @@
       if (newTitle) {
         wheelTitle.textContent = newTitle;
       }
+      titleInput.style.display = "none";
+      wheelTitle.style.display = "inline";
+      editTitleBtn.style.display = "inline";
+    } else if (e.key === "Escape") {
+      // Restore the original title and cancel editing
+      titleInput.value = originalTitle;
       titleInput.style.display = "none";
       wheelTitle.style.display = "inline";
       editTitleBtn.style.display = "inline";
