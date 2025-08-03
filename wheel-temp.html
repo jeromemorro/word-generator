@@ -168,7 +168,23 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
+  
+  function getContrastColor(hexColor) {
+    // Remove # if present
+    hexColor = hexColor.replace("#", "");
 
+    // Convert to RGB
+    const r = parseInt(hexColor.substring(0, 2), 16);
+    const g = parseInt(hexColor.substring(2, 4), 16);
+    const b = parseInt(hexColor.substring(4, 6), 16);
+
+    // Calculate luminance
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // Return white for dark backgrounds, black for light ones
+    return brightness < 128 ? "#fff" : "#000";
+  }
+  
   function drawWheel() {
     const count = entries.length;
     const arc = (2 * Math.PI) / count;
@@ -190,7 +206,7 @@
       ctx.translate(radius, radius);
       ctx.rotate(textAngle);
       ctx.textAlign = "right";
-      ctx.fillStyle = "#000";
+      ctx.fillStyle = getContrastColor(entries[i].color);
       ctx.font = "16px sans-serif";
       ctx.fillText(entries[i].name, radius - 10, 5);
       ctx.restore();
