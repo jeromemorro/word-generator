@@ -218,6 +218,7 @@
 
   editTitleBtn.onclick = () => {
     titleInput.value = wheelTitle.textContent;
+    titleInput.style.width = (titleInput.value.length + 1) + 'ch'; // Dynamically size width
     wheelTitle.style.display = "none";
     editTitleBtn.style.display = "none";
     titleInput.style.display = "inline";
