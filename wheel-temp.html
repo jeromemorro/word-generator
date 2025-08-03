@@ -481,6 +481,10 @@
   }
 
   function exportEntries(source) {
+    const defaultName = "entries.csv";
+    const fileName = prompt("Enter a file name:", defaultName);
+    if (!fileName) return; // User cancelled the prompt
+
     const csvContent = source
       .map(entry => `"${entry.name.replace(/"/g, '""')}",${entry.color}`)
       .join("\n");
@@ -490,7 +494,7 @@
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "entries.csv";
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -498,6 +502,7 @@
 
     alert("Export complete.");
   }
+
 
   function showCustomConfirm() {
     return new Promise((resolve) => {
