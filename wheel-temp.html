@@ -607,7 +607,9 @@
   spinBtn.onclick = spinWheel;
   
   document.addEventListener("DOMContentLoaded", () => {
+    entries = entries.filter(e => e.name.trim() !== "");
     drawWheel();
+    updateArrowLabel();
     updateUI();
   });
 </script>
