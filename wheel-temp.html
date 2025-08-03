@@ -285,6 +285,9 @@
     };
     newDiv.appendChild(newInput);
     entryList.appendChild(newDiv);
+    
+    // ⬇Auto-focus the input every time it's added
+    newInput.focus();
   }
 
   function getRandomColor() {
