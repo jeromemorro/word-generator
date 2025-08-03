@@ -225,29 +225,8 @@
       <input type="file" id="importFileInput" accept=".csv" style="display:none;">
     </div>
   </div>
-
 <script>
-  const wheelTitle = document.getElementById("wheelTitle");
-  const titleInput = document.getElementById("titleInput");
-  const editTitleBtn = document.getElementById("editTitleBtn");
-  const canvas = document.getElementById('wheelCanvas');
-  const ctx = canvas.getContext('2d');
-  const spinBtn = document.getElementById('spinBtn');
-  const shuffleBtn = document.getElementById('shuffleBtn');
-  const editBtn = document.getElementById('editBtn');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const importBtn = document.getElementById("importBtn");
-  const exportBtn = document.getElementById("exportBtn");
-  const importFileInput = document.getElementById("importFileInput");  
-  const entryEditor = document.getElementById('entry-editor');
-  const entryList = document.getElementById('entryList');
-  const arrowLabel = document.getElementById('arrowLabel');
-  const exportModal = document.getElementById("exportModal");
-  const exportDraftBtn = document.getElementById("exportDraftBtn");
-  const exportSavedBtn = document.getElementById("exportSavedBtn");
-  const cancelExportBtn = document.getElementById("cancelExportBtn");
-  
+  // GLOBAL state variables (not DOM elements)
   let entries = [
     { name: "Entry #1", color: "#000000" },
     { name: "Entry #2", color: "#ffffff" }
@@ -255,36 +234,17 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
-  let originalTitle = wheelTitle.textContent;
+  let originalTitle = "";
   let lastArrowLabelText = "";
 
-  editTitleBtn.onclick = () => {
-    originalTitle = wheelTitle.textContent; // Save current title before editing
-    titleInput.value = originalTitle;
-    titleInput.style.width = (titleInput.value.length + 1) + 'ch';
-    wheelTitle.style.display = "none";
-    editTitleBtn.style.display = "none";
-    titleInput.style.display = "inline";
-    titleInput.focus();
-  };
+  // Declare DOM-related variables here as let so we can assign them in DOMContentLoaded
+  let wheelTitle, titleInput, editTitleBtn, canvas, ctx,
+      spinBtn, shuffleBtn, editBtn, saveBtn, cancelBtn,
+      importBtn, exportBtn, importFileInput,
+      entryEditor, entryList, arrowLabel,
+      exportModal, exportDraftBtn, exportSavedBtn, cancelExportBtn;
 
-  titleInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      const newTitle = titleInput.value.trim();
-      if (newTitle) {
-        wheelTitle.textContent = newTitle;
-      }
-      titleInput.style.display = "none";
-      wheelTitle.style.display = "inline";
-      editTitleBtn.style.display = "inline";
-    } else if (e.key === "Escape") {
-      // Restore the original title and cancel editing
-      titleInput.value = originalTitle;
-      titleInput.style.display = "none";
-      wheelTitle.style.display = "inline";
-      editTitleBtn.style.display = "inline";
-    }
-  });
+  // -- Functions that do NOT need DOM access immediately --
 
   function getContrastColor(hexColor) {
     hexColor = hexColor.replace("#", "");
@@ -465,7 +425,7 @@
       window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
     }
   }
-  
+
   function updateArrowLabel(text = "", fadeIn = false) {
     arrowLabel.className = ""; // Ensure no class-based styles interfere
     if (text) {
@@ -515,104 +475,170 @@
 
     alert("Export complete.");
   }
-  
-  editBtn.onclick = () => {
-    arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
-    tempEntries = JSON.parse(JSON.stringify(entries));
-    updateEditor();
-    showEditor(true);
-  };
 
-  saveBtn.onclick = () => {
-    entries = tempEntries.filter(e => e.name.trim() !== "");
-    drawWheel();
-    showEditor(false);
-    updateArrowLabel();        // Clear label
-    lastArrowLabelText = "";   // Clear saved value
-    updateUI();
-  };
-
-  cancelBtn.onclick = () => {
-    tempEntries = [];
-    showEditor(false);
-    updateArrowLabel(lastArrowLabelText); // Restore the previous label text
-    updateUI();
-  };
-  
-  importBtn.onclick = () => {
-    importFileInput.click();
-  };
-
-  importFileInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const lines = event.target.result.split(/\r?\n/);
-      for (let line of lines) {
-        const [rawName, rawColor] = line.split(",");
-        const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
-        const color = rawColor?.trim();
-        if (name && /^#[0-9a-f]{6}$/i.test(color)) {
-          tempEntries.push({ name, color });
-        }
-      }
-      updateEditor();
-    };
-    reader.readAsText(file);
-    importFileInput.value = ''; // reset input so the same file can be re-imported
-  };
-
-  exportBtn.onclick = () => {
-    const hasDraftEntries = tempEntries.length > 0;
-
-    if (!hasDraftEntries) {
-      const confirmExport = confirm("Export the saved entries used by the wheel?");
-      if (confirmExport) {
-        exportEntries(entries);
-      }
-      return;
-    }
-
-    exportModal.style.display = "flex"; // Show modal
-  };
-
-  // Modal button events
-  exportSavedBtn.onclick = () => {
-    exportModal.style.display = "none";
-    exportEntries(entries);
-  };
-
-  exportDraftBtn.onclick = () => {
-    exportModal.style.display = "none";
-    exportEntries(tempEntries);
-  };
-
-  cancelExportBtn.onclick = () => {
-    exportModal.style.display = "none";
-  };
-  
-  shuffleBtn.onclick = () => {
-    updateArrowLabel();        // Clear label
-    lastArrowLabelText = "";   // Clear saved value
-    for (let i = entries.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [entries[i], entries[j]] = [entries[j], entries[i]];
-    }
-    drawWheel();
-    updateUI();
-  };
-
-  spinBtn.onclick = spinWheel;
-  
+  // -- DOMContentLoaded to get all DOM elements and assign event handlers --
   document.addEventListener("DOMContentLoaded", () => {
+    // Get DOM elements now that DOM is loaded
+    wheelTitle = document.getElementById("wheelTitle");
+    titleInput = document.getElementById("titleInput");
+    editTitleBtn = document.getElementById("editTitleBtn");
+    canvas = document.getElementById('wheelCanvas');
+    ctx = canvas.getContext('2d');
+    spinBtn = document.getElementById('spinBtn');
+    shuffleBtn = document.getElementById('shuffleBtn');
+    editBtn = document.getElementById('editBtn');
+    saveBtn = document.getElementById('saveBtn');
+    cancelBtn = document.getElementById('cancelBtn');
+    importBtn = document.getElementById("importBtn");
+    exportBtn = document.getElementById("exportBtn");
+    importFileInput = document.getElementById("importFileInput");  
+    entryEditor = document.getElementById('entry-editor');
+    entryList = document.getElementById('entryList');
+    arrowLabel = document.getElementById('arrowLabel');
+    exportModal = document.getElementById("exportModal");
+    exportDraftBtn = document.getElementById("exportDraftBtn");
+    exportSavedBtn = document.getElementById("exportSavedBtn");
+    cancelExportBtn = document.getElementById("cancelExportBtn");
+
+    // Initialize originalTitle with current wheelTitle text content
+    originalTitle = wheelTitle.textContent;
+
+    // Assign event handlers that depend on DOM elements
+
+    editTitleBtn.onclick = () => {
+      originalTitle = wheelTitle.textContent; // Save current title before editing
+      titleInput.value = originalTitle;
+      titleInput.style.width = (titleInput.value.length + 1) + 'ch';
+      wheelTitle.style.display = "none";
+      editTitleBtn.style.display = "none";
+      titleInput.style.display = "inline";
+      titleInput.focus();
+    };
+
+    titleInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const newTitle = titleInput.value.trim();
+        if (newTitle) {
+          wheelTitle.textContent = newTitle;
+        }
+        titleInput.style.display = "none";
+        wheelTitle.style.display = "inline";
+        editTitleBtn.style.display = "inline";
+      } else if (e.key === "Escape") {
+        // Restore the original title and cancel editing
+        titleInput.value = originalTitle;
+        titleInput.style.display = "none";
+        wheelTitle.style.display = "inline";
+        editTitleBtn.style.display = "inline";
+      }
+    });
+
+    editBtn.onclick = () => {
+      arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
+      tempEntries = JSON.parse(JSON.stringify(entries));
+      updateEditor();
+      showEditor(true);
+    };
+
+    saveBtn.onclick = () => {
+      entries = tempEntries.filter(e => e.name.trim() !== "");
+      drawWheel();
+      showEditor(false);
+      updateArrowLabel();        // Clear label
+      lastArrowLabelText = "";   // Clear saved value
+      updateUI();
+    };
+
+    cancelBtn.onclick = () => {
+      tempEntries = [];
+      showEditor(false);
+      updateArrowLabel(lastArrowLabelText); // Restore the previous label text
+      updateUI();
+    };
+
+    importBtn.onclick = () => {
+      importFileInput.click();
+    };
+
+    importFileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const lines = event.target.result.split(/\r?\n/);
+        for (let line of lines) {
+          const [rawName, rawColor] = line.split(",");
+          const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
+          const color = rawColor?.trim();
+          if (name && /^#[0-9a-f]{6}$/i.test(color)) {
+            tempEntries.push({ name, color });
+          }
+        }
+        updateEditor();
+      };
+      reader.readAsText(file);
+      importFileInput.value = ''; // reset input so the same file can be re-imported
+    };
+
+    exportBtn.onclick = () => {
+      const hasDraftEntries = tempEntries.length > 0;
+
+      if (!hasDraftEntries) {
+        const confirmExport = confirm("Export the saved entries used by the wheel?");
+        if (confirmExport) {
+          exportEntries(entries);
+        }
+        return;
+      }
+
+      exportModal.style.display = "flex"; // Show modal
+    };
+
+    exportSavedBtn.onclick = () => {
+      exportModal.style.display = "none";
+      exportEntries(entries);
+    };
+
+    exportDraftBtn.onclick = () => {
+      exportModal.style.display = "none";
+      exportEntries(tempEntries);
+    };
+
+    cancelExportBtn.onclick = () => {
+      exportModal.style.display = "none";
+    };
+
+    shuffleBtn.onclick = () => {
+      updateArrowLabel();        // Clear label
+      lastArrowLabelText = "";   // Clear saved value
+      for (let i = entries.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [entries[i], entries[j]] = [entries[j], entries[i]];
+      }
+      drawWheel();
+      updateUI();
+    };
+
+    spinBtn.onclick = spinWheel;
+
+    // Final initialization
     entries = entries.filter(e => e.name.trim() !== "");
     drawWheel();
     updateArrowLabel();
     updateUI();
   });
 </script>
+  
+<!-- Export Modal -->
+<div id="exportModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width:250px;">
+    <p>Which entries do you want to export?</p>
+    <button id="exportDraftBtn">Export Draft</button>    
+    <button id="exportSavedBtn">Export Saved</button>
+    <button id="cancelExportBtn">Cancel</button>
+  </div>
+</div>  
 
 </body>
 </html>
