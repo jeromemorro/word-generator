@@ -95,16 +95,28 @@
       border-left: 20px solid red;
       z-index: -1;
     }
-    #arrowLabel {
+    #arrowLabel {      
       position: absolute;
       top: 50%;
       left: 107%;
+      opacity: 1;
+      visibility: visible;
+      transition: none;
       transform: translateY(-50%);
       white-space: nowrap;
       font-weight: bold;
       font-size: 16px;
       white-space: nowrap;
       color: #333;
+    }
+    #arrowLabel.fade-in {
+      opacity: 0;
+      visibility: visible;
+      transition: none;
+    }
+    #arrowLabel.fade-in.active {
+      transition: opacity 1s ease;
+      opacity: 1;
     }
     #entry-editor {
       display: none;
@@ -320,7 +332,11 @@
         // Determine the selected entry after spinning
         const index = entries.length - Math.floor((angle % (2 * Math.PI)) / (2 * Math.PI) * entries.length) - 1;
         const selected = entries[(index + entries.length) % entries.length];
-        updateArrowLabel(selected.name);
+        arrowLabel.textContent = selected.name;
+        lastArrowLabelText = selected.name;
+        arrowLabel.className = "fade-in";
+        void arrowLabel.offsetWidth; // force reflow
+        arrowLabel.classList.add("active");
 
         updateUI();
       }
@@ -432,12 +448,16 @@
   }
   
   function updateArrowLabel(text = "") {
-    arrowLabel.textContent = text;
+    arrowLabel.className = "";
     if (text) {
+      arrowLabel.textContent = text;
       lastArrowLabelText = text;
       arrowLabel.style.visibility = "visible";
+      arrowLabel.style.opacity = "1";
     } else {
+      arrowLabel.textContent = "";
       arrowLabel.style.visibility = "hidden";
+      arrowLabel.style.opacity = "0";
     }
   }
   
