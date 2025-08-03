@@ -59,7 +59,13 @@
       align-items: center;
       gap: 0.5rem;
       justify-content: center;
-    }    
+    }
+    .wheel-container {
+      position: relative;
+      display: inline-block;
+      width: 400px;
+      height: 400px;
+    }
     #spinBtn:enabled {
       background-color: #50c878;
       color: white;
@@ -166,22 +172,24 @@
       </h1>
     </div>
     <div id="container">
-        <div class="main-panel">
-          <div id="arrow"></div>
-          <canvas id="wheelCanvas" width="400" height="400"></canvas>
-          <div class="controls">
-            <button id="spinBtn" disabled>Spin Wheel</button>
-            <button id="shuffleBtn">Randomize Entries</button>
-            <button id="editBtn">Edit Entries</button>
-          </div>
-        </div>
-        <div id="entry-editor">
-          <div id="entryList"></div>
-          <div class="edit-controls">
-            <button id="saveBtn">Save</button>
-            <button id="cancelBtn">Cancel</button>
-          </div>
-        </div>
+    <div class="main-panel">
+      <div class="wheel-container">
+        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        <div id="arrow"></div>
+      </div>
+      <div class="controls">
+        <button id="spinBtn" disabled>Spin Wheel</button>
+        <button id="shuffleBtn">Randomize Entries</button>
+        <button id="editBtn">Edit Entries</button>
+      </div>
+    </div>
+    <div id="entry-editor">
+      <div id="entryList"></div>
+      <div class="edit-controls">
+        <button id="saveBtn">Save</button>
+        <button id="cancelBtn">Cancel</button>
+      </div>
+    </div>
   </div>
 <script>
   const wheelTitle = document.getElementById("wheelTitle");
