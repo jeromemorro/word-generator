@@ -285,6 +285,9 @@
     };
     newDiv.appendChild(newInput);
     entryList.appendChild(newDiv);
+
+    // Auto-focus the input every time it's added
+    newInput.focus();
   }
 
   function getRandomColor() {
@@ -307,8 +310,8 @@
     updateEditor();
     showEditor(true);
     setTimeout(() => {
-      const inputs = entryList.querySelectorAll("input[type='text']");
-      inputs[inputs.length - 1]?.focus();
+      const addInput = entryList.querySelector("input[placeholder='Add new entry']");
+      if (addInput) addInput.focus();
     }, 0);
   };
 
