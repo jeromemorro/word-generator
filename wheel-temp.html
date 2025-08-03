@@ -214,44 +214,34 @@
   }
 
   function spinWheel() {
-    if (entries.length < 2 || isSpinning) return;
+    if (spinning || entries.length < 2) return;
+    spinning = true;
+    updateUI();
+    let startTime = null;
+    let duration = 6000;
 
-    isSpinning = true;
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      let elapsed = timestamp - startTime;
 
-    // Disable buttons during spin
-    spinBtn.disabled = true;
-    shuffleBtn.disabled = true;
-    editBtn.disabled = true;
+      if (elapsed < 2000) {
+        angle += 0.3;
+      } else if (elapsed < duration) {
+        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
+      }
 
-    const segmentAngle = 360 / entries.length;
+      drawWheel();
 
-    // Randomly select a segment and offset slightly within it
-    const selectedIndex = Math.floor(Math.random() * entries.length);
-    const randomOffset = Math.random() * segmentAngle;
-    const targetAngle = (selectedIndex * segmentAngle) + randomOffset;
+      if (elapsed < duration) {
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        updateUI();
+      }
+    }
 
-    // Add multiple full spins before landing
-    const fullRotations = 5 * 360;
-    const finalAngle = fullRotations + (360 - targetAngle);
-
-    // Animate spin
-    wheel.style.transition = 'transform 4s ease-out';
-    wheel.style.transform = `rotate(${finalAngle}deg)`;
-
-    currentAngle = finalAngle;
-
-    setTimeout(() => {
-      wheel.style.transition = 'none';
-      wheel.style.transform = `rotate(${finalAngle % 360}deg)`;
-      isSpinning = false;
-
-      // Re-enable buttons
-      spinBtn.disabled = entries.length < 2;
-      shuffleBtn.disabled = false;
-      editBtn.disabled = false;
-    }, 4000);
+    requestAnimationFrame(animate);
   }
-
 
   function isEditorVisible() {
     return window.getComputedStyle(entryEditor).display !== "none";
