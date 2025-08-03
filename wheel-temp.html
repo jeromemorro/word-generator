@@ -217,8 +217,13 @@
     if (spinning || entries.length < 2) return;
     spinning = true;
     updateUI();
+
     let startTime = null;
     let duration = 6000;
+
+    // Add randomness to the initial angle
+    const randomStartOffset = Math.random() * 2 * Math.PI;
+    angle += randomStartOffset;
 
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
@@ -242,6 +247,7 @@
 
     requestAnimationFrame(animate);
   }
+
 
   function isEditorVisible() {
     return window.getComputedStyle(entryEditor).display !== "none";
