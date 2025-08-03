@@ -245,7 +245,8 @@
       spinBtn, shuffleBtn, editBtn, saveBtn, cancelBtn,
       importBtn, exportBtn, importFileInput,
       entryEditor, entryList, arrowLabel,
-      exportModal, exportDraftBtn, exportSavedBtn, cancelExportBtn;
+      exportModal, exportDraftBtn, exportSavedBtn, cancelExportBtn,
+      confirmModal, confirmMessage, confirmOkBtn, confirmCancelBtn;
 
   // -- Functions that do NOT need DOM access immediately --
 
@@ -498,6 +499,32 @@
     alert("Export complete.");
   }
 
+  function showCustomConfirm(message) {
+    return new Promise((resolve) => {
+      confirmMessage.textContent = message;
+      confirmModal.style.display = "flex";
+
+      function cleanup() {
+        confirmOkBtn.removeEventListener("click", onOk);
+        confirmCancelBtn.removeEventListener("click", onCancel);
+        confirmModal.style.display = "none";
+      }
+
+      function onOk() {
+        cleanup();
+        resolve(true);
+      }
+
+      function onCancel() {
+        cleanup();
+        resolve(false);
+      }
+
+      confirmOkBtn.addEventListener("click", onOk);
+      confirmCancelBtn.addEventListener("click", onCancel);
+    });
+  }
+
   // -- DOMContentLoaded to get all DOM elements and assign event handlers --
   document.addEventListener("DOMContentLoaded", () => {
     // Get DOM elements now that DOM is loaded
@@ -521,6 +548,10 @@
     exportDraftBtn = document.getElementById("exportDraftBtn");
     exportSavedBtn = document.getElementById("exportSavedBtn");
     cancelExportBtn = document.getElementById("cancelExportBtn");
+    confirmModal = document.getElementById("confirmModal");
+    confirmMessage = document.getElementById("confirmMessage");
+    confirmOkBtn = document.getElementById("confirmOkBtn");
+    confirmCancelBtn = document.getElementById("confirmCancelBtn");
 
     // Initialize originalTitle with current wheelTitle text content
     originalTitle = wheelTitle.textContent;
@@ -616,10 +647,11 @@
     exportBtn.onclick = () => {
       // Use isEditingDraft flag instead of tempEntries length:
       if (!isEditingDraft) {
-        const confirmExport = confirm("Export the saved entries used by the wheel?");
-        if (confirmExport) {
-          exportEntries(entries);
-        }
+        showCustomConfirm("Export the saved entries used by the wheel?").then((confirmed) => {
+          if (confirmed) {
+            exportEntries(entries);
+          }
+        });
         return;
       }
 
@@ -670,6 +702,14 @@
     <button id="cancelExportBtn">Cancel</button>
   </div>
 </div>  
-
+  
+<!-- Confirm Modal -->
+<div id="confirmModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width:250px;">
+    <p id="confirmMessage" style="margin-bottom:1rem;">Do you want to export the saved entries?</p>
+    <button id="confirmOkBtn" style="margin-right:10px;">OK</button>
+    <button id="confirmCancelBtn">Cancel</button>
+  </div>
+</div>
 </body>
 </html>
