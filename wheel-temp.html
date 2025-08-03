@@ -452,7 +452,8 @@
     entries = tempEntries.filter(e => e.name.trim() !== "");
     drawWheel();
     showEditor(false);
-    updateArrowLabel(); // Clear the label text completely
+    updateArrowLabel();        // Clear label
+    lastArrowLabelText = "";   // Clear saved value
     updateUI();
   };
 
@@ -464,7 +465,8 @@
   };
 
   shuffleBtn.onclick = () => {
-    updateArrowLabel(); // Clear label on shuffle
+    updateArrowLabel();        // Clear label
+    lastArrowLabelText = "";   // Clear saved value
     for (let i = entries.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [entries[i], entries[j]] = [entries[j], entries[i]];
