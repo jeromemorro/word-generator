@@ -499,9 +499,8 @@
     alert("Export complete.");
   }
 
-  function showCustomConfirm(message) {
+  function showCustomConfirm() {
     return new Promise((resolve) => {
-      //confirmMessage.textContent = message;
       confirmModal.style.display = "flex";
 
       function cleanup() {
@@ -647,7 +646,7 @@
     exportBtn.onclick = () => {
       // Use isEditingDraft flag instead of tempEntries length:
       if (!isEditingDraft) {
-        showCustomConfirm("Export the saved entries used by the wheel?").then((confirmed) => {
+        showCustomConfirm().then((confirmed) => {
           if (confirmed) {
             exportEntries(entries);
           }
@@ -706,7 +705,7 @@
 <!-- Confirm Modal -->
 <div id="confirmModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
   <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width:250px;">
-    <p id="confirmMessage" style="margin-bottom:1rem;">Do you want to export the saved entries?</p>
+    <p>Do you want to export the saved entries?</p>
     <button id="confirmOkBtn" style="margin-right:10px;">OK</button>
     <button id="confirmCancelBtn">Cancel</button>
   </div>
