@@ -134,6 +134,14 @@
       color: #333;
       border: none;
     }
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      cursor: pointer;
+      margin: 0 5px;
+      border-radius: 4px;
+    }    
   </style>
 </head>
 <body>
@@ -158,195 +166,185 @@
       </div>
     </div>
   </div>
-
 <script>
-  const canvas = document.getElementById('wheelCanvas');
-  const ctx = canvas.getContext('2d');
-  const spinBtn = document.getElementById('spinBtn');
-  const shuffleBtn = document.getElementById('shuffleBtn');
-  const editBtn = document.getElementById('editBtn');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const entryEditor = document.getElementById('entry-editor');
-  const entryList = document.getElementById('entryList');
+  const canvas = document.getElementById("wheel");
+  const ctx = canvas.getContext("2d");
+  const spinBtn = document.getElementById("spinBtn");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const editBtn = document.getElementById("editBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const editor = document.getElementById("editor");
+  const entryList = document.getElementById("entryList");
+  const addEntryBtn = document.getElementById("addEntryBtn");
 
-  let entries = ["Apple", "Banana", "Cherry"];
-  let tempEntries = []; // working copy for the editor
-  let colors = [];
+  let entries = [
+    { text: "Apple", color: null },
+    { text: "Banana", color: null },
+    { text: "Cherry", color: null }
+  ];
+
+  let currentEntries = JSON.parse(JSON.stringify(entries));
   let angle = 0;
   let spinning = false;
+  let spinTimeout;
+  let spinAngleStart = 0;
+  let spinTime = 0;
+  let spinTimeTotal = 0;
 
   function generateColors(count) {
-    const result = [];
-    const hueStep = 360 / count;
+    const colors = [];
     for (let i = 0; i < count; i++) {
-      result.push(`hsl(${i * hueStep}, 70%, 60%)`);
+      const hue = (i * 360) / count;
+      colors.push(`hsl(${hue}, 100%, 65%)`);
     }
-    return result;
+    return colors;
   }
 
   function drawWheel() {
-    const count = entries.length;
-    const arc = (2 * Math.PI) / count;
+    const numEntries = entries.length;
+    const arcSize = (2 * Math.PI) / numEntries;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const radius = canvas.width / 2;
+    ctx.font = "16px sans-serif";
 
-    for (let i = 0; i < count; i++) {
-      const start = angle + i * arc;
-      const end = start + arc;
+    entries.forEach((entry, i) => {
+      const angleStart = angle + i * arcSize;
+      const angleEnd = angleStart + arcSize;
       ctx.beginPath();
-      ctx.moveTo(radius, radius);
-      ctx.arc(radius, radius, radius, start, end);
-      ctx.fillStyle = colors[i];
+      ctx.moveTo(canvas.width / 2, canvas.height / 2);
+      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, angleStart, angleEnd);
+      ctx.fillStyle = entry.color || generateColors(entries.length)[i];
       ctx.fill();
-      ctx.stroke();
-
-      const textAngle = start + arc / 2;
       ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(textAngle);
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(angleStart + arcSize / 2);
       ctx.textAlign = "right";
       ctx.fillStyle = "#000";
-      ctx.font = "16px sans-serif";
-      ctx.fillText(entries[i], radius - 10, 5);
+      ctx.fillText(entry.text, canvas.width / 2 - 10, 10);
       ctx.restore();
+    });
+  }
+
+  function rotateWheel() {
+    angle += spinAngleStart * Math.PI / 180;
+    drawWheel();
+
+    spinTime += 30;
+    if (spinTime >= spinTimeTotal) {
+      stopRotateWheel();
+      return;
     }
+
+    const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+    spinAngleStart = spinAngle;
+    spinTimeout = setTimeout(rotateWheel, 30);
+  }
+
+  function easeOut(t, b, c, d) {
+    return c * ((t = t / d - 1) * t * t + 1) + b;
+  }
+
+  function stopRotateWheel() {
+    clearTimeout(spinTimeout);
+    spinning = false;
+    updateUI();
   }
 
   function spinWheel() {
     if (spinning || entries.length < 2) return;
     spinning = true;
     updateUI();
-
-    let startTime = null;
-    let duration = 6000;
-
-    // Add randomness to the initial angle
-    const randomStartOffset = Math.random() * 2 * Math.PI;
-    angle += randomStartOffset;
-
-    function animate(timestamp) {
-      if (!startTime) startTime = timestamp;
-      let elapsed = timestamp - startTime;
-
-      if (elapsed < 2000) {
-        angle += 0.3;
-      } else if (elapsed < duration) {
-        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
-      }
-
-      drawWheel();
-
-      if (elapsed < duration) {
-        requestAnimationFrame(animate);
-      } else {
-        spinning = false;
-        updateUI();
-      }
-    }
-
-    requestAnimationFrame(animate);
+    spinAngleStart = Math.random() * 10 + 10;
+    spinTime = 0;
+    spinTimeTotal = Math.random() * 3000 + 2000;
+    rotateWheel();
   }
 
-
-  function isEditorVisible() {
-    return window.getComputedStyle(entryEditor).display !== "none";
-  }
-
-  function updateUI() {
-    const enable = !spinning && entries.length >= 2 && !isEditorVisible();
-    spinBtn.disabled = !enable;
-    shuffleBtn.disabled = !enable;
-    editBtn.disabled = spinning || isEditorVisible();
-  }
-
-  function updateEditor() {
-    entryList.innerHTML = "";
-    tempEntries.forEach((entry, i) => {
-      const div = document.createElement("div");
-      div.className = "entryRow";
-
-      const input = document.createElement("input");
-      input.value = entry;
-      input.oninput = (e) => {
-        tempEntries[i] = e.target.value;
-      };
-
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "X";
-      delBtn.onclick = () => {
-        tempEntries.splice(i, 1);
-        updateEditor();
-      };
-
-      div.appendChild(input);
-      div.appendChild(delBtn);
-      entryList.appendChild(div);
-    });
-
-    // New entry input box
-    const newDiv = document.createElement("div");
-    const newInput = document.createElement("input");
-    newInput.placeholder = "Add new entry";
-    newInput.onkeydown = (e) => {
-      if (e.key === "Enter" && newInput.value.trim()) {
-        tempEntries.push(newInput.value.trim());
-        updateEditor();
-      }
-    };
-    newDiv.appendChild(newInput);
-    entryList.appendChild(newDiv);
-  }
-
-  function showEditor(show) {
-    entryEditor.style.display = show ? "flex" : "none";
-    updateUI();
-
-    if(show) {
-      // Scroll horizontally to show the editor
-      window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
-    }
-  }
-
-  editBtn.onclick = () => {
-    tempEntries = [...entries]; // make a copy to edit
-    updateEditor();
-    showEditor(true);
-
-    setTimeout(() => {
-      const inputs = entryList.querySelectorAll("input");
-      inputs[inputs.length - 1]?.focus();
-    }, 0);
-  };
-
-  saveBtn.onclick = () => {
-    entries = tempEntries.filter(e => e.trim() !== "");
-    colors = generateColors(entries.length);
-    drawWheel();
-    showEditor(false);
-    updateUI();
-  };
-
-  cancelBtn.onclick = () => {
-    tempEntries = []; // discard changes
-    showEditor(false);
-    updateUI();
-  };
-
-  shuffleBtn.onclick = () => {
+  function shuffleEntries() {
     for (let i = entries.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [entries[i], entries[j]] = [entries[j], entries[i]];
     }
-    colors = generateColors(entries.length);
+    drawWheel();
+  }
+
+  function updateUI() {
+    const shouldDisable = spinning;
+    spinBtn.disabled = shouldDisable || entries.length < 2;
+    shuffleBtn.disabled = shouldDisable;
+    editBtn.disabled = shouldDisable;
+  }
+
+  function createEntryElement(entry, index) {
+    const li = document.createElement("li");
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = entry.text;
+    input.addEventListener("input", () => {
+      currentEntries[index].text = input.value;
+    });
+
+    const colorBtn = document.createElement("input");
+    colorBtn.type = "color";
+    colorBtn.value = entry.color || "#cccccc";
+    colorBtn.style.margin = "0 8px";
+    colorBtn.addEventListener("input", () => {
+      currentEntries[index].color = colorBtn.value;
+    });
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "×";
+    deleteBtn.addEventListener("click", () => {
+      currentEntries.splice(index, 1);
+      renderEntryList();
+    });
+
+    li.appendChild(input);
+    li.appendChild(colorBtn);
+    li.appendChild(deleteBtn);
+    return li;
+  }
+
+  function renderEntryList() {
+    entryList.innerHTML = "";
+    currentEntries.forEach((entry, index) => {
+      entryList.appendChild(createEntryElement(entry, index));
+    });
+  }
+
+  editBtn.addEventListener("click", () => {
+    currentEntries = JSON.parse(JSON.stringify(entries));
+    editor.style.display = "block";
+    renderEntryList();
+    setTimeout(() => {
+      const firstInput = entryList.querySelector("input[type='text']");
+      if (firstInput) firstInput.focus();
+    }, 0);
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    editor.style.display = "none";
+  });
+
+  saveBtn.addEventListener("click", () => {
+    entries = currentEntries.filter(entry => entry.text.trim() !== "");
+    editor.style.display = "none";
     drawWheel();
     updateUI();
-  };
+  });
 
-  spinBtn.onclick = spinWheel;
+  addEntryBtn.addEventListener("click", () => {
+    currentEntries.push({ text: "", color: null });
+    renderEntryList();
+  });
 
-  // Initial setup
-  colors = generateColors(entries.length);
+  spinBtn.addEventListener("click", spinWheel);
+  shuffleBtn.addEventListener("click", () => {
+    shuffleEntries();
+    updateUI();
+  });
+
   drawWheel();
   updateUI();
 </script>
