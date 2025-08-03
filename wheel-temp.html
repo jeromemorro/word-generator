@@ -160,26 +160,30 @@
 <body>
   <div id="container">
     <div class="main-panel">
-    <h1 id="wheelTitleContainer">
-      <span id="wheelTitle">Color Wheel Spinner</span>
-      <span id="editTitleBtn" title="Click to edit title">✏️</span>
-      <input type="text" id="titleInput" style="display:none; font-size:1em;" />
-    </h1>
-    <div id="arrow"></div>
-      <canvas id="wheelCanvas" width="400" height="400"></canvas>
-      <div class="controls">
-        <button id="spinBtn" disabled>Spin Wheel</button>
-        <button id="shuffleBtn">Randomize Entries</button>
-        <button id="editBtn">Edit Entries</button>
-      </div>
+    <div id="titleWrapper">
+      <h1 id="wheelTitleContainer">
+        <span id="wheelTitle">Color Wheel Spinner</span>
+        <span id="editTitleBtn" title="Click to edit title">✏️</span>
+        <input type="text" id="titleInput" style="display:none; font-size:1em;" />
+      </h1>
     </div>
-    <div id="entry-editor">
-      <div id="entryList"></div>
-      <div class="edit-controls">
-        <button id="saveBtn">Save</button>
-        <button id="cancelBtn">Cancel</button>
-      </div>
-    </div>
+    <div id="container">
+        <div class="main-panel">
+          <div id="arrow"></div>
+          <canvas id="wheelCanvas" width="400" height="400"></canvas>
+          <div class="controls">
+            <button id="spinBtn" disabled>Spin Wheel</button>
+            <button id="shuffleBtn">Randomize Entries</button>
+            <button id="editBtn">Edit Entries</button>
+          </div>
+        </div>
+        <div id="entry-editor">
+          <div id="entryList"></div>
+          <div class="edit-controls">
+            <button id="saveBtn">Save</button>
+            <button id="cancelBtn">Cancel</button>
+          </div>
+        </div>
   </div>
 <script>
   const wheelTitle = document.getElementById("wheelTitle");
