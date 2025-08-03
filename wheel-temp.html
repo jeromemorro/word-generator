@@ -8,7 +8,7 @@
     body {
       font-family: sans-serif;
       margin: 0;
-      padding: 5rem 2rem 2rem 2rem; /* Top padding increased for fixed title */
+      padding: 5rem 2rem 2rem 2rem;
       background: #f5f5f5;
       overflow-x: auto;
       overflow-y: hidden;
@@ -21,10 +21,6 @@
       transform: translateX(-50%);
       z-index: 1000;
       background-color: transparent;
-      padding: 0;
-      border-radius: 0;
-      box-shadow: none;
-      width: auto;
       text-align: center;
     }
     #wheelTitleContainer {
@@ -37,7 +33,6 @@
       font-size: 0.5em;
       cursor: pointer;
       vertical-align: middle;
-      line-height: 1;
     }
     #titleInput {
       font-family: inherit;
@@ -50,7 +45,6 @@
     }
     .main-panel {
       text-align: center;
-      position: relative;
       flex: 0 0 auto;
     }
     canvas {
@@ -61,7 +55,6 @@
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
     }
     .wheel-container {
       position: relative;
@@ -108,12 +101,10 @@
       flex-direction: column;
       align-items: flex-start;
       flex: 0 0 320px;
-      vertical-align: top;
       background-color: white;
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 10px;
-      height: fit-content;
     }
     #entryList {
       width: 100%;
@@ -130,6 +121,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 5px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      background: #fefefe;
+    }
+    .entryRow.drag-over {
+      border-top: 2px solid #50c878;
     }
     .entryRow input[type="text"] {
       flex-grow: 1;
@@ -145,6 +144,7 @@
     .edit-controls {
       margin-top: 10px;
       text-align: right;
+      width: 100%;
     }
     .edit-controls button {
       margin: 0 5px;
@@ -193,6 +193,7 @@
       </div>
     </div>
   </div>
+
 <script>
   const wheelTitle = document.getElementById("wheelTitle");
   const titleInput = document.getElementById("titleInput");
@@ -218,7 +219,7 @@
 
   editTitleBtn.onclick = () => {
     titleInput.value = wheelTitle.textContent;
-    titleInput.style.width = (titleInput.value.length + 1) + 'ch'; // Dynamically size width
+    titleInput.style.width = (titleInput.value.length + 1) + 'ch';
     wheelTitle.style.display = "none";
     editTitleBtn.style.display = "none";
     titleInput.style.display = "inline";
@@ -236,23 +237,16 @@
       editTitleBtn.style.display = "inline";
     }
   });
-  
-  function getContrastColor(hexColor) {
-    // Remove # if present
-    hexColor = hexColor.replace("#", "");
 
-    // Convert to RGB
+  function getContrastColor(hexColor) {
+    hexColor = hexColor.replace("#", "");
     const r = parseInt(hexColor.substring(0, 2), 16);
     const g = parseInt(hexColor.substring(2, 4), 16);
     const b = parseInt(hexColor.substring(4, 6), 16);
-
-    // Calculate luminance
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-
-    // Return white for dark backgrounds, black for light ones
     return brightness < 128 ? "#fff" : "#000";
   }
-  
+
   function drawWheel() {
     const count = entries.length;
     const arc = (2 * Math.PI) / count;
@@ -327,23 +321,52 @@
 
   function updateEditor() {
     entryList.innerHTML = "";
+
     tempEntries.forEach((entry, i) => {
       const div = document.createElement("div");
       div.className = "entryRow";
+      div.setAttribute("draggable", "true");
+      div.dataset.index = i;
+
+      div.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", i);
+        div.style.opacity = "0.5";
+      });
+
+      div.addEventListener("dragend", () => {
+        div.style.opacity = "1";
+      });
+
+      div.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        div.classList.add("drag-over");
+      });
+
+      div.addEventListener("dragleave", () => {
+        div.classList.remove("drag-over");
+      });
+
+      div.addEventListener("drop", (e) => {
+        e.preventDefault();
+        div.classList.remove("drag-over");
+        const fromIndex = parseInt(e.dataTransfer.getData("text/plain"));
+        const toIndex = parseInt(div.dataset.index);
+        if (fromIndex !== toIndex) {
+          const [moved] = tempEntries.splice(fromIndex, 1);
+          tempEntries.splice(toIndex, 0, moved);
+          updateEditor();
+        }
+      });
 
       const input = document.createElement("input");
       input.type = "text";
       input.value = entry.name;
-      input.oninput = (e) => {
-        tempEntries[i].name = e.target.value;
-      };
+      input.oninput = (e) => tempEntries[i].name = e.target.value;
 
       const colorBtn = document.createElement("input");
       colorBtn.type = "color";
       colorBtn.value = entry.color;
-      colorBtn.oninput = (e) => {
-        tempEntries[i].color = e.target.value;
-      };
+      colorBtn.oninput = (e) => tempEntries[i].color = e.target.value;
 
       const delBtn = document.createElement("button");
       delBtn.textContent = "X";
@@ -369,8 +392,6 @@
     };
     newDiv.appendChild(newInput);
     entryList.appendChild(newDiv);
-
-    // Auto-focus the input every time it's added
     newInput.focus();
   }
 
@@ -378,7 +399,7 @@
     const r = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     const g = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     const b = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-    return #${r}${g}${b};
+    return `#${r}${g}${b}`;
   }
 
   function showEditor(show) {
@@ -393,10 +414,6 @@
     tempEntries = JSON.parse(JSON.stringify(entries));
     updateEditor();
     showEditor(true);
-    setTimeout(() => {
-      const addInput = entryList.querySelector("input[placeholder='Add new entry']");
-      if (addInput) addInput.focus();
-    }, 0);
   };
 
   saveBtn.onclick = () => {
