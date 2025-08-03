@@ -295,6 +295,7 @@
   function spinWheel() {
     if (spinning || entries.length < 2) return;
     spinning = true;
+    updateArrowLabel(); // Clear label on spin
     updateUI();
 
     let startTime = null;
@@ -318,7 +319,7 @@
         requestAnimationFrame(animate);
       } else {
         spinning = false;
-        
+
         // Determine the selected entry after spinning
         const index = entries.length - Math.floor((angle % (2 * Math.PI)) / (2 * Math.PI) * entries.length) - 1;
         const selected = entries[(index + entries.length) % entries.length];
