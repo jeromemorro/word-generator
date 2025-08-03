@@ -10,18 +10,27 @@
       margin: 0;
       padding: 2rem;
       background: #f5f5f5;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
+
+      /* Make body a block container that scrolls horizontally */
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap; /* prevent wrapping */
+    }
+    /* Wrap the main-panel and editor in a flex container so they are side by side */
+    #container {
+      display: inline-flex; /* inline-flex so container width is content width, allowing horizontal scroll */
       align-items: flex-start;
       gap: 2rem;
     }
     .main-panel {
       text-align: center;
       position: relative;
+      /* Fix width so it doesn't shrink */
+      flex: 0 0 auto;
     }
     canvas {
       margin-bottom: 1rem;
+      display: block;
     }
     .controls button {
       margin: 0.5rem;
@@ -69,15 +78,23 @@
       margin-top: 45px;
       flex-direction: column;
       align-items: flex-start;
-    }
-    #entryList {
-      width: 300px;
-      margin: 10px auto;
-      padding: 10px;
-      background-color: #ffffff;
+      flex: 0 0 320px; /* fixed width so it doesn't shrink */
+      vertical-align: top;
+      background-color: white;
       border: 1px solid #ccc;
       border-radius: 8px;
+      padding: 10px;
+      height: fit-content;
+    }
+    #entryList {
+      width: 100%;
+      margin: 10px 0;
+      padding: 0;
+      background-color: #ffffff;
+      border-radius: 4px;
       text-align: left;
+      overflow-y: auto;
+      max-height: 300px;
     }
     #entryList input {
       width: calc(100% - 30px);
@@ -99,6 +116,7 @@
     }
     .edit-controls {
       margin-top: 10px;
+      text-align: right;
     }
     .edit-controls button {
       margin: 0 5px;
@@ -119,25 +137,28 @@
   </style>
 </head>
 <body>
-  <div class="main-panel">
-    <h1>Color Wheel Spinner</h1>
-    <div id="arrow"></div>
-    <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-      <button id="spinBtn" disabled>Spin</button>
-      <button id="shuffleBtn">Randomize Entries</button>
-      <button id="editBtn">Edit Entries</button>
+  <div id="container">
+    <div class="main-panel">
+      <h1>Color Wheel Spinner</h1>
+      <div id="arrow"></div>
+      <canvas id="wheelCanvas" width="400" height="400"></canvas>
+      <div class="controls">
+        <button id="spinBtn" disabled>Spin</button>
+        <button id="shuffleBtn">Randomize Entries</button>
+        <button id="editBtn">Edit Entries</button>
+      </div>
+    </div>
+
+    <!-- New editor container -->
+    <div id="entry-editor">
+      <div id="entryList"></div>
+      <div class="edit-controls">
+        <button id="saveBtn">Save</button>
+        <button id="cancelBtn">Cancel</button>
+      </div>
     </div>
   </div>
 
-  <!-- New editor container -->
-  <div id="entry-editor">
-    <div id="entryList"></div>
-    <div class="edit-controls">
-      <button id="saveBtn">Save</button>
-      <button id="cancelBtn">Cancel</button>
-    </div>
-  </div>
 <script>
   const canvas = document.getElementById('wheelCanvas');
   const ctx = canvas.getContext('2d');
@@ -274,6 +295,11 @@
   function showEditor(show) {
     entryEditor.style.display = show ? "flex" : "none";
     updateUI();
+
+    if(show) {
+      // Scroll horizontally to show the editor
+      window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
+    }
   }
 
   editBtn.onclick = () => {
