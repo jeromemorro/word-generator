@@ -138,186 +138,185 @@
       <button id="cancelBtn">Cancel</button>
     </div>
   </div>
+<script>
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const spinBtn = document.getElementById('spinBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const entryEditor = document.getElementById('entry-editor');
+  const entryList = document.getElementById('entryList');
 
-  <script>
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const spinBtn = document.getElementById('spinBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const editBtn = document.getElementById('editBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const entryEditor = document.getElementById('entry-editor');
-    const entryList = document.getElementById('entryList');
+  let entries = ["Apple", "Banana", "Cherry"];
+  let tempEntries = []; // working copy for the editor
+  let colors = [];
+  let angle = 0;
+  let spinning = false;
 
-    let entries = ["Apple", "Banana", "Cherry"];
-    let colors = [];
-    let angle = 0;
-    let spinning = false;
-
-    function generateColors(count) {
-      const result = [];
-      const hueStep = 360 / count;
-      for (let i = 0; i < count; i++) {
-        result.push(`hsl(${i * hueStep}, 70%, 60%)`);
-      }
-      return result;
+  function generateColors(count) {
+    const result = [];
+    const hueStep = 360 / count;
+    for (let i = 0; i < count; i++) {
+      result.push(`hsl(${i * hueStep}, 70%, 60%)`);
     }
+    return result;
+  }
 
-    function drawWheel() {
-      const count = entries.length;
-      const arc = (2 * Math.PI) / count;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const radius = canvas.width / 2;
+  function drawWheel() {
+    const count = entries.length;
+    const arc = (2 * Math.PI) / count;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const radius = canvas.width / 2;
 
-      for (let i = 0; i < count; i++) {
-        const start = angle + i * arc;
-        const end = start + arc;
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.fillStyle = colors[i];
-        ctx.fill();
-        ctx.stroke();
+    for (let i = 0; i < count; i++) {
+      const start = angle + i * arc;
+      const end = start + arc;
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, start, end);
+      ctx.fillStyle = colors[i];
+      ctx.fill();
+      ctx.stroke();
 
-        const textAngle = start + arc / 2;
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(textAngle);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#000";
-        ctx.font = "16px sans-serif";
-        ctx.fillText(entries[i], radius - 10, 5);
-        ctx.restore();
-      }
+      const textAngle = start + arc / 2;
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(textAngle);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#000";
+      ctx.font = "16px sans-serif";
+      ctx.fillText(entries[i], radius - 10, 5);
+      ctx.restore();
     }
+  }
 
-    function spinWheel() {
-      if (spinning || entries.length < 2) return;
-      spinning = true;
-      updateUI();
-      let startTime = null;
-      let duration = 6000;
+  function spinWheel() {
+    if (spinning || entries.length < 2) return;
+    spinning = true;
+    updateUI();
+    let startTime = null;
+    let duration = 6000;
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        let elapsed = timestamp - startTime;
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      let elapsed = timestamp - startTime;
 
-        if (elapsed < 2000) {
-          angle += 0.3;
-        } else if (elapsed < duration) {
-          angle += 0.3 * (1 - (elapsed - 2000) / 4000);
-        }
-
-        drawWheel();
-
-        if (elapsed < duration) {
-          requestAnimationFrame(animate);
-        } else {
-          spinning = false;
-          updateUI();
-        }
+      if (elapsed < 2000) {
+        angle += 0.3;
+      } else if (elapsed < duration) {
+        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
       }
 
-      requestAnimationFrame(animate);
+      drawWheel();
+
+      if (elapsed < duration) {
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        updateUI();
+      }
     }
 
-    function isEditorVisible() {
-      return window.getComputedStyle(entryEditor).display !== "none";
-    }
-    
-    function updateUI() {
-      const enable = !spinning && entries.length >= 2 && !isEditorVisible();
-      spinBtn.disabled = !enable;
-      shuffleBtn.disabled = !enable;
-      editBtn.disabled = spinning || isEditorVisible();
-    }
+    requestAnimationFrame(animate);
+  }
 
-    function updateEditor() {
-      entryList.innerHTML = "";
-      entries.forEach((entry, i) => {
-        const div = document.createElement("div");
-        div.className = "entryRow";
+  function isEditorVisible() {
+    return window.getComputedStyle(entryEditor).display !== "none";
+  }
 
-        const input = document.createElement("input");
-        input.value = entry;
+  function updateUI() {
+    const enable = !spinning && entries.length >= 2 && !isEditorVisible();
+    spinBtn.disabled = !enable;
+    shuffleBtn.disabled = !enable;
+    editBtn.disabled = spinning || isEditorVisible();
+  }
 
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "X";
-        delBtn.onclick = () => {
-          entries.splice(i, 1);
-          updateEditor();
-        };
+  function updateEditor() {
+    entryList.innerHTML = "";
+    tempEntries.forEach((entry, i) => {
+      const div = document.createElement("div");
+      div.className = "entryRow";
 
-        div.appendChild(input);
-        div.appendChild(delBtn);
-        entryList.appendChild(div);
-      });
-
-      // New entry input box
-      const newDiv = document.createElement("div");
-      const newInput = document.createElement("input");
-      newInput.placeholder = "Add new entry";
-      newInput.onkeydown = (e) => {
-        if (e.key === "Enter" && newInput.value.trim()) {
-          entries.push(newInput.value.trim());
-          updateEditor();
-        }
+      const input = document.createElement("input");
+      input.value = entry;
+      input.oninput = (e) => {
+        tempEntries[i] = e.target.value;
       };
-      newDiv.appendChild(newInput);
-      entryList.appendChild(newDiv);
-    }
 
-    function showEditor(show) {
-      entryEditor.style.display = show ? "flex" : "none";
-      updateUI();
-    }
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "X";
+      delBtn.onclick = () => {
+        tempEntries.splice(i, 1);
+        updateEditor();
+      };
 
-    function saveEntries() {
-      // Save all non-empty inputs except the last one (new entry box)
+      div.appendChild(input);
+      div.appendChild(delBtn);
+      entryList.appendChild(div);
+    });
+
+    // New entry input box
+    const newDiv = document.createElement("div");
+    const newInput = document.createElement("input");
+    newInput.placeholder = "Add new entry";
+    newInput.onkeydown = (e) => {
+      if (e.key === "Enter" && newInput.value.trim()) {
+        tempEntries.push(newInput.value.trim());
+        updateEditor();
+      }
+    };
+    newDiv.appendChild(newInput);
+    entryList.appendChild(newDiv);
+  }
+
+  function showEditor(show) {
+    entryEditor.style.display = show ? "flex" : "none";
+    updateUI();
+  }
+
+  editBtn.onclick = () => {
+    tempEntries = [...entries]; // make a copy to edit
+    updateEditor();
+    showEditor(true);
+
+    setTimeout(() => {
       const inputs = entryList.querySelectorAll("input");
-      const newEntries = [];
-      // Exclude last input which is for new entry (if you want)
-      for (let i = 0; i < inputs.length - 1; i++) {
-        const val = inputs[i].value.trim();
-        if (val) newEntries.push(val);
-      }
-      entries = newEntries;
-      colors = generateColors(entries.length);
-      drawWheel();
-      showEditor(false);
+      inputs[inputs.length - 1]?.focus();
+    }, 0);
+  };
+
+  saveBtn.onclick = () => {
+    entries = tempEntries.filter(e => e.trim() !== "");
+    colors = generateColors(entries.length);
+    drawWheel();
+    showEditor(false);
+    updateUI();
+  };
+
+  cancelBtn.onclick = () => {
+    tempEntries = []; // discard changes
+    showEditor(false);
+    updateUI();
+  };
+
+  shuffleBtn.onclick = () => {
+    for (let i = entries.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [entries[i], entries[j]] = [entries[j], entries[i]];
     }
-
-    editBtn.onclick = () => {
-      updateEditor();
-      showEditor(true);
-
-      // Auto-focus the new entry input
-      setTimeout(() => {
-        const inputs = entryList.querySelectorAll("input");
-        inputs[inputs.length - 1]?.focus();
-      }, 0);
-    };
-
-    saveBtn.onclick = saveEntries;
-    cancelBtn.onclick = () => showEditor(false);
-
-    shuffleBtn.onclick = () => {
-      for (let i = entries.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [entries[i], entries[j]] = [entries[j], entries[i]];
-      }
-      colors = generateColors(entries.length);
-      drawWheel();
-      updateUI();
-    };
-
-    spinBtn.onclick = spinWheel;
-
-    // Initial setup
     colors = generateColors(entries.length);
     drawWheel();
     updateUI();
-  </script>
+  };
+
+  spinBtn.onclick = spinWheel;
+
+  // Initial setup
+  colors = generateColors(entries.length);
+  drawWheel();
+  updateUI();
+</script>
 </body>
 </html>
