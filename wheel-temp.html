@@ -307,8 +307,8 @@
     updateEditor();
     showEditor(true);
     setTimeout(() => {
-      const inputs = entryList.querySelectorAll("input[type='text']");
-      inputs[inputs.length - 1]?.focus();
+      const addInput = entryList.querySelector("input[placeholder='Add new entry']");
+      if (addInput) addInput.focus();
     }, 0);
   };
 
