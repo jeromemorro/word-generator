@@ -285,16 +285,13 @@
     };
     newDiv.appendChild(newInput);
     entryList.appendChild(newDiv);
-    
-    // Auto-focus the input every time it's added
-    newInput.focus();
   }
 
   function getRandomColor() {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
     const b = Math.floor(Math.random() * 256);
-    return rgb(${r},${g},${b});
+    return `rgb(${r},${g},${b})`;
   }
 
   function showEditor(show) {
@@ -310,8 +307,8 @@
     updateEditor();
     showEditor(true);
     setTimeout(() => {
-      const addInput = entryList.querySelector("input[placeholder='Add new entry']");
-      if (addInput) addInput.focus();
+      const inputs = entryList.querySelectorAll("input[type='text']");
+      inputs[inputs.length - 1]?.focus();
     }, 0);
   };
 
