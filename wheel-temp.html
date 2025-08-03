@@ -233,6 +233,10 @@
       requestAnimationFrame(animate);
     }
 
+    function isEditorVisible() {
+      return window.getComputedStyle(entryEditor).display !== "none";
+    }
+    
     function updateUI() {
       const enable = !spinning && entries.length >= 2 && entryEditor.style.display === "none";
       spinBtn.disabled = !enable;
