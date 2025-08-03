@@ -334,9 +334,9 @@
         const selected = entries[(index + entries.length) % entries.length];
         arrowLabel.textContent = selected.name;
         lastArrowLabelText = selected.name;
-        arrowLabel.className = "fade-in";
+        arrowLabel.classList.remove("fade-in", "active"); // Reset any previous animation
         void arrowLabel.offsetWidth; // force reflow
-        arrowLabel.classList.add("active");
+        arrowLabel.classList.add("fade-in", "active"); // Trigger fade-in
 
         updateUI();
       }
@@ -447,18 +447,38 @@
     }
   }
   
-  function updateArrowLabel(text = "") {
+  function updateArrowLabel(text = "", fadeIn = false) {
     arrowLabel.className = "";
     if (text) {
       arrowLabel.textContent = text;
       lastArrowLabelText = text;
-      arrowLabel.style.visibility = "visible";
-      arrowLabel.style.opacity = "1";
+
+      if (fadeIn) {
+        arrowLabel.style.opacity = "0";
+        arrowLabel.style.visibility = "visible";
+
+        // Force reflow to restart the transition
+        void arrowLabel.offsetWidth;
+
+        // Animate to visible (fade-in)
+        arrowLabel.style.transition = "opacity 1s ease";
+        arrowLabel.style.opacity = "1";
+
+        // Remove the transition after it's done so it doesn't affect other updates
+        setTimeout(() => {
+          arrowLabel.style.transition = "none";
+        }, 1000);
+      } else {
+        arrowLabel.style.transition = "none";
+        arrowLabel.style.opacity = "1";
+        arrowLabel.style.visibility = "visible";
+      }
     } else {
       arrowLabel.textContent = "";
-      arrowLabel.style.visibility = "hidden";
       arrowLabel.style.opacity = "0";
-    }
+      arrowLabel.style.visibility = "hidden";
+      arrowLabel.style.transition = "none";
+   }
   }
   
   editBtn.onclick = () => {
