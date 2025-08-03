@@ -34,6 +34,15 @@
       font-size: 1rem;
       transition: background-color 0.3s ease;
     }
+    #wheelTitleContainer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #titleInput {
+      font-family: inherit;
+      padding: 0.25rem;
+    }
     #spinBtn:enabled {
       background-color: #50c878;
       color: white;
@@ -132,8 +141,12 @@
 <body>
   <div id="container">
     <div class="main-panel">
-      <h1>Color Wheel Spinner</h1>
-      <div id="arrow"></div>
+    <h1 id="wheelTitleContainer">
+      <span id="wheelTitle">Color Wheel Spinner</span>
+      <span id="editTitleBtn" title="Edit title" style="cursor: pointer;">✏️</span>
+      <input type="text" id="titleInput" style="display:none; font-size:1em;" />
+    </h1>
+    <div id="arrow"></div>
       <canvas id="wheelCanvas" width="400" height="400"></canvas>
       <div class="controls">
         <button id="spinBtn" disabled>Spin Wheel</button>
@@ -150,6 +163,9 @@
     </div>
   </div>
 <script>
+  const wheelTitle = document.getElementById("wheelTitle");
+  const titleInput = document.getElementById("titleInput");
+  const editTitleBtn = document.getElementById("editTitleBtn");
   const canvas = document.getElementById('wheelCanvas');
   const ctx = canvas.getContext('2d');
   const spinBtn = document.getElementById('spinBtn');
@@ -168,6 +184,26 @@
   let tempEntries = [];
   let angle = 0;
   let spinning = false;
+
+  editTitleBtn.onclick = () => {
+    titleInput.value = wheelTitle.textContent;
+    wheelTitle.style.display = "none";
+    editTitleBtn.style.display = "none";
+    titleInput.style.display = "inline";
+    titleInput.focus();
+  };
+
+  titleInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const newTitle = titleInput.value.trim();
+      if (newTitle) {
+        wheelTitle.textContent = newTitle;
+      }
+      titleInput.style.display = "none";
+      wheelTitle.style.display = "inline";
+      editTitleBtn.style.display = "inline";
+    }
+  });
   
   function getContrastColor(hexColor) {
     // Remove # if present
