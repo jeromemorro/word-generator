@@ -291,6 +291,12 @@
     editBtn.onclick = () => {
       updateEditor();
       showEditor(true);
+
+      // Auto-focus the new entry input
+      setTimeout(() => {
+        const inputs = entryList.querySelectorAll("input");
+        inputs[inputs.length - 1]?.focus();
+      }, 0);
     };
 
     saveBtn.onclick = saveEntries;
