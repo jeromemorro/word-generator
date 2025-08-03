@@ -32,6 +32,7 @@
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
+      transition: background-color 0.3s ease;
     }
     #spinBtn:enabled {
       background-color: #50c878;
@@ -72,6 +73,7 @@
       flex-direction: column;
       align-items: flex-start;
       flex: 0 0 320px;
+      vertical-align: top;
       background-color: white;
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -91,18 +93,11 @@
     .entryRow {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 5px;
-      margin-bottom: 5px;
     }
     .entryRow input[type="text"] {
-      flex: 1;
-      padding: 5px;
-    }
-    .entryRow input[type="color"] {
-      width: 30px;
-      height: 30px;
-      border: none;
-      cursor: pointer;
+      flex-grow: 1;
     }
     .entryRow button {
       padding: 5px 10px;
@@ -154,175 +149,194 @@
       </div>
     </div>
   </div>
-  <script>
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const spinBtn = document.getElementById('spinBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const editBtn = document.getElementById('editBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const entryEditor = document.getElementById('entry-editor');
-    const entryList = document.getElementById('entryList');
+<script>
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const spinBtn = document.getElementById('spinBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const entryEditor = document.getElementById('entry-editor');
+  const entryList = document.getElementById('entryList');
 
-    let entries = [
-      { label: "Apple", color: "#ff4d4d" },
-      { label: "Banana", color: "#ffe135" },
-      { label: "Cherry", color: "#d00000" },
-    ];
-    let tempEntries = [];
-    let angle = 0;
-    let spinning = false;
+  let entries = [
+    { name: "Apple", color: "#ff0000" },
+    { name: "Banana", color: "#ffe135" },
+    { name: "Cherry", color: "#8b0000" }
+  ];
+  let tempEntries = [];
+  let angle = 0;
+  let spinning = false;
 
-    function drawWheel() {
-      const count = entries.length;
-      const arc = (2 * Math.PI) / count;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const radius = canvas.width / 2;
+  function drawWheel() {
+    const count = entries.length;
+    const arc = (2 * Math.PI) / count;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const radius = canvas.width / 2;
 
-      for (let i = 0; i < count; i++) {
-        const start = angle + i * arc;
-        const end = start + arc;
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.fillStyle = entries[i].color;
-        ctx.fill();
-        ctx.stroke();
+    for (let i = 0; i < count; i++) {
+      const start = angle + i * arc;
+      const end = start + arc;
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, start, end);
+      ctx.fillStyle = entries[i].color;
+      ctx.fill();
+      ctx.stroke();
 
-        const textAngle = start + arc / 2;
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(textAngle);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#000";
-        ctx.font = "16px sans-serif";
-        ctx.fillText(entries[i].label, radius - 10, 5);
-        ctx.restore();
+      const textAngle = start + arc / 2;
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(textAngle);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#000";
+      ctx.font = "16px sans-serif";
+      ctx.fillText(entries[i].name, radius - 10, 5);
+      ctx.restore();
+    }
+  }
+
+  function spinWheel() {
+    if (spinning || entries.length < 2) return;
+    spinning = true;
+    updateUI();
+
+    let startTime = null;
+    let duration = 6000;
+    const randomStartOffset = Math.random() * 2 * Math.PI;
+    angle += randomStartOffset;
+
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      let elapsed = timestamp - startTime;
+
+      if (elapsed < 2000) {
+        angle += 0.3;
+      } else if (elapsed < duration) {
+        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
+      }
+
+      drawWheel();
+
+      if (elapsed < duration) {
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        updateUI();
       }
     }
 
-    function spinWheel() {
-      if (spinning || entries.length < 2) return;
-      spinning = true;
-      updateUI();
+    requestAnimationFrame(animate);
+  }
 
-      let startTime = null;
-      let duration = 6000;
-      angle += Math.random() * 2 * Math.PI;
+  function isEditorVisible() {
+    return window.getComputedStyle(entryEditor).display !== "none";
+  }
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        let elapsed = timestamp - startTime;
+  function updateUI() {
+    const enable = !spinning && entries.length >= 2 && !isEditorVisible();
+    spinBtn.disabled = !enable;
+    shuffleBtn.disabled = !enable;
+    editBtn.disabled = spinning || isEditorVisible();
+  }
 
-        if (elapsed < 2000) {
-          angle += 0.3;
-        } else if (elapsed < duration) {
-          angle += 0.3 * (1 - (elapsed - 2000) / 4000);
-        }
+  function updateEditor() {
+    entryList.innerHTML = "";
+    tempEntries.forEach((entry, i) => {
+      const div = document.createElement("div");
+      div.className = "entryRow";
 
-        drawWheel();
-
-        if (elapsed < duration) {
-          requestAnimationFrame(animate);
-        } else {
-          spinning = false;
-          updateUI();
-        }
-      }
-      requestAnimationFrame(animate);
-    }
-
-    function isEditorVisible() {
-      return window.getComputedStyle(entryEditor).display !== "none";
-    }
-    
-    function updateUI() {
-      const enable = !spinning && entries.length >= 2 && entryEditor.style.display === "none";
-      spinBtn.disabled = !enable;
-      shuffleBtn.disabled = !enable;
-      editBtn.disabled = spinning || entryEditor.style.display !== "none";
-    }
-
-    function updateEditor() {
-      entryList.innerHTML = "";
-      tempEntries.forEach((entry, i) => {
-        const row = document.createElement("div");
-        row.className = "entryRow";
-
-        const input = document.createElement("input");
-        input.type = "text";
-        input.value = entry.label;
-        input.oninput = e => tempEntries[i].label = e.target.value;
-
-        const colorPicker = document.createElement("input");
-        colorPicker.type = "color";
-        colorPicker.value = entry.color;
-        colorPicker.oninput = e => tempEntries[i].color = e.target.value;
-
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "X";
-        delBtn.onclick = () => {
-          tempEntries.splice(i, 1);
-          updateEditor();
-        };
-
-        row.appendChild(input);
-        row.appendChild(colorPicker);
-        row.appendChild(delBtn);
-        entryList.appendChild(row);
-      });
-
-      const newRow = document.createElement("div");
-      newRow.className = "entryRow";
-      const newInput = document.createElement("input");
-      newInput.placeholder = "Add new entry";
-      newInput.onkeydown = e => {
-        if (e.key === "Enter" && newInput.value.trim()) {
-          tempEntries.push({ label: newInput.value.trim(), color: "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0') });
-          updateEditor();
-        }
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = entry.name;
+      input.oninput = (e) => {
+        tempEntries[i].name = e.target.value;
       };
-      newRow.appendChild(newInput);
-      entryList.appendChild(newRow);
-    }
 
-    function showEditor(show) {
-      entryEditor.style.display = show ? "flex" : "none";
-      updateUI();
-      if (show) {
-        window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
+      const colorBtn = document.createElement("input");
+      colorBtn.type = "color";
+      colorBtn.value = entry.color;
+      colorBtn.oninput = (e) => {
+        tempEntries[i].color = e.target.value;
+      };
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "X";
+      delBtn.onclick = () => {
+        tempEntries.splice(i, 1);
+        updateEditor();
+      };
+
+      div.appendChild(input);
+      div.appendChild(colorBtn);
+      div.appendChild(delBtn);
+      entryList.appendChild(div);
+    });
+
+    const newDiv = document.createElement("div");
+    const newInput = document.createElement("input");
+    newInput.placeholder = "Add new entry";
+    newInput.onkeydown = (e) => {
+      if (e.key === "Enter" && newInput.value.trim()) {
+        tempEntries.push({ name: newInput.value.trim(), color: getRandomColor() });
+        updateEditor();
       }
+    };
+    newDiv.appendChild(newInput);
+    entryList.appendChild(newDiv);
+  }
+
+  function getRandomColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function showEditor(show) {
+    entryEditor.style.display = show ? "flex" : "none";
+    updateUI();
+    if (show) {
+      window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
     }
+  }
 
-    editBtn.onclick = () => {
-      tempEntries = JSON.parse(JSON.stringify(entries));
-      updateEditor();
-      showEditor(true);
-    };
+  editBtn.onclick = () => {
+    tempEntries = JSON.parse(JSON.stringify(entries));
+    updateEditor();
+    showEditor(true);
+    setTimeout(() => {
+      const inputs = entryList.querySelectorAll("input[type='text']");
+      inputs[inputs.length - 1]?.focus();
+    }, 0);
+  };
 
-    saveBtn.onclick = () => {
-      entries = tempEntries.filter(e => e.label.trim() !== "");
-      drawWheel();
-      showEditor(false);
-    };
+  saveBtn.onclick = () => {
+    entries = tempEntries.filter(e => e.name.trim() !== "");
+    drawWheel();
+    showEditor(false);
+    updateUI();
+  };
 
-    cancelBtn.onclick = () => {
-      tempEntries = [];
-      showEditor(false);
-    };
+  cancelBtn.onclick = () => {
+    tempEntries = [];
+    showEditor(false);
+    updateUI();
+  };
 
-    shuffleBtn.onclick = () => {
-      for (let i = entries.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [entries[i], entries[j]] = [entries[j], entries[i]];
-      }
-      drawWheel();
-    };
-
-    spinBtn.onclick = spinWheel;
+  shuffleBtn.onclick = () => {
+    for (let i = entries.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [entries[i], entries[j]] = [entries[j], entries[i]];
+    }
     drawWheel();
     updateUI();
-  </script>
+  };
+
+  spinBtn.onclick = spinWheel;
+  drawWheel();
+  updateUI();
+</script>
 </body>
 </html>
