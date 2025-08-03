@@ -237,6 +237,9 @@
   let originalTitle = "";
   let lastArrowLabelText = "";
 
+  // Add this global draft editing flag:
+  let isEditingDraft = false;
+
   // Declare DOM-related variables here as let so we can assign them in DOMContentLoaded
   let wheelTitle, titleInput, editTitleBtn, canvas, ctx,
       spinBtn, shuffleBtn, editBtn, saveBtn, cancelBtn,
@@ -371,24 +374,40 @@
           const [moved] = tempEntries.splice(fromIndex, 1);
           tempEntries.splice(toIndex, 0, moved);
           updateEditor();
+
+          // Mark draft dirty when reordered:
+          isEditingDraft = true;
         }
       });
 
       const input = document.createElement("input");
       input.type = "text";
       input.value = entry.name;
-      input.oninput = (e) => tempEntries[i].name = e.target.value;
+      input.oninput = (e) => {
+        tempEntries[i].name = e.target.value;
+
+        // Mark draft dirty when entry name changes:
+        isEditingDraft = true;
+      };
 
       const colorBtn = document.createElement("input");
       colorBtn.type = "color";
       colorBtn.value = entry.color;
-      colorBtn.oninput = (e) => tempEntries[i].color = e.target.value;
+      colorBtn.oninput = (e) => {
+        tempEntries[i].color = e.target.value;
+
+        // Mark draft dirty when entry color changes:
+        isEditingDraft = true;
+      };
 
       const delBtn = document.createElement("button");
       delBtn.textContent = "X";
       delBtn.onclick = () => {
         tempEntries.splice(i, 1);
         updateEditor();
+
+        // Mark draft dirty when entry deleted:
+        isEditingDraft = true;
       };
 
       div.appendChild(input);
@@ -404,6 +423,9 @@
       if (e.key === "Enter" && newInput.value.trim()) {
         tempEntries.push({ name: newInput.value.trim(), color: getRandomColor() });
         updateEditor();
+
+        // Mark draft dirty when new entry added:
+        isEditingDraft = true;
       }
     };
     newDiv.appendChild(newInput);
@@ -491,7 +513,7 @@
     cancelBtn = document.getElementById('cancelBtn');
     importBtn = document.getElementById("importBtn");
     exportBtn = document.getElementById("exportBtn");
-    importFileInput = document.getElementById("importFileInput");  
+    importFileInput = document.getElementById("importFileInput");
     entryEditor = document.getElementById('entry-editor');
     entryList = document.getElementById('entryList');
     arrowLabel = document.getElementById('arrowLabel');
@@ -536,6 +558,10 @@
     editBtn.onclick = () => {
       arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
       tempEntries = JSON.parse(JSON.stringify(entries));
+
+      // Reset draft flag on open:
+      isEditingDraft = false;
+
       updateEditor();
       showEditor(true);
     };
@@ -547,6 +573,9 @@
       updateArrowLabel();        // Clear label
       lastArrowLabelText = "";   // Clear saved value
       updateUI();
+
+      // Reset draft flag on save:
+      isEditingDraft = false;
     };
 
     cancelBtn.onclick = () => {
@@ -554,6 +583,9 @@
       showEditor(false);
       updateArrowLabel(lastArrowLabelText); // Restore the previous label text
       updateUI();
+
+      // Reset draft flag on cancel:
+      isEditingDraft = false;
     };
 
     importBtn.onclick = () => {
@@ -582,9 +614,8 @@
     };
 
     exportBtn.onclick = () => {
-      const hasDraftEntries = tempEntries.length > 0;
-
-      if (!hasDraftEntries) {
+      // Use isEditingDraft flag instead of tempEntries length:
+      if (!isEditingDraft) {
         const confirmExport = confirm("Export the saved entries used by the wheel?");
         if (confirmExport) {
           exportEntries(entries);
