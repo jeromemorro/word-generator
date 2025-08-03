@@ -491,6 +491,25 @@
       arrowLabel.style.transition = "none";
     }
   }
+
+  function exportEntries(source) {
+    const csvContent = source
+      .map(entry => `"${entry.name.replace(/"/g, '""')}",${entry.color}`)
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "entries.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    alert("Export complete.");
+  }
   
   editBtn.onclick = () => {
     arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
@@ -541,22 +560,32 @@
   };
 
   exportBtn.onclick = () => {
-    const csvContent = tempEntries
-      .map(entry => `"${entry.name.replace(/"/g, '""')}",${entry.color}`)
-      .join("\n");
+    const hasDraftEntries = tempEntries.length > 0;
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    
-    a.href = url;
-    a.download = "entries.csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    if (!hasDraftEntries) {
+      const confirmExport = confirm("Export the saved entries used by the wheel?");
+      if (confirmExport) {
+        exportEntries(entries);
+      }
+      return;
+    }
 
-    alert("Export complete.");
+    exportModal.style.display = "flex"; // Show modal
+  };
+
+  // Modal button events
+  exportSavedBtn.onclick = () => {
+    exportModal.style.display = "none";
+    exportEntries(entries);
+  };
+
+  exportDraftBtn.onclick = () => {
+    exportModal.style.display = "none";
+    exportEntries(tempEntries);
+  };
+
+  cancelExportBtn.onclick = () => {
+    exportModal.style.display = "none";
   };
   
   shuffleBtn.onclick = () => {
@@ -574,5 +603,14 @@
   drawWheel();
   updateUI();
 </script>
+<!-- Export Modal -->
+<div id="exportModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width:250px;">
+    <p>Which entries do you want to export?</p>
+    <button id="exportDraftBtn">Export Draft</button>    
+    <button id="exportSavedBtn">Export Saved</button>
+    <button id="cancelExportBtn">Cancel</button>
+  </div>
+</div>  
 </body>
 </html>
