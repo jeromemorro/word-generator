@@ -290,45 +290,48 @@
 
   function spinWheel() {
     if (spinning || entries.length < 2) return;
-
     spinning = true;
-    updateArrowLabel();
+    updateArrowLabel(); // Clear label on spin
     updateUI();
 
-    let startTime = null;
-    const duration = 6000; // total spin duration in ms
-    const fullSpins = 5;   // full rotations before slowing
+    const duration = 6000;
+    const startAngle = angle % (2 * Math.PI); // Normalize angle between 0 and 2π
 
-    // Reset angle to remove historical bias
-    const initialAngle = 0;
-    const randomOffset = Math.random() * 2 * Math.PI;
-    const finalAngle = fullSpins * 2 * Math.PI + randomOffset;
+    // Randomly select an index to land on
+    const selectedIndex = Math.floor(Math.random() * entries.length);
+
+    // Calculate the angle for the selected segment's center:
+    const arc = (2 * Math.PI) / entries.length;
+    const targetAngle = 2 * Math.PI * 5 + // At least 5 full rotations for visual spin
+                        (2 * Math.PI - (selectedIndex + 0.5) * arc);
+
+    // The total rotation needed from current angle:
+    const totalRotation = targetAngle - startAngle;
+    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+    let startTime = null;
 
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const t = Math.min(elapsed / duration, 1); // normalized time (0 to 1)
+      const t = Math.min(elapsed / duration, 1);
+      const easedT = easeOutCubic(t);
 
-      // Ease-out cubic function for natural slowing
-      const eased = 1 - Math.pow(1 - t, 3);
-
-      angle = initialAngle + eased * finalAngle;
+      angle = startAngle + totalRotation * easedT;
       drawWheel();
 
       if (t < 1) {
         requestAnimationFrame(animate);
       } else {
         spinning = false;
+        // Normalize angle so it stays between 0 and 2π
+        angle = angle % (2 * Math.PI);
 
-        // Normalize angle to 0 to 2π
-        const normalizedAngle = angle % (2 * Math.PI);
-
-        // Find which entry is selected
-        const arcSize = (2 * Math.PI) / entries.length;
-        const index = Math.floor((entries.length - (normalizedAngle / arcSize)) % entries.length);
-
-        const selected = entries[index];
+        // Calculate the index based on final angle
+        const finalIndex = entries.length - Math.floor((angle % (2 * Math.PI)) / arc) - 1;
+        const selected = entries[(finalIndex + entries.length) % entries.length];
         updateArrowLabel(selected.name, true);
+
         updateUI();
       }
     }
