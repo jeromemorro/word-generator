@@ -290,37 +290,45 @@
 
   function spinWheel() {
     if (spinning || entries.length < 2) return;
+
     spinning = true;
-    updateArrowLabel(); // Clear label on spin
+    updateArrowLabel();
     updateUI();
 
     let startTime = null;
-    let duration = 6000;
-    const randomStartOffset = Math.random() * 2 * Math.PI;
-    angle += randomStartOffset;
+    const duration = 6000; // total spin duration in ms
+    const fullSpins = 5;   // full rotations before slowing
+
+    // Reset angle to remove historical bias
+    const initialAngle = 0;
+    const randomOffset = Math.random() * 2 * Math.PI;
+    const finalAngle = fullSpins * 2 * Math.PI + randomOffset;
 
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
-      let elapsed = timestamp - startTime;
+      const elapsed = timestamp - startTime;
+      const t = Math.min(elapsed / duration, 1); // normalized time (0 to 1)
 
-      if (elapsed < 2000) {
-        angle += 0.3;
-      } else if (elapsed < duration) {
-        angle += 0.3 * (1 - (elapsed - 2000) / 4000);
-      }
+      // Ease-out cubic function for natural slowing
+      const eased = 1 - Math.pow(1 - t, 3);
 
+      angle = initialAngle + eased * finalAngle;
       drawWheel();
 
-      if (elapsed < duration) {
+      if (t < 1) {
         requestAnimationFrame(animate);
       } else {
         spinning = false;
 
-        // Determine the selected entry after spinning
-        const index = entries.length - Math.floor((angle % (2 * Math.PI)) / (2 * Math.PI) * entries.length) - 1;
-        const selected = entries[(index + entries.length) % entries.length];
-        updateArrowLabel(selected.name, true); // Use fade-in
+        // Normalize angle to 0 to 2π
+        const normalizedAngle = angle % (2 * Math.PI);
 
+        // Find which entry is selected
+        const arcSize = (2 * Math.PI) / entries.length;
+        const index = Math.floor((entries.length - (normalizedAngle / arcSize)) % entries.length);
+
+        const selected = entries[index];
+        updateArrowLabel(selected.name, true);
         updateUI();
       }
     }
