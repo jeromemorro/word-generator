@@ -3,249 +3,801 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Color Wheel Spinner</title>
+  <title>Random Entry Selector</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 0;
-      padding: 2rem;
+      padding: 5rem 2rem 2rem 2rem;
       background: #f5f5f5;
-      display: flex;
-      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
+    #titleWrapper {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background-color: transparent;
+      text-align: center;
+    }
+    #wheelTitleContainer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       justify-content: center;
+    }
+    #editTitleBtn {
+      font-size: 0.5em;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    #titleInput {
+      font-family: inherit;
+      padding: 0.25rem;
+    }
+    #container {
+      display: inline-flex;
       align-items: flex-start;
       gap: 2rem;
     }
     .main-panel {
       text-align: center;
-      position: relative;
+      flex: 0 0 auto;
     }
     canvas {
       margin-bottom: 1rem;
+      display: block;
     }
     .controls button {
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      /* Add a smooth background color transition */
-      transition: background-color 0.3s ease;
     }
-    /* Spin button enabled style */
+    .wheel-container {
+      position: relative;
+      display: inline-block;
+      width: 400px;
+      height: 400px;
+    }
     #spinBtn:enabled {
-      background-color: #50c878; /* light emerald green */
+      background-color: #50c878;
       color: white;
       border: none;
       cursor: pointer;
     }
-    /* Spin button disabled uses default disabled styles */
     #spinBtn:disabled {
       background-color: #e9e9e9;
       color: #a8a8b2;
       cursor: default;
     }
-    .entry-editor {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-top: 45px; /* aligns top of editor with top of wheel */
-    }
-    .entry-editor textarea {
-      width: 300px;
-      height: 150px;
-    }
-    #saveBtn, #cancelBtn {
-      display: none;
-      margin-top: 0.5rem;
-    }
-    #cancelBtn {
-      margin-left: 0.5rem;
-    }
-    .button-row {
-      display: flex;
-      flex-direction: row;
-    }
     #arrow {
       position: absolute;
-      top: 48%;
-      left: 96%;
-      transform: rotate(180deg);
+      top: 50%;
+      left: 98%;
+      transform: translateY(-50%) rotate(180deg);
       width: 0;
       height: 0;
-      border-top: 14px solid transparent;    /* red arrow top border (10px) + 4px */
-      border-bottom: 14px solid transparent; /* red arrow bottom border (10px) + 4px */
-      border-left: 28px solid black;         /* red arrow left border (20px) + 8px */
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 28px solid black;
       z-index: 10;
     }
-
     #arrow::before {
       content: '';
       position: absolute;
-      top: -10px;    /* negative of black border thickness */
-      left: -26px;   /* negative of black border thickness */
+      top: -10px;
+      left: -26px;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
-      border-left: 20px solid red;           /* unchanged */
+      border-left: 20px solid red;
       z-index: -1;
     }
+    #arrowLabel {      
+      position: absolute;
+      top: 50%;
+      left: 107%;
+      opacity: 1;
+      visibility: visible;
+      transition: none;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-weight: bold;
+      font-size: 20px;
+      white-space: nowrap;
+      color: #333;
+    }
+    #entry-editor {
+      display: none;
+      margin-top: 45px;
+      flex-direction: column;
+      align-items: flex-start;
+      flex: 0 0 320px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    #entryList {
+      width: 100%;
+      margin: 10px 0;
+      padding: 0;
+      background-color: #ffffff;
+      border-radius: 4px;
+      text-align: left;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    .entryRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      background: #fefefe;
+    }
+    .entryRow.drag-over {
+      border-top: 2px solid #50c878;
+    }
+    .entryRow input[type="text"] {
+      flex-grow: 1;
+    }
+    .entryRow button {
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .edit-controls {
+      margin-top: 10px;
+      text-align: right;
+      width: 100%;
+    }
+    .edit-controls button {
+      margin: 0 5px;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .edit-controls button#saveBtn {
+      background-color: #50c878;
+      color: white;
+      border: none;
+    }
+    .edit-controls button#cancelBtn {
+      background-color: #e9e9e9;
+      color: #333;
+      border: none;
+    }
+    .edit-controls button#importBtn {
+      background-color: #e9e9e9;
+      color: #333;
+      border: none;
+    }
+    .edit-controls button#exportBtn {
+      background-color: #e9e9e9;
+      color: #333;
+      border: none;
+    }    
   </style>
 </head>
 <body>
-  <div class="main-panel">
-    <h1>Color Wheel Spinner</h1>
-    <div id="arrow"></div>
-    <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-      <button id="spinBtn" disabled>Spin</button>
-      <button id="shuffleBtn">Randomize Entries</button>
-      <button id="editBtn">Edit Entries</button>
-    </div>
+  <div id="titleWrapper">
+    <h1 id="wheelTitleContainer">
+      <span id="wheelTitle">Random Entry Selector</span>
+      <span id="editTitleBtn" title="Click to edit title">✏️</span>
+      <input type="text" id="titleInput" style="display:none; font-size:1em;" />
+    </h1>
   </div>
 
-  <div class="entry-editor" id="editor" style="display: none">
-    <p>One entry per line:</p>
-    <textarea id="entryInput"></textarea>
-    <div class="button-row">
-      <button id="saveBtn">Save</button>
-      <button id="cancelBtn">Cancel</button>
+  <div id="container">
+    <div class="main-panel">
+      <div class="wheel-container">
+        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        <div id="arrow"></div>
+        <div id="arrowLabel"></div>
+      </div>
+      <div class="controls">
+        <button id="spinBtn" disabled>Spin Wheel</button>
+        <button id="shuffleBtn">Randomize Entries</button>
+        <button id="editBtn">Edit Entries</button>
+      </div>
+    </div>
+    <div id="entry-editor">
+      <div id="entryList"></div>
+      <div class="edit-controls">
+        <div style="display: inline-block;">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+        <div style="display: inline-block; margin-left: 20px;">
+          <button id="importBtn" title="Import from CSV file">Import</button>
+          <button id="exportBtn" title="Export to CSV file">Export</button>
+        </div>
+      </div>
+      <input type="file" id="importFileInput" accept=".csv" style="display:none;">
     </div>
   </div>
+<script>
+  // GLOBAL state variables (not DOM elements)
+  let entries = [
+    { name: "Entry #1", color: "#000000" },
+    { name: "Entry #2", color: "#ffffff" }
+  ];
+  let tempEntries = [];
+  let angle = 0;
+  let spinning = false;
+  let originalTitle = "";
+  let lastArrowLabelText = "";
 
-  <script>
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const spinBtn = document.getElementById('spinBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const editBtn = document.getElementById('editBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const editor = document.getElementById('editor');
-    const entryInput = document.getElementById('entryInput');
+  // Add this global draft editing flag:
+  let isEditingDraft = false;
 
-    let entries = ["Apple", "Banana", "Cherry"];
-    let colors = [];
-    let angle = 0;
-    let spinning = false;
+  // Declare DOM-related variables here as let so we can assign them in DOMContentLoaded
+  let wheelTitle, titleInput, editTitleBtn, canvas, ctx,
+      spinBtn, shuffleBtn, editBtn, saveBtn, cancelBtn,
+      importBtn, exportBtn, importFileInput,
+      entryEditor, entryList, arrowLabel,
+      exportModal, exportDraftBtn, exportSavedBtn, cancelExportBtn,
+      confirmModal, confirmOkBtn, confirmCancelBtn;
 
-    function generateColors(count) {
-      const result = [];
-      const hueStep = 360 / count;
-      for (let i = 0; i < count; i++) {
-        result.push(`hsl(${i * hueStep}, 70%, 60%)`);
-      }
-      return result;
+  // -- Functions that do NOT need DOM access immediately --
+
+  function getContrastColor(hexColor) {
+    hexColor = hexColor.replace("#", "");
+    const r = parseInt(hexColor.substring(0, 2), 16);
+    const g = parseInt(hexColor.substring(2, 4), 16);
+    const b = parseInt(hexColor.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness < 128 ? "#fff" : "#000";
+  }
+
+  function drawWheel() {
+    const count = entries.length;
+    const arc = (2 * Math.PI) / count;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const radius = canvas.width / 2;
+
+    for (let i = 0; i < count; i++) {
+      const start = angle + i * arc;
+      const end = start + arc;
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, start, end);
+      ctx.fillStyle = entries[i].color;
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+
+      const textAngle = start + arc / 2;
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(textAngle);
+      ctx.textAlign = "right";
+      ctx.fillStyle = getContrastColor(entries[i].color);
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillText(entries[i].name, radius - 10, 5);
+      ctx.restore();
     }
+  }
 
-    function drawWheel() {
-      const count = entries.length;
-      const arc = (2 * Math.PI) / count;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const radius = canvas.width / 2;
+  /* Non-drammatic wheel spin (Lands precisely on the target)
+  function spinWheel() {
+    if (spinning || entries.length < 2) return;
+    spinning = true;
+    updateArrowLabel(); // Clear label on spin
+    updateUI();
 
-      for (let i = 0; i < count; i++) {
-        const start = angle + i * arc;
-        const end = start + arc;
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.fillStyle = colors[i];
-        ctx.fill();
-        ctx.stroke();
+    const duration = 6000;
+    const startAngle = angle % (2 * Math.PI); // Normalize angle between 0 and 2π
 
-        const textAngle = start + arc / 2;
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(textAngle);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#000";
-        ctx.font = "16px sans-serif";
-        ctx.fillText(entries[i], radius - 10, 5);
-        ctx.restore();
-      }
-    }
+    // Randomly select an index to land on
+    const selectedIndex = Math.floor(Math.random() * entries.length);
 
-    function spinWheel() {
-      if (spinning || entries.length < 2) return;
-      spinning = true;
-      updateUI();
-      let startTime = null;
-      let duration = 6000;  // <-- Changed from 5000 to 6000
+    // Calculate the angle for the selected segment's center:
+    const arc = (2 * Math.PI) / entries.length;
+    const targetAngle = 2 * Math.PI * 5 + // At least 5 full rotations for visual spin
+                        (2 * Math.PI - (selectedIndex + 0.5) * arc);
 
-      function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        let elapsed = timestamp - startTime;
+    // The total rotation needed from current angle:
+    const totalRotation = targetAngle - startAngle;
+    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
 
-        if (elapsed < 2000) {
-          angle += 0.3;
-        } else if (elapsed < duration) {
-          angle += 0.3 * (1 - (elapsed - 2000) / 4000);  // adjusted deceleration for 4 seconds
-        }
+    let startTime = null;
 
-        drawWheel();
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const easedT = easeOutCubic(t);
 
-        if (elapsed < duration) {
-          requestAnimationFrame(animate);
-        } else {
-          spinning = false;
-          updateUI();
-        }
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    function updateUI() {
-      const enable = !spinning && entries.length >= 2 && editor.style.display === 'none';
-      spinBtn.disabled = !enable;
-      shuffleBtn.disabled = !enable;
-      editBtn.disabled = spinning || editor.style.display !== 'none';
-    }
-
-    function enterEditMode() {
-      editor.style.display = 'flex';
-      saveBtn.style.display = 'inline-block';
-      cancelBtn.style.display = 'inline-block';
-      entryInput.value = entries.join('\n');
-      spinBtn.disabled = true;
-      shuffleBtn.disabled = true;
-      editBtn.disabled = true;
-    }
-
-    function exitEditMode() {
-      editor.style.display = 'none';
-      saveBtn.style.display = 'none';
-      cancelBtn.style.display = 'none';
-      updateUI();
-    }
-
-    function saveChanges() {
-      const lines = entryInput.value.split(/\n+/).map(x => x.trim()).filter(x => x);
-      entries = [...new Set(lines)];
-      colors = generateColors(entries.length);
+      angle = startAngle + totalRotation * easedT;
       drawWheel();
-      exitEditMode();
+
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        // Normalize angle so it stays between 0 and 2π
+        angle = angle % (2 * Math.PI);
+
+        // Calculate the index based on final angle
+        const finalIndex = entries.length - Math.floor((angle % (2 * Math.PI)) / arc) - 1;
+        const selected = entries[(finalIndex + entries.length) % entries.length];
+        updateArrowLabel(selected.name, true);
+
+        updateUI();
+      }
     }
 
-    function shuffleEntries() {
+    requestAnimationFrame(animate);
+  }
+  */
+
+function spinWheel() {
+  if (spinning || entries.length < 2) return;
+  spinning = true;
+  updateArrowLabel(); // Clear label on spin
+  updateUI();
+
+  const count = entries.length;
+  const arc = (2 * Math.PI) / count;
+
+  // Randomly select winner segment index
+  const selectedIndex = Math.floor(Math.random() * count);
+
+  // Spin parameters
+  const fullRotations = 9; // Number of full spins before landing
+  const baseAngle = fullRotations * 2 * Math.PI;
+
+  const segmentStart = selectedIndex * arc;
+  const randomOffsetInsideSegment = arc * (0.1 + Math.random() * 0.8);
+  const finalAngle = baseAngle + (2 * Math.PI - (segmentStart + randomOffsetInsideSegment));
+
+  let startAngle = angle % (2 * Math.PI);
+  let startTime = null;
+  const duration = 7000; // 7 seconds
+
+  function easeOutQuad(t) {
+    return t * (2 - t);
+  }
+
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    let elapsed = timestamp - startTime;
+    let progress = Math.min(elapsed / duration, 1);
+
+    // Use easeOutQuad for fast start and slow end
+    let easedProgress = easeOutQuad(progress);
+
+    angle = startAngle + easedProgress * (finalAngle - startAngle);
+
+    drawWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      spinning = false;
+
+      const normalizedAngle = angle % (2 * Math.PI);
+      const landedIndex = count - Math.floor(normalizedAngle / arc) - 1;
+      const selected = entries[(landedIndex + count) % count];
+
+      updateArrowLabel(selected.name, true);
+      updateUI();
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+
+  function isEditorVisible() {
+    return window.getComputedStyle(entryEditor).display !== "none";
+  }
+
+  function updateUI() {
+    const enable = !spinning && entries.length >= 2 && !isEditorVisible();
+    spinBtn.disabled = !enable;
+    shuffleBtn.disabled = !enable;
+    editBtn.disabled = spinning || isEditorVisible();
+  }
+
+  function updateEditor() {
+    entryList.innerHTML = "";
+
+    tempEntries.forEach((entry, i) => {
+      const div = document.createElement("div");
+      div.className = "entryRow";
+      div.setAttribute("draggable", "true");
+      div.dataset.index = i;
+
+      div.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", i);
+        div.style.opacity = "0.5";
+      });
+
+      div.addEventListener("dragend", () => {
+        div.style.opacity = "1";
+      });
+
+      div.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        div.classList.add("drag-over");
+      });
+
+      div.addEventListener("dragleave", () => {
+        div.classList.remove("drag-over");
+      });
+
+      div.addEventListener("drop", (e) => {
+        e.preventDefault();
+        div.classList.remove("drag-over");
+        const fromIndex = parseInt(e.dataTransfer.getData("text/plain"));
+        const toIndex = parseInt(div.dataset.index);
+        if (fromIndex !== toIndex) {
+          const [moved] = tempEntries.splice(fromIndex, 1);
+          tempEntries.splice(toIndex, 0, moved);
+          updateEditor();
+
+          // Mark draft dirty when reordered:
+          isEditingDraft = true;
+        }
+      });
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = entry.name;
+      input.oninput = (e) => {
+        tempEntries[i].name = e.target.value;
+
+        // Mark draft dirty when entry name changes:
+        isEditingDraft = true;
+      };
+
+      const colorBtn = document.createElement("input");
+      colorBtn.type = "color";
+      colorBtn.value = entry.color;
+      colorBtn.oninput = (e) => {
+        tempEntries[i].color = e.target.value;
+
+        // Mark draft dirty when entry color changes:
+        isEditingDraft = true;
+      };
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "X";
+      delBtn.onclick = () => {
+        tempEntries.splice(i, 1);
+        updateEditor();
+
+        // Mark draft dirty when entry deleted:
+        isEditingDraft = true;
+      };
+
+      div.appendChild(input);
+      div.appendChild(colorBtn);
+      div.appendChild(delBtn);
+      entryList.appendChild(div);
+    });
+
+    const newDiv = document.createElement("div");
+    const newInput = document.createElement("input");
+    newInput.placeholder = "Add new entry";
+    newInput.onkeydown = (e) => {
+      if (e.key === "Enter" && newInput.value.trim()) {
+        tempEntries.push({ name: newInput.value.trim(), color: getRandomColor() });
+        updateEditor();
+
+        // Mark draft dirty when new entry added:
+        isEditingDraft = true;
+      }
+    };
+    newDiv.appendChild(newInput);
+    entryList.appendChild(newDiv);
+    newInput.focus();
+  }
+
+  function getRandomColor() {
+    const r = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    const g = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    const b = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
+  }
+
+  function showEditor(show) {
+    entryEditor.style.display = show ? "flex" : "none";
+    updateUI();
+    if (show) {
+      window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
+    }
+  }
+
+  function updateArrowLabel(text = "", fadeIn = false) {
+    arrowLabel.className = ""; // Ensure no class-based styles interfere
+    if (text) {
+      arrowLabel.textContent = text;
+      lastArrowLabelText = text;
+
+      if (fadeIn) {
+        arrowLabel.style.opacity = "0";
+        arrowLabel.style.visibility = "visible";
+
+        void arrowLabel.offsetWidth; // Force reflow to apply transition
+
+        arrowLabel.style.transition = "opacity 2s ease";
+        arrowLabel.style.opacity = "1";
+
+        setTimeout(() => {
+          arrowLabel.style.transition = "none"; // Reset for future updates
+        }, 1000);
+      } else {
+        arrowLabel.style.transition = "none";
+        arrowLabel.style.opacity = "1";
+        arrowLabel.style.visibility = "visible";
+      }
+    } else {
+      arrowLabel.textContent = "";
+      arrowLabel.style.opacity = "0";
+      arrowLabel.style.visibility = "hidden";
+      arrowLabel.style.transition = "none";
+    }
+  }
+
+  function exportEntries(source) {
+    const defaultName = "entries.csv";
+    const fileName = prompt("Enter a file name:", defaultName);
+    if (!fileName) return; // User cancelled the prompt
+
+    const csvContent = source
+      .map(entry => `"${entry.name.replace(/"/g, '""')}",${entry.color}`)
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    alert("Export complete.");
+  }
+
+
+  function showCustomConfirm() {
+    return new Promise((resolve) => {
+      confirmModal.style.display = "flex";
+
+      function cleanup() {
+        confirmOkBtn.removeEventListener("click", onOk);
+        confirmCancelBtn.removeEventListener("click", onCancel);
+        confirmModal.style.display = "none";
+      }
+
+      function onOk() {
+        cleanup();
+        resolve(true);
+      }
+
+      function onCancel() {
+        cleanup();
+        resolve(false);
+      }
+
+      confirmOkBtn.addEventListener("click", onOk);
+      confirmCancelBtn.addEventListener("click", onCancel);
+    });
+  }
+
+  // -- DOMContentLoaded to get all DOM elements and assign event handlers --
+  document.addEventListener("DOMContentLoaded", () => {
+    // Get DOM elements now that DOM is loaded
+    wheelTitle = document.getElementById("wheelTitle");
+    titleInput = document.getElementById("titleInput");
+    editTitleBtn = document.getElementById("editTitleBtn");
+    canvas = document.getElementById('wheelCanvas');
+    ctx = canvas.getContext('2d');
+    spinBtn = document.getElementById('spinBtn');
+    shuffleBtn = document.getElementById('shuffleBtn').style.display = "none";
+    editBtn = document.getElementById('editBtn');
+    saveBtn = document.getElementById('saveBtn');
+    cancelBtn = document.getElementById('cancelBtn');
+    importBtn = document.getElementById("importBtn");
+    exportBtn = document.getElementById("exportBtn");
+    importFileInput = document.getElementById("importFileInput");
+    entryEditor = document.getElementById('entry-editor');
+    entryList = document.getElementById('entryList');
+    arrowLabel = document.getElementById('arrowLabel');
+    exportModal = document.getElementById("exportModal");
+    exportDraftBtn = document.getElementById("exportDraftBtn");
+    exportSavedBtn = document.getElementById("exportSavedBtn");
+    cancelExportBtn = document.getElementById("cancelExportBtn");
+    confirmModal = document.getElementById("confirmModal");
+    confirmOkBtn = document.getElementById("confirmOkBtn");
+    confirmCancelBtn = document.getElementById("confirmCancelBtn");
+
+    // Initialize originalTitle with current wheelTitle text content
+    originalTitle = wheelTitle.textContent;
+
+    // Assign event handlers that depend on DOM elements
+
+    editTitleBtn.onclick = () => {
+      originalTitle = wheelTitle.textContent; // Save current title before editing
+      titleInput.value = originalTitle;
+      titleInput.style.width = (titleInput.value.length + 1) + 'ch';
+      wheelTitle.style.display = "none";
+      editTitleBtn.style.display = "none";
+      titleInput.style.display = "inline";
+      titleInput.focus();
+    };
+
+    titleInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const newTitle = titleInput.value.trim();
+        if (newTitle) {
+          wheelTitle.textContent = newTitle;
+        }
+        titleInput.style.display = "none";
+        wheelTitle.style.display = "inline";
+        editTitleBtn.style.display = "inline";
+      } else if (e.key === "Escape") {
+        // Restore the original title and cancel editing
+        titleInput.value = originalTitle;
+        titleInput.style.display = "none";
+        wheelTitle.style.display = "inline";
+        editTitleBtn.style.display = "inline";
+      }
+    });
+
+    editBtn.onclick = () => {
+      arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
+      tempEntries = JSON.parse(JSON.stringify(entries));
+
+      // Reset draft flag on open:
+      isEditingDraft = false;
+
+      updateEditor();
+      showEditor(true);
+    };
+
+    saveBtn.onclick = () => {
+      entries = tempEntries.filter(e => e.name.trim() !== "");
+      drawWheel();
+      showEditor(false);
+      updateArrowLabel();        // Clear label
+      lastArrowLabelText = "";   // Clear saved value
+      updateUI();
+
+      // Reset draft flag on save:
+      isEditingDraft = false;
+    };
+
+    cancelBtn.onclick = () => {
+      tempEntries = [];
+      showEditor(false);
+      updateArrowLabel(lastArrowLabelText); // Restore the previous label text
+      updateUI();
+
+      // Reset draft flag on cancel:
+      isEditingDraft = false;
+    };
+
+    importBtn.onclick = () => {
+      importFileInput.click();
+    };
+
+    importFileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const lines = event.target.result.split(/\r?\n/);
+        for (let line of lines) {
+          const [rawName, rawColor] = line.split(",");
+          const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
+          const color = rawColor?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
+          if (name && /^#[0-9a-f]{6}$/i.test(color)) {
+            tempEntries.push({ name, color });
+          }
+        }
+        updateEditor();
+      };
+      reader.readAsText(file);
+      importFileInput.value = ''; // reset input so the same file can be re-imported
+    };
+
+    exportBtn.onclick = () => {
+      // Use isEditingDraft flag instead of tempEntries length:
+      if (!isEditingDraft) {
+        showCustomConfirm().then((confirmed) => {
+          if (confirmed) {
+            exportEntries(entries);
+          }
+        });
+        return;
+      }
+
+      exportModal.style.display = "flex"; // Show modal
+    };
+
+    exportSavedBtn.onclick = () => {
+      exportModal.style.display = "none";
+      exportEntries(entries);
+    };
+
+    exportDraftBtn.onclick = () => {
+      exportModal.style.display = "none";
+      exportEntries(tempEntries);
+    };
+
+    cancelExportBtn.onclick = () => {
+      exportModal.style.display = "none";
+    };
+
+    shuffleBtn.onclick = () => {
+      updateArrowLabel();        // Clear label
+      lastArrowLabelText = "";   // Clear saved value
       for (let i = entries.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [entries[i], entries[j]] = [entries[j], entries[i]];
       }
-      colors = generateColors(entries.length);
       drawWheel();
-    }
-
-    spinBtn.addEventListener('click', spinWheel);
-    shuffleBtn.addEventListener('click', () => {
-      shuffleEntries();
       updateUI();
-    });
-    editBtn.addEventListener('click', enterEditMode);
-    saveBtn.addEventListener('click', saveChanges);
-    cancelBtn.addEventListener('click', exitEditMode);
+    };
 
-    colors = generateColors(entries.length);
+    spinBtn.onclick = spinWheel;
+
+    // Final initialization
+    entries = entries.filter(e => e.name.trim() !== "");
     drawWheel();
+    updateArrowLabel();
     updateUI();
-  </script>
+  });
+</script>
+  
+<!-- Export Modal -->
+<div id="exportModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; border-radius:8px; text-align:center; min-width:250px; overflow:hidden;">
+    <!-- Title Bar -->
+    <div style="background-color:#007bff; color:white; padding:10px; font-weight:bold; text-align:center;">
+      Export to CSV File
+    </div>
+    <!-- Modal Content -->
+    <div style="padding:8px 20px 20px 20px;">
+      <p>Which entries do you want to export?</p>
+      <button id="exportDraftBtn">Unsaved</button>    
+      <button id="exportSavedBtn">Saved</button>
+      <button id="cancelExportBtn">Cancel</button>
+    </div>    
+  </div>
+</div>
+  
+<!-- Confirm Modal -->
+<div id="confirmModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:white; border-radius:8px; text-align:center; min-width:250px; overflow:hidden;">
+    <!-- Title Bar -->
+    <div style="background-color:#007bff; color:white; padding:10px; font-weight:bold; text-align:center;">
+      Export to CSV File
+    </div>
+    <!-- Modal Content -->
+    <div style="padding:8px 20px 20px 20px;">
+      <p>Do you want to export the saved entries?</p>
+      <button id="confirmOkBtn" style="margin-right:10px;">OK</button>
+      <button id="confirmCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
