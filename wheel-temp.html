@@ -341,6 +341,12 @@
   }
   */
 
+  function easeInOutQuad(t) {
+    return t < 0.5
+      ? 2 * t * t         // accelerate in first half
+      : -1 + (4 - 2 * t) * t; // decelerate in second half
+  }
+
   function spinWheel() {
     if (spinning || entries.length < 2) return;
     spinning = true;
@@ -354,29 +360,25 @@
     const selectedIndex = Math.floor(Math.random() * count);
 
     // Spin parameters
-    const fullRotations = 5; // Number of full spins before landing
+    const fullRotations = 5;
     const baseAngle = fullRotations * 2 * Math.PI;
 
-    // Calculate random offset within the winning segment (avoid edges)
     const segmentStart = selectedIndex * arc;
-    const randomOffsetInsideSegment = arc * (0.1 + Math.random() * 0.8); 
+    const randomOffsetInsideSegment = arc * (0.1 + Math.random() * 0.8);
     const finalAngle = baseAngle + (2 * Math.PI - (segmentStart + randomOffsetInsideSegment));
 
-    let startAngle = angle % (2 * Math.PI); // normalize current angle
+    let startAngle = angle % (2 * Math.PI);
     let startTime = null;
-    const duration = 6000; // spin duration in ms
-
-    function easeOut(t) {
-      return t * (2 - t); // simple ease-out quadratic
-    }
+    const duration = 6000; // 6 seconds
 
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
       let elapsed = timestamp - startTime;
       let progress = Math.min(elapsed / duration, 1);
-      let easedProgress = easeOut(progress);
 
-      // Interpolate angle from startAngle to finalAngle
+      // Use easeInOutQuad for fast start and slow end
+      let easedProgress = easeInOutQuad(progress);
+
       angle = startAngle + easedProgress * (finalAngle - startAngle);
 
       drawWheel();
@@ -386,12 +388,11 @@
       } else {
         spinning = false;
 
-        // Calculate the landed segment based on final angle
         const normalizedAngle = angle % (2 * Math.PI);
         const landedIndex = count - Math.floor(normalizedAngle / arc) - 1;
         const selected = entries[(landedIndex + count) % count];
 
-        updateArrowLabel(selected.name, true); // fade-in effect
+        updateArrowLabel(selected.name, true);
         updateUI();
       }
     }
