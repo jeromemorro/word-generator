@@ -2,80 +2,187 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Entry Selector</title>
+  <title>Application Settings</title>
   <style>
+  /* === 🧱 Base Styles === */
+  /* === Base Body Styling === */
     body {
-      font-family: sans-serif;
       margin: 0;
-      padding: 5rem 2rem 2rem 2rem;
-      background: #f5f5f5;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
+      background-color: #121212;
+      font-family: Arial, sans-serif;
+      color: white;
     }
-    #titleWrapper {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      background-color: transparent;
-      text-align: center;
+
+  /* === Light Mode Overrides === */
+    body.light-mode {
+      background-color: #f0f0f0;
+      color: #000;
     }
-    #wheelTitleContainer {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
+
+  /* === 🪟 Window & Layout Containers === */
+  /* === Main Window Container === */
+    .window {
+      width: 320px;
+      margin-top: 10px;
+      border: 1px solid #444;
+      background-color: #000;
+      box-shadow: 0 0 10px #222;
+    }
+
+  /* === Main Layout Flexbox === */
+    .main-layout {
+      display: flex;
       justify-content: center;
-    }
-    #editTitleBtn {
-      font-size: 0.5em;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-    #titleInput {
-      font-family: inherit;
-      padding: 0.25rem;
-    }
-    #container {
-      display: inline-flex;
       align-items: flex-start;
-      gap: 2rem;
+      gap: 50px;
     }
-    .main-panel {
-      text-align: center;
-      flex: 0 0 auto;
-    }
-    canvas {
-      margin-bottom: 1rem;
-      display: block;
-    }
-    .controls button {
-      margin: 0.5rem;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-    }
+
+  /* === Wheel Container === */
     .wheel-container {
       position: relative;
       display: inline-block;
       width: 400px;
       height: 400px;
+      margin-top: 40px;
+      margin-left: 20px;
     }
+
+  /* === 🖼️ Canvas & Welcome Message === */
+  /* === Canvas Styling === */
+    canvas {
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+  /* === Welcome Message Overlay === */
+    .welcome-message {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ccc;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #000;
+      z-index: 5;
+      max-width: 540px;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+
+  /* === 🎛️ Controls & Buttons === */
+  /* === Controls Container === */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+    }
+
+  /* === Generic Button Styling === */
+    .controls button {
+      display: flex;
+      height: 30px;
+      padding: 0 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      white-space: nowrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+  /* === Content Container === */
+    .content {
+      height: 400px;
+      border: 1px solid purple;
+      margin: 10px;
+      background-color: #121212;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+
+  /* === 🎯 Spin & Edit Buttons === */
+  /* === Spin Button States === */
     #spinBtn:enabled {
       background-color: #50c878;
       color: white;
-      border: none;
       cursor: pointer;
     }
+
     #spinBtn:disabled {
       background-color: #e9e9e9;
       color: #a8a8b2;
       cursor: default;
     }
+
+  /* === Edit Button States === */
+    #editBtn:enabled {
+      background-color: #9370DB;
+      color: white;
+      cursor: pointer;
+    }
+
+    #editBtn:disabled {
+      background-color: #e9e9e9;
+      color: #a8a8b2;
+      cursor: default;
+    }
+
+  /* === Hover Colors Based on Mode === */
+    body:not(.light-mode) #spinBtn:hover:enabled {
+      background-color: #6fd290;
+    }
+
+    body.light-mode #spinBtn:hover:enabled {
+      background-color: #a0e6c0;
+    }
+
+    body:not(.light-mode) #editBtn:hover:enabled {
+      background-color: #A080E0;
+    }
+
+    body.light-mode #editBtn:hover:enabled {
+      background-color: #7A5FC0;
+    }
+
+  /* === 🧭 Wheel Title & Arrow === */
+  /* === Wheel Title Container === */
+    #wheelTitleContainer {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    #wheelTitle {
+      display: inline-block;
+    }
+
+    #titleInput {
+      display: inline-block;
+      font-size: 1em;
+    }
+
+    #editTitleBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      cursor: pointer;
+      vertical-align: middle;
+      text-align: center;
+      line-height: 1;
+    }
+
+  /* === Arrow Pointer === */
     #arrow {
       position: absolute;
-      top: 50%;
+      top: 60%;
       left: 98%;
       transform: translateY(-50%) rotate(180deg);
       width: 0;
@@ -85,6 +192,7 @@
       border-left: 28px solid black;
       z-index: 10;
     }
+
     #arrow::before {
       content: '';
       position: absolute;
@@ -95,160 +203,726 @@
       border-left: 20px solid red;
       z-index: -1;
     }
-    #arrowLabel {      
-      position: absolute;
-      top: 50%;
-      left: 107%;
-      opacity: 1;
-      visibility: visible;
-      transition: none;
-      transform: translateY(-50%);
-      white-space: nowrap;
-      font-weight: bold;
-      font-size: 20px;
-      white-space: nowrap;
-      color: #333;
+
+  /* === 🧩 Title Bar & Icon Bar === */
+  /* === Title Bar Styling === */
+    .title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 6px;
+      background-color: #222;
+      border-bottom: 1px solid #444;
+      height: 32px;
     }
-    #entry-editor {
-      display: none;
-      margin-top: 45px;
-      flex-direction: column;
-      align-items: flex-start;
-      flex: 0 0 320px;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-    }
-    #entryList {
-      width: 100%;
-      margin: 10px 0;
-      padding: 0;
-      background-color: #ffffff;
-      border-radius: 4px;
-      text-align: left;
-      overflow-y: auto;
-      max-height: 300px;
-    }
-    .entryRow {
+
+    .title-bar .left {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 5px;
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 5px;
-      background: #fefefe;
+      gap: 6px;
+      font-size: 14px;
     }
-    .entryRow.drag-over {
-      border-top: 2px solid #50c878;
-    }
-    .entryRow input[type="text"] {
-      flex-grow: 1;
-    }
-    .entryRow button {
-      padding: 5px 10px;
-      font-size: 12px;
-      background-color: #f44336;
-      color: white;
-      border: none;
+
+    .title-bar .right {
       cursor: pointer;
+      width: 24px;
+      height: 24px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
     }
-    .edit-controls {
-      margin-top: 10px;
-      text-align: right;
+
+    .title-bar .right:hover {
+      background-color: #333;
+    }
+
+  /* === Icon Bar Styling === */
+    .icon-bar {
+      display: flex;
+      gap: 4px;
+      padding: 2px 6px;
+      background-color: #1a1a1a;
+      border-bottom: 1px solid #444;
+      height: 28px;
+    }
+
+    .icon-group {
+      display: flex;
+      gap: 1px;
+    }
+
+    .icon-group + .icon-group {
+      margin-left: 6px;
+    }
+
+  /* === 🖱️ Icon Wrapper & Tooltip === */
+  /* === Icon Wrapper === */
+    .icon-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      width: 24px;
+      height: 24px;
+      padding-top: 2px;
+      border-radius: 6px;
+    }
+
+    .icon-wrapper:hover {
+      background-color: #333;
+    }
+
+  /* === Tooltip Styling === */
+    .icon-wrapper::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #555;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 11px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 10;
+    }
+
+    .icon-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 9;
+    }
+
+    .icon-wrapper.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .icon-wrapper:hover::after,
+    .icon-wrapper:hover::before {
+      animation: showTooltip 0s linear 2s forwards;
+    }
+
+  /* === Tooltip Animation === */
+    @keyframes showTooltip {
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(2px);
+      }
+    }
+
+  /* === 📝 Editor & Display === */
+  /* === Editor Window Visibility === */
+    #editorWindow {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      height: 100%;
+    }
+
+    #editorWindow.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+  /* === Editor Container === */
+    #editor-container {
+      position: relative;
       width: 100%;
+      height: 100%;
+      border: 1px solid #391C6B;
+      font-family: monospace;
+      font-size: 16px;
+      line-height: 1.4em;
+      overflow: hidden;
     }
-    .edit-controls button {
-      margin: 0 5px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
+
+  /* === Editable Area === */
+    #editable-area {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+      outline: none;
+      white-space: pre;
+      overflow-wrap: break-word;
+      overflow-x: auto;
+      overflow-y: auto;
+      font-size: 16px;
+      line-height: 1.4em;
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    #editable-area:empty::before {
+      content: "Enter up to 50 lines...";
+      color: #888;
+      pointer-events: none;
+    }
+
+  /* === Formatted Display === */
+    #formatted-display {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      overflow-x: auto;
+      overflow-y: auto;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1.4em;
+      white-space: pre;
+      padding: 5px;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+
+    #formatted-display.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #formatted-display.placeholder::before {
+      content: "Enter up to 50 lines...";
+      color: #888;
+      font-style: italic;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      pointer-events: none;
+      font-family: monospace;
+      font-size: 16px;
+      line-height: 1.4em;
+    }
+
+  /* === 🧵 Line Styling & Tags === */
+  /* === Line Styling === */
+    .line {
+      position: relative;
+      white-space: pre;
+      width: max-content;
+      min-width: 100%;
+      display: block;
+      line-height: 1.4em;
+      margin: 0;
+    }
+
+    .line:nth-child(even) {
+      background-color: #424242;
+    }
+
+    .line:nth-child(odd) {
+      background-color: #2D2D2D;
+    }
+
+  /* === Insertion Line === */
+    .insertion-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #391C6B;
+      z-index: 10;
+    }
+
+  /* === Color Tag === */
+    .color-tag {
+      position: absolute;
+      right: 4px;
+      top: 2px;
+      width: 24px;
+      height: 16px;
+      background-color: #ffcc00;
+      border: 1px solid #999;
+      border-radius: 999px;
       cursor: pointer;
     }
-    .edit-controls button#saveBtn {
-      background-color: #50c878;
+
+    #toggle-color-mode.active {
+      background-color: #FFD700;
+      border: 1px solid #999;
+      color: #000;
+    }
+
+  /* === 💡 Light Mode Overrides (Extended) === */
+    body.light-mode .window {
+      background-color: #fff;
+      border-color: #ccc;
+      box-shadow: 0 0 10px #aaa;
+    }
+
+    body.light-mode .title-bar {
+      background-color: #ddd;
+      border-bottom: 1px solid #ccc;
+    }
+
+    body.light-mode .icon-bar {
+      background-color: #eee;
+      border-bottom: 1px solid #ccc;
+    }
+
+    body.light-mode .icon-wrapper:hover {
+      background-color: #ccc;
+    }
+
+    body.light-mode #toggle-color-mode.active {
+      background-color: #FFB800;
+      color: #000;
+    }
+
+    body.light-mode .content {
+      background-color: #f9f9f9;
+      border-color: #ccc;
+    }
+
+    body.light-mode #editor-container {
+      border-color: #999;
+    }
+
+    body.light-mode #editable-area {
+      background-color: #fff;
+      color: #000;
+    }
+
+    body.light-mode #formatted-display {
+      background-color: #fff;
+      color: #000;
+    }
+
+    body.light-mode .line:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+
+    body.light-mode .line:nth-child(odd) {
+      background-color: #e0e0e0;
+    }
+
+    body.light-mode .color-tag {
+      border-color: #666;
+    }
+
+    body.light-mode #formatted-display.placeholder::before {
+      color: #666;
+    }
+
+  /* === 🧾 Result Dialog === */
+  /* === Dialog Container === */
+    #resultDialog {
+      position: fixed;
+      left: 100px;
+      top: 100px;
+      transform: none;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #1A1A1A;
       color: white;
-      border: none;
+      box-shadow: 0 0 10px #000;
+      z-index: 1000;
+      width: 300px;
+      height: auto;
+      overflow: visible;
     }
-    .edit-controls button#cancelBtn {
-      background-color: #e9e9e9;
-      color: #333;
-      border: none;
+
+  /* === Dialog Title Bar === */
+    #resultDialog .title-bar {
+      background-color: #222222;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      border-bottom: 1px solid #444;
     }
-    .edit-controls button#importBtn {
-      background-color: #e9e9e9;
-      color: #333;
-      border: none;
+
+  /* === Dialog Content === */
+    #resultDialog .dialog-content {
+      padding: 20px;
+      text-align: center;
+      background-color: #1A1A1A;
+      overflow: visible;
     }
-    .edit-controls button#exportBtn {
-      background-color: #e9e9e9;
-      color: #333;
-      border: none;
-    }    
+
+  /* === Dialog Buttons === */
+    #resultDialog .dialog-buttons {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      top: 10px;
+    }
+
+    #resultDialog .dialog-buttons .icon-wrapper {
+      width: auto;
+      height: auto;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+    }
+
+    #resultDialog .dialog-buttons .icon-wrapper.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    #resultDialog .dialog-buttons .icon-wrapper:hover {
+      background-color: #666;
+    }
+
+/* === Confirmation Dialog === */
+/* === Dialog Container === */
+#confirmDialog {
+  position: fixed;
+  left: 100px;
+  top: 100px;
+  transform: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #1A1A1A;
+  color: white;
+  box-shadow: 0 0 10px #000;
+  z-index: 10000;
+  width: 300px;
+  height: auto;
+  overflow: visible;
+  max-height: 180px;
+}
+
+ /* === Dialog Title Bar === */
+#confirmDialog .title-bar {
+  background-color: #222;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+}
+
+ /* === Dialog Content === */
+#confirmDialog .dialog-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 20px;
+}
+
+/* === Dialog Text === */
+#confirmDialogText {
+  flex: 1;
+  text-align: left;
+}
+
+/* === Dialog Question Icon === */
+#confirmDialog .question-icon {
+  font-size: 22px;
+  color: white;
+  border: 2px solid #800080;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+  /* === Dialog Buttons === */
+#confirmDialog .dialog-buttons.compact {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  padding: 10px;
+}
+
+#confirmDialog .dialog-buttons.compact button {
+  padding: 6px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+}
+
+#confirmDialog .dialog-buttons.compact button:hover {
+  background-color: #666;
+}
+
+
+  /* === Highlighted Entry === */
+    .highlighted-entry {
+      background-color: #800080;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+  /* === Light Mode Dialog Overrides === */
+    body.light-mode #resultDialog {
+      background-color: #fff;
+      color: #000;
+    }
+
+    body.light-mode #resultDialog .dialog-buttons .icon-wrapper {
+      background-color: #ddd;
+      color: #000;
+    }
+
+    body.light-mode #resultDialog .dialog-buttons .icon-wrapper:hover {
+      background-color: #bbb;
+    }
+
+    body.light-mode #resultDialog .title-bar {
+      background-color: #ddd;
+      border-bottom: 1px solid #ccc;
+    }
+
+    body.light-mode #resultDialog .dialog-content {
+      background-color: #fff;
+      color: #000;
+    }
+
+    body.light-mode .highlighted-entry {
+      background-color: #F0F0F0;
+      color: #000;
+    }
+
+/* === Light Mode Dialog Overrides === */
+body.light-mode #confirmDialog {
+  background-color: #fff;
+  color: #000;
+}
+
+body.light-mode #confirmDialog .dialog-buttons.compact button {
+  background-color: #ddd;
+  color: #000;
+}
+
+body.light-mode #confirmDialog .dialog-buttons.compact button:hover {
+  background-color: #bbb;
+}
+
+body.light-mode #confirmDialog .title-bar {
+  background-color: #ddd;
+  border-bottom: 1px solid #ccc;
+}
+
+body.light-mode #confirmDialog .dialog-content {
+  background-color: #fff;
+  color: #000;
+}
+
+body.light-mode #confirmDialog .question-icon {
+  color: black;
+  border-color: black;
+}
+
   </style>
 </head>
 <body>
-  <div id="titleWrapper">
-    <h1 id="wheelTitleContainer">
-      <span id="wheelTitle">Random Entry Selector</span>
-      <span id="editTitleBtn" title="Click to edit title">✏️</span>
-      <input type="text" id="titleInput" style="display:none; font-size:1em;" />
-    </h1>
+
+<div class="main-layout">
+  <div class="wheel-container">
+    <div id="titleWrapper">
+      <div id="wheelTitleContainer">
+        <span id="wheelTitle">Random Entry Selector</span>
+        <!-- <span id="editTitleBtn" title="Edit title">✏️</span> -->
+        <div class="icon-wrapper" id="editTitleBtn" data-tooltip="Edit title">✏️</div>
+        <input type="text" id="titleInput" style="display:none; font-size:1em;" />
+      </div>
+    </div>
+
+    <div id="welcomeMessage" class="welcome-message">
+      <h2>🎉Welcome!</h2>
+      Click <em>Edit</em> to enter up to 50 entries.<br>
+      Then click <em>Spin</em> to randomly select one!<br><br>
+    </div>
+
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+    <div id="arrow"></div>
+    <!-- Tooltip for truncated wheel entries -->
+    <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      font-size: 18px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+    "></div>
+
+    <div class="controls">
+      <div class="icon-wrapper" data-tooltip="Spin the wheel">
+        <button id="spinBtn" disabled>🌀Spin</button>
+      </div>
+      <div class="icon-wrapper" data-tooltip="Edit entries">
+        <button id="editBtn">⚙️Edit</button>
+      </div>
+    </div>
+<dialog id="resultDialog">
+  <div class="title-bar">
+    <div class="left">🎯 Result</div>
+    <div class="icon-wrapper right" id="closeDialogBtn" data-tooltip="Close dialog">✖️</div>
+  </div>
+  <div class="dialog-content">
+    <p id="resultText"></p>
+    <div class="dialog-buttons">
+      <button class="icon-wrapper" id="removeBtn" data-tooltip="Remove entry">Remove</button>
+      <button class="icon-wrapper" id="okBtn" data-tooltip="Confirm result">OK</button>
+    </div>
+  </div>
+</dialog>
+
   </div>
 
-  <div id="container">
-    <div class="main-panel">
-      <div class="wheel-container">
-        <canvas id="wheelCanvas" width="400" height="400"></canvas>
-        <div id="arrow"></div>
-        <div id="arrowLabel"></div>
+  <div class="window" id="editorWindow">
+    <div class="title-bar">
+      <div class="left">
+        <span>⚙️</span>
+        <span>Edit Entries</span>
       </div>
-      <div class="controls">
-        <button id="spinBtn" disabled>Spin Wheel</button>
-        <button id="shuffleBtn">Randomize Entries</button>
-        <button id="editBtn">Edit Entries</button>
+      <div class="icon-wrapper right" id="closeEditorBtn" data-tooltip="Close window">✖️</div>
+    </div>
+    <div class="icon-bar">
+      <div class="icon-group">
+        <div class="icon-wrapper" data-tooltip="Import from file">📥</div>
+        <input type="file" id="importFile" accept=".csv" style="display:none;" />
+        <div class="icon-wrapper disabled" id="exportFile" data-tooltip="Export to file">📤</div>
+      </div>
+      <div class="icon-group">
+        <div class="icon-wrapper disabled" id="toggle-color-mode" data-tooltip="Edit colors">🎨</div>
+        <div class="icon-wrapper disabled" id="toggle-sort-order" data-tooltip="Sort entries">🔡</div>
+        <div class="icon-wrapper disabled" id="deleteAllEntries" data-tooltip="Delete all entries">🗑️</div>
+      </div>
+      <div style="flex-grow: 1;"></div> <!-- Spacer to push next icon to the right -->
+      <div class="icon-wrapper" id="toggle-dark-mode" data-tooltip="Toggle dark mode">🌓</div>
+    </div>
+    <div class="content">
+      <div id="editor-container">
+        <div id="editable-area" contenteditable="true" spellcheck="true"></div>
+        <div id="formatted-display"></div>
       </div>
     </div>
-    <div id="entry-editor">
-      <div id="entryList"></div>
-      <div class="edit-controls">
-        <div style="display: inline-block;">
-          <button id="saveBtn">Save</button>
-          <button id="cancelBtn">Cancel</button>
-        </div>
-        <div style="display: inline-block; margin-left: 20px;">
-          <button id="importBtn" title="Import from CSV file">Import</button>
-          <button id="exportBtn" title="Export to CSV file">Export</button>
-        </div>
-      </div>
-      <input type="file" id="importFileInput" accept=".csv" style="display:none;">
+<dialog id="confirmDialog">
+  <div class="title-bar">
+    <span id="confirmDialogTitle">Confirm</span>
+    <div class="icon-wrapper" data-tooltip="Close dialog">
+      <span id="closeConfirmDialogBtn" class="right">✖️</span>
     </div>
   </div>
+  <div class="dialog-content">
+    <div class="question-icon">❔</div>
+    <div id="confirmDialogText">Are you sure?</div>
+  </div>
+<div class="dialog-buttons compact">
+  <div class="icon-wrapper" data-tooltip="Confirm action">
+    <button id="confirmYesBtn">Yes</button>
+  </div>
+  <div class="icon-wrapper" data-tooltip="Cancel action">
+    <button id="confirmNoBtn" autofocus>No</button>
+  </div>
+</div>
+</dialog>
+
+  </div>
+</div>
 <script>
-  // GLOBAL state variables (not DOM elements)
-  let entries = [
-    { name: "Entry #1", color: "#000000" },
-    { name: "Entry #2", color: "#ffffff" }
-  ];
-  let tempEntries = [];
-  let angle = 0;
-  let spinning = false;
+document.addEventListener("DOMContentLoaded", () => {
+  // === State Variables ===
+  let typingTimer;
   let originalTitle = "";
-  let lastArrowLabelText = "";
+  let state = "formatted"; // Tracks whether we're in editing or formatted view
+  let isMouseDown = false; // Used to delay formatting while dragging
+  let colorEditMode = false; // Toggles color editing mode
+  let lastEditorText = ""; // Stores last known editor content
+  let persistentLines = []; // Stores current line order
+  let entries = [];
+  let uniqueColors = generateUniqueColors(50);
+  let isDescending = false; // Tracks current sort direction
+  let angle = 0;
+  let tooltipLocked = false;
+  let spinning = false;
+  let selectedEntry = "";
+  let entryWasRemoved = false;
+  let isDraggingCD = false, isDraggingRD = false, offsetX = 0, offsetY = 0;
 
-  // Add this global draft editing flag:
-  let isEditingDraft = false;
+  // === DOM Elements ===
+  const wheelTitle = document.getElementById("wheelTitle");
+  const titleInput = document.getElementById("titleInput");
+  const editableArea = document.getElementById("editable-area");
+  const formattedDisplay = document.getElementById("formatted-display");
+  const toggleColorButton = document.getElementById("toggle-color-mode");
+  const toggleDarkButton = document.getElementById("toggle-dark-mode");
+  const toggleSortOrder = document.getElementById("toggle-sort-order");
+  const deleteAllEntries = document.getElementById("deleteAllEntries");
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const spinBtn = document.getElementById('spinBtn');
+  const editBtn = document.getElementById('editBtn');
+  const closeBtn = document.getElementById('closeEditorBtn');
+  const editorWindow = document.getElementById('editorWindow');
+  const importIcon = document.querySelector(".icon-wrapper[data-tooltip='Import from file']");
+  const importFileInput = document.getElementById("importFile");
+  const exportFile = document.getElementById("exportFile");
+  const arrow = document.getElementById("arrow");
+  const resultDialog = document.getElementById("resultDialog");
+  const confirmDialog = document.getElementById("confirmDialog");
+  const resultText = document.getElementById("resultText");
+  const okBtn = document.getElementById("okBtn");
+  const removeBtn = document.getElementById("removeBtn");
+  const closeDialogBtn = document.getElementById("closeDialogBtn");
+  const resultTitleBar = resultDialog.querySelector(".title-bar");
+  const confirmTitleBar = confirmDialog.querySelector(".title-bar");
 
-  // Declare DOM-related variables here as let so we can assign them in DOMContentLoaded
-  let wheelTitle, titleInput, editTitleBtn, canvas, ctx,
-      spinBtn, shuffleBtn, editBtn, saveBtn, cancelBtn,
-      importBtn, exportBtn, importFileInput,
-      entryEditor, entryList, arrowLabel,
-      exportModal, exportDraftBtn, exportSavedBtn, cancelExportBtn,
-      confirmModal, confirmOkBtn, confirmCancelBtn;
 
-  // -- Functions that do NOT need DOM access immediately --
+  // Initialize originalTitle with current wheelTitle text content
+  originalTitle = wheelTitle.textContent;
+
+  function updateWelcomeMessage() {
+    const welcome = document.getElementById("welcomeMessage");
+    if (!welcome) return;
+
+    welcome.style.display = entries.length === 0 ? "block" : "none";
+  }
+
+  function generateUniqueColors(count) {
+    const colors = new Set();
+    while (colors.size < count) {
+      colors.add(getRandomColor());
+    }
+    return Array.from(colors);
+  }
 
   function getContrastColor(hexColor) {
     hexColor = hexColor.replace("#", "");
@@ -259,92 +933,212 @@
     return brightness < 128 ? "#fff" : "#000";
   }
 
-  function drawWheel() {
-    const count = entries.length;
-    const arc = (2 * Math.PI) / count;
+/*
+function getTextDrawRadius(entryCount, radius) {
+  if (entryCount === 12 || entryCount === 13) return radius - 34;
+  if (entryCount >= 14 && entryCount <= 50) return radius - 30;
+
+  return radius - (-0.1338 * Math.pow(entryCount, 3) + 3.633 * Math.pow(entryCount, 2) - 36.34 * entryCount + 176.2);
+}
+*/
+
+/*
+function getArcSafetyFactor(count) {
+  if (count >= 5 || count === 1) return 0.92;
+  if (count === 4) return 0.88;
+  if (count === 3) return 0.46;
+  if (count === 2) return 0.30;
+  return 0.50; // fallback for unexpected case
+}
+*/
+
+/*
+function getSafeArcWidth(entry, radius, fontSize, ctx, entryCount) {
+  ctx.font = `bold ${fontSize}px sans-serif`;
+  const textWidth = ctx.measureText(entry.displayText).width;
+  const textDrawRadius = getTextDrawRadius(entryCount, radius);
+  return textWidth / textDrawRadius; // angular width in radians
+}
+*/
+
+
+//Estimates how much space each slice of the wheel should reserve for its text, based on how many slices there are.
+function getArcSafetyFactor(count) {
+  const targetMaxTextAngle = 0.95; // empirically derived from 2 and 3 slices
+  const arc = (2 * Math.PI) / count;
+  const dynamicFactor = targetMaxTextAngle / arc;
+
+  // Clamp to reasonable bounds
+  if (count > 20) {
+     return 0.92;
+  } else {
+     return Math.max(0.30, Math.min(dynamicFactor, 1.19));
+  }
+}
+
+
+//Estimates how much arc space the text will take up on the wheel, given its font size and position.
+function getSafeArcWidth(entry, radius, fontSize, ctx, entryCount) {
+  ctx.font = `bold ${fontSize}px sans-serif`;
+  const textWidth = ctx.measureText(entry.displayText).width * 1.01; // add safety margin
+  const textDrawRadius =  radius - 10; // match actual drawing position
+  return textWidth / textDrawRadius;
+}
+
+
+function truncateTextToFit(text, maxAngle, radius, fontSize, ctx, entryCount) {
+  let truncated = text;
+  while (truncated.length > 0) {
+    const candidate = truncated + "…";
+    const testEntry = { displayText: candidate };
+    const angle = getSafeArcWidth(testEntry, radius, fontSize, ctx, entryCount);
+    if (angle <= maxAngle) return candidate;
+    truncated = truncated.slice(0, -1);
+  }
+  return "…";
+}
+
+function drawWheel() {
+  const count = entries.length;
+  if (count === 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const radius = canvas.width / 2;
-
-    for (let i = 0; i < count; i++) {
-      const start = angle + i * arc;
-      const end = start + arc;
-      ctx.beginPath();
-      ctx.moveTo(radius, radius);
-      ctx.arc(radius, radius, radius, start, end);
-      ctx.fillStyle = entries[i].color;
-      ctx.fill();
-      ctx.strokeStyle = "#fff";
-      ctx.stroke();
-
-      const textAngle = start + arc / 2;
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(textAngle);
-      ctx.textAlign = "right";
-      ctx.fillStyle = getContrastColor(entries[i].color);
-      ctx.font = "bold 16px sans-serif";
-      ctx.fillText(entries[i].name, radius - 10, 5);
-      ctx.restore();
-    }
+    return;
   }
 
-  /* Non-drammatic wheel spin (Lands precisely on the target)
-  function spinWheel() {
-    if (spinning || entries.length < 2) return;
-    spinning = true;
-    updateArrowLabel(); // Clear label on spin
-    updateUI();
+  const arc = (2 * Math.PI) / count;
+  const arcSafetyFactor = getArcSafetyFactor(count);
 
-    const duration = 6000;
-    const startAngle = angle % (2 * Math.PI); // Normalize angle between 0 and 2π
+  // Prevent overflow into adjacent slices
+  const maxTextAngle = arc * arcSafetyFactor; 
+  const radius = canvas.width / 2;
+  const minFontSize = 17;
+  const targetFontSize = 22;
+  const maxFontSize = 50;
 
-    // Randomly select an index to land on
-    const selectedIndex = Math.floor(Math.random() * entries.length);
+  let entryFontSizes = [];
 
-    // Calculate the angle for the selected segment's center:
-    const arc = (2 * Math.PI) / entries.length;
-    const targetAngle = 2 * Math.PI * 5 + // At least 5 full rotations for visual spin
-                        (2 * Math.PI - (selectedIndex + 0.5) * arc);
+  document.querySelectorAll(".wheel-tooltip-overlay").forEach(el => el.remove());
 
-    // The total rotation needed from current angle:
-    const totalRotation = targetAngle - startAngle;
-    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  for (let entry of entries) {
+    let fontSize = maxFontSize;
+    let displayText = entry.name;
+    let truncated = false;
 
-    let startTime = null;
+    const testEntry = { displayText };
 
-    function animate(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const t = Math.min(elapsed / duration, 1);
-      const easedT = easeOutCubic(t);
+    // Step 1: Downsize until it fits or hits minFontSize
+    while (fontSize >= minFontSize) {
+      const angle = getSafeArcWidth(testEntry, radius, fontSize, ctx, count);
+      if (angle <= maxTextAngle *0.94) break;
+      if (fontSize === minFontSize) break;
+      fontSize--;
+    }
 
-      angle = startAngle + totalRotation * easedT;
-      drawWheel();
+    // Step 2: If it still doesn't fit at minFontSize, truncate
+    const finalAngle = getSafeArcWidth(testEntry, radius, fontSize, ctx, count);
+    if (fontSize === minFontSize && finalAngle > maxTextAngle) {
+      truncated = true;
+      displayText = truncateTextToFit(entry.name, maxTextAngle, radius, fontSize, ctx, count);
+    }
 
-      if (t < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        spinning = false;
-        // Normalize angle so it stays between 0 and 2π
-        angle = angle % (2 * Math.PI);
 
-        // Calculate the index based on final angle
-        const finalIndex = entries.length - Math.floor((angle % (2 * Math.PI)) / arc) - 1;
-        const selected = entries[(finalIndex + entries.length) % entries.length];
-        updateArrowLabel(selected.name, true);
+/*    if (finalAngle > maxTextAngle * 1.05) {
+      truncated = true;
+      fontSize = targetFontSize;
+      displayText = truncateTextToFit(entry.name, maxTextAngle, radius, fontSize, ctx, count);
 
-        updateUI();
+      if (displayText === "…") {
+        for (let size = targetFontSize - 1; size >= minFontSize; size--) {
+          const candidate = truncateTextToFit(entry.name, maxTextAngle, radius, size, ctx, count);
+          if (candidate !== "…") {
+            displayText = candidate;
+            fontSize = size;
+            break;
+          }
+        }
       }
-    }
+    } */
 
-    requestAnimationFrame(animate);
+    entry.displayText = displayText;
+    entry.truncated = truncated;
+    entryFontSizes.push(fontSize);
   }
-  */
+
+  const globalFontSize = Math.min(...entryFontSizes);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < count; i++) {
+    const start = angle + i * arc;
+    const midAngle = start + arc / 2;
+    const entry = entries[i];
+    const displayText = entry.displayText;
+
+    // Draw slice
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, start, start + arc);
+    ctx.fillStyle = entry.color;
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+
+    // Draw text
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(midAngle);
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "right";
+    ctx.font = `bold ${globalFontSize}px sans-serif`;
+    ctx.fillStyle = getContrastColor(entry.color);
+    ctx.fillText(displayText, radius - 10, 0);
+    ctx.restore();
+
+    // Tooltip overlay for truncated entries
+    if (entry.truncated) {
+      const overlay = document.createElement("div");
+      overlay.className = "icon-wrapper wheel-tooltip-overlay";
+      overlay.setAttribute("data-tooltip", entry.name);
+
+      // Geometry
+      const angle = midAngle;
+      const radialOffset = radius * 0.05;
+      const tooltipLength = radius * 0.93;
+      const canvasRect = canvas.getBoundingClientRect();
+      const centerX = canvasRect.left + radius;
+      const centerY = canvasRect.top + radius;
+
+      // Start point of tooltip (5% out from center)
+      const startX = centerX + radialOffset * Math.cos(angle);
+      const startY = centerY + radialOffset * Math.sin(angle);
+
+      overlay.style.position = "fixed";
+      overlay.style.left = `${startX}px`;
+      overlay.style.top = `${startY - globalFontSize / 2}px`; // vertical centering
+      overlay.style.width = `${tooltipLength}px`;
+      overlay.style.height = `${globalFontSize}px`;
+      overlay.style.transformOrigin = "left center";
+      overlay.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
+      overlay.style.background = "transparent";
+      overlay.style.zIndex = "1000";
+      overlay.style.pointerEvents = "auto";
+      overlay.style.display = "inline-flex";
+      overlay.style.alignItems = "center";
+      overlay.style.justifyContent = "flex-start";
+      //overlay.style.border = "2px dotted red";
+
+      document.body.appendChild(overlay);
+    }
+  }
+}
+
 
 function spinWheel() {
-  if (spinning || entries.length < 2) return;
+  if (spinning || entries.length < 1) return;
   spinning = true;
-  updateArrowLabel(); // Clear label on spin
+
+  // Disable color mode toggle while spinning
+  toggleColorButton.classList.add("disabled");
+
   updateUI();
 
   const count = entries.length;
@@ -354,9 +1148,8 @@ function spinWheel() {
   const selectedIndex = Math.floor(Math.random() * count);
 
   // Spin parameters
-  const fullRotations = 9; // Number of full spins before landing
+  const fullRotations = 15; // Number of full spins before landing
   const baseAngle = fullRotations * 2 * Math.PI;
-
   const segmentStart = selectedIndex * arc;
   const randomOffsetInsideSegment = arc * (0.1 + Math.random() * 0.8);
   const finalAngle = baseAngle + (2 * Math.PI - (segmentStart + randomOffsetInsideSegment));
@@ -390,7 +1183,19 @@ function spinWheel() {
       const landedIndex = count - Math.floor(normalizedAngle / arc) - 1;
       const selected = entries[(landedIndex + count) % count];
 
-      updateArrowLabel(selected.name, true);
+      entryWasRemoved = false;
+      selectedEntry = selected.name;
+      resultText.innerHTML = `Selected entry: <span class="highlighted-entry">${selected.name}</span>`;
+
+      // Re-enable Remove button
+      removeBtn.disabled = false;
+      removeBtn.classList.remove("disabled");
+
+      resultDialog.show();
+
+      // Re-enable color mode toggle after spinning ends
+      toggleColorButton.classList.remove("disabled");
+
       updateUI();
     }
   }
@@ -399,111 +1204,52 @@ function spinWheel() {
 }
 
 
+  function showTooltip(x, y, text) {
+    if (tooltipLocked) return;
+
+    const tooltip = document.getElementById("wheelTooltip");
+    tooltip.setAttribute("data-tooltip", text);
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.style.opacity = 1;
+    tooltipLocked = true;
+  }
+
+  function hideTooltip() {
+    const tooltip = document.getElementById("wheelTooltip");
+    tooltip.style.opacity = 0;
+    tooltipLocked = false;
+  }
+
+
+  function isEditMode() {
+    return (state === "editing");
+  }
+
   function isEditorVisible() {
-    return window.getComputedStyle(entryEditor).display !== "none";
+    return editorWindow.classList.contains('visible');
+  }
+
+  function updateArrowVisibility() {
+    arrow.style.display = entries.length > 0 ? "block" : "none";
   }
 
   function updateUI() {
-    const enable = !spinning && entries.length >= 2 && !isEditorVisible();
-    spinBtn.disabled = !enable;
-    shuffleBtn.disabled = !enable;
-    editBtn.disabled = spinning || isEditorVisible();
+    const hasEntries = entries.length >= 1;
+    const canSpin = hasEntries && !spinning && state !== "editing" && !colorEditMode;
+  
+    spinBtn.disabled = !canSpin;
+    editBtn.disabled = isEditorVisible();
+
+    importIcon.classList.toggle("disabled", spinning || colorEditMode);
+    exportFile.classList.toggle("disabled", !hasEntries);
+    toggleColorButton.classList.toggle("disabled", !hasEntries || spinning);
+    toggleSortOrder.classList.toggle("disabled", !hasEntries || spinning || colorEditMode);
+    deleteAllEntries.classList.toggle("disabled", !hasEntries || spinning || colorEditMode);
+    updateArrowVisibility();
+    updateWelcomeMessage(); 
   }
 
-  function updateEditor() {
-    entryList.innerHTML = "";
-
-    tempEntries.forEach((entry, i) => {
-      const div = document.createElement("div");
-      div.className = "entryRow";
-      div.setAttribute("draggable", "true");
-      div.dataset.index = i;
-
-      div.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", i);
-        div.style.opacity = "0.5";
-      });
-
-      div.addEventListener("dragend", () => {
-        div.style.opacity = "1";
-      });
-
-      div.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        div.classList.add("drag-over");
-      });
-
-      div.addEventListener("dragleave", () => {
-        div.classList.remove("drag-over");
-      });
-
-      div.addEventListener("drop", (e) => {
-        e.preventDefault();
-        div.classList.remove("drag-over");
-        const fromIndex = parseInt(e.dataTransfer.getData("text/plain"));
-        const toIndex = parseInt(div.dataset.index);
-        if (fromIndex !== toIndex) {
-          const [moved] = tempEntries.splice(fromIndex, 1);
-          tempEntries.splice(toIndex, 0, moved);
-          updateEditor();
-
-          // Mark draft dirty when reordered:
-          isEditingDraft = true;
-        }
-      });
-
-      const input = document.createElement("input");
-      input.type = "text";
-      input.value = entry.name;
-      input.oninput = (e) => {
-        tempEntries[i].name = e.target.value;
-
-        // Mark draft dirty when entry name changes:
-        isEditingDraft = true;
-      };
-
-      const colorBtn = document.createElement("input");
-      colorBtn.type = "color";
-      colorBtn.value = entry.color;
-      colorBtn.oninput = (e) => {
-        tempEntries[i].color = e.target.value;
-
-        // Mark draft dirty when entry color changes:
-        isEditingDraft = true;
-      };
-
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "X";
-      delBtn.onclick = () => {
-        tempEntries.splice(i, 1);
-        updateEditor();
-
-        // Mark draft dirty when entry deleted:
-        isEditingDraft = true;
-      };
-
-      div.appendChild(input);
-      div.appendChild(colorBtn);
-      div.appendChild(delBtn);
-      entryList.appendChild(div);
-    });
-
-    const newDiv = document.createElement("div");
-    const newInput = document.createElement("input");
-    newInput.placeholder = "Add new entry";
-    newInput.onkeydown = (e) => {
-      if (e.key === "Enter" && newInput.value.trim()) {
-        tempEntries.push({ name: newInput.value.trim(), color: getRandomColor() });
-        updateEditor();
-
-        // Mark draft dirty when new entry added:
-        isEditingDraft = true;
-      }
-    };
-    newDiv.appendChild(newInput);
-    entryList.appendChild(newDiv);
-    newInput.focus();
-  }
 
   function getRandomColor() {
     const r = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
@@ -512,292 +1258,645 @@ function spinWheel() {
     return `#${r}${g}${b}`;
   }
 
-  function showEditor(show) {
-    entryEditor.style.display = show ? "flex" : "none";
+  // === Utility: Remove visual insertion lines used during drag-and-drop ===
+  function removeInsertionLines() {
+    formattedDisplay.querySelectorAll(".insertion-line").forEach(el => el.remove());
+  }
+
+  // === Main Display Function: Shows formatted lines with optional color tags ===
+function showFormattedDisplay() {
+  const text = lastEditorText || editableArea.innerText;
+  const lines = text.split("\n").map(line => line.trim());
+
+  const allEmpty = lines.every(line => line === "");
+  if (allEmpty) {
+    persistentLines = [];
+    entries = [];
+    drawWheel();
+    formattedDisplay.innerHTML = "";
+    formattedDisplay.classList.add("placeholder");
+    formattedDisplay.classList.add("show");
+    editableArea.style.visibility = "hidden";
+    toggleColorButton.classList.add("disabled");
+    exportFile.classList.add("disabled");
     updateUI();
-    if (show) {
-      window.scrollTo({ left: document.body.scrollWidth, behavior: 'smooth' });
-    }
+    state = "formatted";
+    return;
   }
 
-  function updateArrowLabel(text = "", fadeIn = false) {
-    arrowLabel.className = ""; // Ensure no class-based styles interfere
-    if (text) {
-      arrowLabel.textContent = text;
-      lastArrowLabelText = text;
+  if (!colorEditMode) {
+    persistentLines = lines.filter(line => line.trim() !== "").slice(0, 50);
+    entries = persistentLines.map((name, i) => ({
+      name,
+      color: uniqueColors[i]
+    }));
+    drawWheel();
+  }
 
-      if (fadeIn) {
-        arrowLabel.style.opacity = "0";
-        arrowLabel.style.visibility = "visible";
+  formattedDisplay.innerHTML = "";
+  formattedDisplay.classList.remove("placeholder");
 
-        void arrowLabel.offsetWidth; // Force reflow to apply transition
+  const longestLineLength = Math.max(...persistentLines.map(line => line.length));
+  const testSpan = document.createElement("span");
+  testSpan.style.visibility = "hidden";
+  testSpan.style.position = "absolute";
+  testSpan.style.whiteSpace = "pre";
+  testSpan.style.fontFamily = "monospace";
+  testSpan.style.fontSize = "16px";
+  testSpan.textContent = "W".repeat(longestLineLength);
+  document.body.appendChild(testSpan);
+  const charWidth = testSpan.offsetWidth / longestLineLength;
+  document.body.removeChild(testSpan);
 
-        arrowLabel.style.transition = "opacity 2s ease";
-        arrowLabel.style.opacity = "1";
+  const editorPixelWidth = formattedDisplay.clientWidth;
+  const colorTagPixelWidth = 28;
+  const buffer = 16;
+  const availableTextWidth = editorPixelWidth - colorTagPixelWidth - buffer;
 
-        setTimeout(() => {
-          arrowLabel.style.transition = "none"; // Reset for future updates
-        }, 1000);
-      } else {
-        arrowLabel.style.transition = "none";
-        arrowLabel.style.opacity = "1";
-        arrowLabel.style.visibility = "visible";
-      }
+  let dragSrcIndex = null;
+  let dropTargetIndex = null;
+
+  persistentLines.forEach((line, index) => {
+    const div = document.createElement("div");
+    div.className = "line";
+    div.style.position = "relative";
+    div.style.height = "1.4em";
+    div.style.lineHeight = "1.4em";
+    div.style.overflow = "hidden";
+    div.setAttribute("draggable", colorEditMode ? "true" : "false");
+    div.dataset.index = index;
+
+    if (colorEditMode) {
+      div.style.width = "100%";
+
+      div.addEventListener("dragstart", (e) => {
+        dragSrcIndex = parseInt(e.currentTarget.dataset.index);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", dragSrcIndex);
+        e.currentTarget.style.opacity = "0.5";
+      });
+
+      div.addEventListener("dragend", (e) => {
+        e.currentTarget.style.opacity = "1";
+        removeInsertionLines();
+      });
+
+      div.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        removeInsertionLines();
+
+        const bounding = div.getBoundingClientRect();
+        const offset = e.clientY - bounding.top;
+        const insertAbove = offset < bounding.height / 2;
+        const insertionLine = document.createElement("div");
+        insertionLine.className = "insertion-line";
+        insertionLine.style.top = insertAbove ? "0" : "calc(100% - 1px)";
+        div.appendChild(insertionLine);
+        dropTargetIndex = insertAbove ? index : index + 1;
+      });
+
+      div.addEventListener("dragleave", removeInsertionLines);
+      div.addEventListener("drop", (e) => {
+        e.preventDefault();
+        removeInsertionLines();
+        if (
+          dragSrcIndex !== null &&
+          dropTargetIndex !== null &&
+          dragSrcIndex !== dropTargetIndex &&
+          dropTargetIndex <= persistentLines.length
+        ) {
+          const tempLine = persistentLines[dragSrcIndex];
+          const tempColor = uniqueColors[dragSrcIndex];
+          persistentLines.splice(dragSrcIndex, 1);
+          uniqueColors.splice(dragSrcIndex, 1);
+          const adjustedIndex = dragSrcIndex < dropTargetIndex ? dropTargetIndex - 1 : dropTargetIndex;
+          persistentLines.splice(adjustedIndex, 0, tempLine);
+          uniqueColors.splice(adjustedIndex, 0, tempColor);
+          lastEditorText = persistentLines.join("\n");
+          showFormattedDisplay();
+        }
+      });
     } else {
-      arrowLabel.textContent = "";
-      arrowLabel.style.opacity = "0";
-      arrowLabel.style.visibility = "hidden";
-      arrowLabel.style.transition = "none";
+      div.style.width = `${longestLineLength}ch`;
+    }
+
+    const textSpan = document.createElement("span");
+    textSpan.style.fontFamily = "monospace";
+    textSpan.style.fontSize = "16px";
+    textSpan.style.whiteSpace = "nowrap";
+    textSpan.style.overflow = "hidden";
+    textSpan.style.textOverflow = "ellipsis";
+    textSpan.title = line;
+    textSpan.style.display = "inline-block";
+    textSpan.style.paddingRight = `${colorTagPixelWidth + buffer}px`;
+    textSpan.style.maxWidth = colorEditMode ? `${availableTextWidth}px` : "100%";
+    textSpan.textContent = line;
+    div.appendChild(textSpan);
+
+    if (colorEditMode) {
+      const colorTag = document.createElement("span");
+      colorTag.className = "color-tag";
+      colorTag.title = "Click to change color";
+      colorTag.style.backgroundColor = uniqueColors[index];
+      colorTag.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.querySelectorAll("input[type='color'].floating-color-input").forEach(el => el.remove());
+        const input = document.createElement("input");
+        input.type = "color";
+        input.value = uniqueColors[index];
+        input.className = "floating-color-input";
+        input.style.position = "absolute";
+        input.style.zIndex = 1000;
+        input.style.width = "1px";
+        input.style.height = "1px";
+        input.style.border = "none";
+        input.style.padding = "0";
+        input.style.margin = "0";
+        input.style.opacity = "0.01";
+        input.style.pointerEvents = "auto";
+        document.body.appendChild(input);
+        requestAnimationFrame(() => {
+          const rect = e.target.getBoundingClientRect();
+          input.style.left = `${rect.left + window.scrollX}px`;
+          input.style.top = `${rect.bottom + window.scrollY}px`;
+          input.focus();
+          input.click();
+        });
+        let initialValue = input.value;
+        input.addEventListener("change", () => {
+          if (input.value !== initialValue) {
+            uniqueColors[index] = input.value;
+            colorTag.style.backgroundColor = input.value;
+            entries[index].color = input.value;
+            drawWheel();
+          }
+          setTimeout(() => input.remove(), 500);
+        });
+      });
+      div.appendChild(colorTag);
+    }
+
+    formattedDisplay.appendChild(div);
+  });
+
+  formattedDisplay.classList.add("show");
+  editableArea.style.visibility = "hidden";
+  state = "formatted";
+  //toggleColorButton.classList.remove("disabled"); //NEW FUNCTIONALITY
+  //exportFile.classList.remove("disabled");
+  updateUI(); // ✅ Ensures Spin button is refreshed after entries are added
+}
+
+  // === Switch to editable mode ===
+  function showEditableArea() {
+    if (spinning) return; // Prevent switching while spinning
+    editableArea.innerText = persistentLines.join("\n");
+    lastEditorText = editableArea.innerText;
+
+    formattedDisplay.classList.remove("show");
+    editableArea.style.visibility = "visible";
+    editableArea.focus();
+    state = "editing";
+    //NEW FUNCTIONALITY
+    //exportFile.classList.add("disabled");
+    //toggleColorButton.classList.add("disabled");
+    
+    scheduleFormatting();
+  }
+
+  // === Delay formatting after typing ===
+  function scheduleFormatting() {
+    clearTimeout(typingTimer);
+    if (!isMouseDown) {
+      typingTimer = setTimeout(() => {
+        if (state === "editing") {
+          lastEditorText = editableArea.innerText;
+          showFormattedDisplay();
+        }
+      }, 3000);
     }
   }
 
-  function exportEntries(source) {
-    const defaultName = "entries.csv";
-    const fileName = prompt("Enter a file name:", defaultName);
-    if (!fileName) return; // User cancelled the prompt
+  // === Utility: Estimate max characters that fit in container ===
+  function getMaxCharsThatFit(container) {
+    const testSpan = document.createElement("span");
+    testSpan.style.visibility = "hidden";
+    testSpan.style.position = "absolute";
+    testSpan.style.whiteSpace = "pre";
+    testSpan.textContent = "W".repeat(100);
+    container.appendChild(testSpan);
+    const charWidth = testSpan.offsetWidth / 100;
+    container.removeChild(testSpan);
+    const usableWidth = container.clientWidth - 40;
+    return Math.floor(usableWidth / charWidth);
+  }
 
-    const csvContent = source
-      .map(entry => `"${entry.name.replace(/"/g, '""')}",${entry.color}`)
-      .join("\n");
+  function placeCaretAtEnd(el) {
+    el.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
+function showConfirmationDialog(title, message, onConfirm) {
+  const dialog = document.getElementById("confirmDialog");
+  document.getElementById("confirmDialogTitle").textContent = title;
+  document.getElementById("confirmDialogText").textContent = message;
+
+  dialog.showModal(); // Modal behavior
+
+  const yesBtn = document.getElementById("confirmYesBtn");
+  const noBtn = document.getElementById("confirmNoBtn");
+
+  yesBtn.onclick = () => {
+    dialog.close();
+    onConfirm(true);
+  };
+
+  noBtn.onclick = () => {
+    dialog.close();
+    onConfirm(false);
+  };
+
+  document.getElementById("closeConfirmDialogBtn").onclick = () => {
+    dialog.close();
+    onConfirm(false);
+  };
+}
+
+
+  // === Event Listeners ===
+  editTitleBtn.onclick = () => {
+    originalTitle = wheelTitle.textContent; // Save current title before editing
+    titleInput.value = originalTitle;
+    titleInput.style.width = (titleInput.value.length + 1) + 'ch';
+    wheelTitle.style.display = "none";
+    editTitleBtn.style.visibility = "hidden";
+    titleInput.style.display = "inline";
+    titleInput.focus();
+  };
+
+  titleInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const newTitle = titleInput.value.trim();
+      if (newTitle) {
+        wheelTitle.textContent = newTitle;
+      }
+      titleInput.style.display = "none";
+      wheelTitle.style.display = "inline";
+      editTitleBtn.style.visibility = "visible";
+    } else if (e.key === "Escape") {
+      // Restore the original title and cancel editing
+      titleInput.value = originalTitle;
+      titleInput.style.display = "none";
+      wheelTitle.style.display = "inline";
+      editTitleBtn.style.visibility = "visible";
+    }
+  });
+  
+  editableArea.addEventListener("focus", () => {
+    if (state !== "editing") {
+      state = "editing";
+      scheduleFormatting();
+    }
+  });
+
+  editableArea.addEventListener("input", () => {
+    const lines = editableArea.innerText.split("\n");
+    if (lines.length > 51) {
+      editableArea.innerText = lines.slice(0, 50).join("\n");
+      placeCaretAtEnd(editableArea); // Optional: keeps cursor at end
+    }
+
+    if (state !== "editing") {
+      state = "editing";
+    }
+    lastEditorText = editableArea.innerText;
+    scheduleFormatting();
+  });
+
+  editableArea.addEventListener("click", () => {
+    if (state === "editing") {
+      scheduleFormatting();
+    }
+  });
+
+  editableArea.addEventListener("keydown", (e) => {
+    // Arrow keys: e.key starts with "Arrow"
+    // Modifier keys: Shift, Control, Alt
+    if (
+      e.key.startsWith("Arrow") ||
+      e.key === "Shift" ||
+      e.key === "Control" ||
+      e.key === "Alt"
+    ) {
+      scheduleFormatting();
+    }
+  });
+
+  toggleDarkButton.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const radius = canvas.width / 2;
+    const dx = x - radius;
+    const dy = y - radius;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > radius) {
+      hideTooltip();
+      return;
+    }
+
+    const angleFromCenter = Math.atan2(dy, dx);
+    const normalizedAngle = (angleFromCenter + 2 * Math.PI) % (2 * Math.PI);
+    const arc = (2 * Math.PI) / entries.length;
+    const index = Math.floor((normalizedAngle - angle + 2 * Math.PI) % (2 * Math.PI) / arc);
+
+    const entry = entries[index];
+    if (entry && entry.truncated) {
+      showTooltip(e.clientX + 10, e.clientY + 10, entry.name);
+    } else {
+      hideTooltip();
+    }
+  });
+
+
+  editableArea.addEventListener("blur", () => {
+    if (state === "editing") {
+      lastEditorText = editableArea.innerText;
+      setTimeout(() => {
+        if (document.activeElement !== editableArea) {
+          showFormattedDisplay();
+        }
+      }, 100);
+    }
+  });
+
+  editableArea.addEventListener("mousedown", () => {
+    isMouseDown = true;
+    clearTimeout(typingTimer);
+  });
+
+  editableArea.addEventListener("mouseup", () => {
+    isMouseDown = false;
+    if (state === "editing") {
+      scheduleFormatting();
+    }
+  });
+
+  formattedDisplay.addEventListener("click", () => {
+    if (state === "formatted" && !colorEditMode) {
+      showEditableArea();
+    }
+  });
+
+  toggleColorButton.addEventListener("click", () => {
+    colorEditMode = !colorEditMode;
+    toggleColorButton.classList.toggle("active", colorEditMode);
+    showFormattedDisplay();
+  });
+
+  toggleSortOrder.addEventListener("click", () => {
+    if (entries.length === 0 || spinning) return;
+
+    showConfirmationDialog("🔡 Sort entries", "Do you want to sort the entries?", (confirmed) => {
+      if (confirmed) {
+        // Sort persistentLines and uniqueColors together
+        const combined = persistentLines.map((line, i) => ({
+          name: line,
+          color: uniqueColors[i]
+        }));
+
+        combined.sort((a, b) => {
+          return isDescending
+            ? b.name.localeCompare(a.name)
+            : a.name.localeCompare(b.name);
+        });
+
+        // Update persistentLines and uniqueColors
+        persistentLines = combined.map(item => item.name);
+        uniqueColors = combined.map(item => item.color);
+
+        // Update entries and re-render
+        entries = combined;
+        lastEditorText = persistentLines.join("\n");
+        showFormattedDisplay();
+        drawWheel();
+        updateUI();
+
+        // Toggle sort direction for next click
+        isDescending = !isDescending;
+          }
+      });
+  });
+
+  deleteAllEntries.addEventListener("click", () => {
+    if (spinning || entries.length === 0) return;
+
+    showConfirmationDialog("🗑️ Delete all entries", "Are you sure you want to delete all entries?", (confirmed) => {
+      if (confirmed) {
+        // existing delete logic here
+        persistentLines = [];
+        entries = [];
+        lastEditorText = "";
+
+        editableArea.innerText = "";
+        formattedDisplay.innerHTML = "";
+        drawWheel();
+        showFormattedDisplay();
+        updateUI();
+      }
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    editorWindow.classList.remove('visible');
+    editBtn.disabled = false;
+  });
+
+  editBtn.addEventListener('click', () => {
+    editorWindow.style.display = 'block'; // restore display
+    // Force reflow to ensure transition applies
+    void editorWindow.offsetWidth;
+    editorWindow.classList.add('visible');
+    editBtn.disabled = true;
+  });
+
+  importIcon.addEventListener("click", () => {
+    importFileInput.click();
+  });
+
+  importFileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const lines = event.target.result.split("\n").map(line => line.trim()).filter(line => line && !/^"\s*",\s*#[0-9a-fA-F]{6}$/.test(line)); // filters out empty names
+      const importedEntries = [];
+      const importedColors = [];
+
+      lines.forEach(line => {
+        const match = line.match(/^"(.*)",\s*(#[0-9a-fA-F]{6})$/);
+        if (match) {
+          importedEntries.push(match[1]);
+          importedColors.push(match[2]);
+        }
+      });
+
+      persistentLines = importedEntries.slice(0, 50);
+      uniqueColors = importedColors.slice(0, 50);
+      entries = persistentLines
+        .filter(name => name.trim() !== "")
+        .map((name, i) => ({
+          name,
+          color: uniqueColors[i]
+        }));
+
+      lastEditorText = persistentLines.join("\n");
+      showFormattedDisplay();
+      drawWheel();
+      updateUI(); // Add this to refresh export and arrow 
+      importFileInput.value = ""; // Reset input
+    };
+
+    reader.readAsText(file);
+  });
+
+  exportFile.addEventListener("click", () => {
+    const filename = prompt("Enter filename for export:", "entries.csv");
+    if (!filename) return;
+
+    const csvContent = entries.map(e => `"${e.name}",${e.color}`).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-    alert("Export complete.");
-  }
-
-
-  function showCustomConfirm() {
-    return new Promise((resolve) => {
-      confirmModal.style.display = "flex";
-
-      function cleanup() {
-        confirmOkBtn.removeEventListener("click", onOk);
-        confirmCancelBtn.removeEventListener("click", onCancel);
-        confirmModal.style.display = "none";
-      }
-
-      function onOk() {
-        cleanup();
-        resolve(true);
-      }
-
-      function onCancel() {
-        cleanup();
-        resolve(false);
-      }
-
-      confirmOkBtn.addEventListener("click", onOk);
-      confirmCancelBtn.addEventListener("click", onCancel);
-    });
-  }
-
-  // -- DOMContentLoaded to get all DOM elements and assign event handlers --
-  document.addEventListener("DOMContentLoaded", () => {
-    // Get DOM elements now that DOM is loaded
-    wheelTitle = document.getElementById("wheelTitle");
-    titleInput = document.getElementById("titleInput");
-    editTitleBtn = document.getElementById("editTitleBtn");
-    canvas = document.getElementById('wheelCanvas');
-    ctx = canvas.getContext('2d');
-    spinBtn = document.getElementById('spinBtn');
-    shuffleBtn = document.getElementById('shuffleBtn').style.display = "none";
-    editBtn = document.getElementById('editBtn');
-    saveBtn = document.getElementById('saveBtn');
-    cancelBtn = document.getElementById('cancelBtn');
-    importBtn = document.getElementById("importBtn");
-    exportBtn = document.getElementById("exportBtn");
-    importFileInput = document.getElementById("importFileInput");
-    entryEditor = document.getElementById('entry-editor');
-    entryList = document.getElementById('entryList');
-    arrowLabel = document.getElementById('arrowLabel');
-    exportModal = document.getElementById("exportModal");
-    exportDraftBtn = document.getElementById("exportDraftBtn");
-    exportSavedBtn = document.getElementById("exportSavedBtn");
-    cancelExportBtn = document.getElementById("cancelExportBtn");
-    confirmModal = document.getElementById("confirmModal");
-    confirmOkBtn = document.getElementById("confirmOkBtn");
-    confirmCancelBtn = document.getElementById("confirmCancelBtn");
-
-    // Initialize originalTitle with current wheelTitle text content
-    originalTitle = wheelTitle.textContent;
-
-    // Assign event handlers that depend on DOM elements
-
-    editTitleBtn.onclick = () => {
-      originalTitle = wheelTitle.textContent; // Save current title before editing
-      titleInput.value = originalTitle;
-      titleInput.style.width = (titleInput.value.length + 1) + 'ch';
-      wheelTitle.style.display = "none";
-      editTitleBtn.style.display = "none";
-      titleInput.style.display = "inline";
-      titleInput.focus();
-    };
-
-    titleInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const newTitle = titleInput.value.trim();
-        if (newTitle) {
-          wheelTitle.textContent = newTitle;
-        }
-        titleInput.style.display = "none";
-        wheelTitle.style.display = "inline";
-        editTitleBtn.style.display = "inline";
-      } else if (e.key === "Escape") {
-        // Restore the original title and cancel editing
-        titleInput.value = originalTitle;
-        titleInput.style.display = "none";
-        wheelTitle.style.display = "inline";
-        editTitleBtn.style.display = "inline";
-      }
-    });
-
-    editBtn.onclick = () => {
-      arrowLabel.style.visibility = "hidden"; // Just hide it (don't clear)
-      tempEntries = JSON.parse(JSON.stringify(entries));
-
-      // Reset draft flag on open:
-      isEditingDraft = false;
-
-      updateEditor();
-      showEditor(true);
-    };
-
-    saveBtn.onclick = () => {
-      entries = tempEntries.filter(e => e.name.trim() !== "");
-      drawWheel();
-      showEditor(false);
-      updateArrowLabel();        // Clear label
-      lastArrowLabelText = "";   // Clear saved value
-      updateUI();
-
-      // Reset draft flag on save:
-      isEditingDraft = false;
-    };
-
-    cancelBtn.onclick = () => {
-      tempEntries = [];
-      showEditor(false);
-      updateArrowLabel(lastArrowLabelText); // Restore the previous label text
-      updateUI();
-
-      // Reset draft flag on cancel:
-      isEditingDraft = false;
-    };
-
-    importBtn.onclick = () => {
-      importFileInput.click();
-    };
-
-    importFileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const lines = event.target.result.split(/\r?\n/);
-        for (let line of lines) {
-          const [rawName, rawColor] = line.split(",");
-          const name = rawName?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
-          const color = rawColor?.trim().replace(/^"(.*)"$/, "$1"); // Remove surrounding quotes
-          if (name && /^#[0-9a-f]{6}$/i.test(color)) {
-            tempEntries.push({ name, color });
-          }
-        }
-        updateEditor();
-      };
-      reader.readAsText(file);
-      importFileInput.value = ''; // reset input so the same file can be re-imported
-    };
-
-    exportBtn.onclick = () => {
-      // Use isEditingDraft flag instead of tempEntries length:
-      if (!isEditingDraft) {
-        showCustomConfirm().then((confirmed) => {
-          if (confirmed) {
-            exportEntries(entries);
-          }
-        });
-        return;
-      }
-
-      exportModal.style.display = "flex"; // Show modal
-    };
-
-    exportSavedBtn.onclick = () => {
-      exportModal.style.display = "none";
-      exportEntries(entries);
-    };
-
-    exportDraftBtn.onclick = () => {
-      exportModal.style.display = "none";
-      exportEntries(tempEntries);
-    };
-
-    cancelExportBtn.onclick = () => {
-      exportModal.style.display = "none";
-    };
-
-    shuffleBtn.onclick = () => {
-      updateArrowLabel();        // Clear label
-      lastArrowLabelText = "";   // Clear saved value
-      for (let i = entries.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [entries[i], entries[j]] = [entries[j], entries[i]];
-      }
-      drawWheel();
-      updateUI();
-    };
-
-    spinBtn.onclick = spinWheel;
-
-    // Final initialization
-    entries = entries.filter(e => e.name.trim() !== "");
-    drawWheel();
-    updateArrowLabel();
+    alert("Export complete!");
     updateUI();
   });
+
+
+  arrow.addEventListener('click', function () {
+      if (selectedEntry === "" || spinning) return;
+      resultText.innerHTML = `Selected entry: <span class="highlighted-entry">${selectedEntry}</span>`;
+      removeBtn.disabled = entryWasRemoved;
+      if (!entryWasRemoved) removeBtn.classList.remove("disabled");
+      resultDialog.show();
+  });
+
+  okBtn.onclick = () => resultDialog.close();
+  closeDialogBtn.onclick = () => resultDialog.close();
+
+  removeBtn.onclick = () => {
+    const selectedName = resultText.textContent.replace("Selected entry: ", "").trim();
+    const indexToRemove = entries.findIndex(e => e.name === selectedName);
+    if (indexToRemove !== -1) {
+      entryWasRemoved = true;
+      entries.splice(indexToRemove, 1);
+      persistentLines.splice(indexToRemove, 1);
+      uniqueColors.splice(indexToRemove, 1);
+      lastEditorText = persistentLines.join("\n");
+      showFormattedDisplay();
+      drawWheel();
+      updateUI();
+    }
+
+    // Disable the Remove button until dialog is shown again
+    removeBtn.disabled = true;
+    removeBtn.classList.add("disabled");
+  };
+
+  resultTitleBar.addEventListener("mousedown", (e) => {
+    isDraggingRD = true;
+
+    // Ensure dialog has explicit left/top values
+    const computedStyle = window.getComputedStyle(resultDialog);
+    if (computedStyle.left === "auto" || computedStyle.top === "auto") {
+      resultDialog.style.left = `${resultDialog.offsetLeft}px`;
+      resultDialog.style.top = `${resultDialog.offsetTop}px`;
+    }
+
+    offsetX = e.clientX - resultDialog.offsetLeft;
+    offsetY = e.clientY - resultDialog.offsetTop;
+  });
+
+  confirmTitleBar.addEventListener("mousedown", (e) => {
+    isDraggingCD = true;
+
+    const computedStyle = window.getComputedStyle(confirmDialog);
+    if (computedStyle.left === "auto" || computedStyle.top === "auto") {
+      confirmDialog.style.left = `${confirmDialog.offsetLeft}px`;
+      confirmDialog.style.top = `${confirmDialog.offsetTop}px`;
+    }
+
+    offsetX = e.clientX - confirmDialog.offsetLeft;
+    offsetY = e.clientY - confirmDialog.offsetTop;
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDraggingCD) {
+      confirmDialog.style.left = `${e.clientX - offsetX}px`;
+      confirmDialog.style.top = `${e.clientY - offsetY}px`;
+    }
+    if (isDraggingRD) {
+      resultDialog.style.left = `${e.clientX - offsetX}px`;
+      resultDialog.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDraggingCD = false;
+    isDraggingRD = false;
+  });
+
+  spinBtn.onclick = spinWheel;
+
+
+  // Wait for layout to stabilize after wheel rendering
+  requestAnimationFrame(() => {
+    const wheelRect = canvas.getBoundingClientRect();
+    const wheelCenterX = wheelRect.left + wheelRect.width / 2;
+    const wheelCenterY = wheelRect.top + wheelRect.height / 2;
+
+    resultDialog.style.left = `${wheelCenterX}px`;
+    resultDialog.style.top = `${wheelCenterY}px`;
+    resultDialog.style.transform = "translate(-50%, -50%)";
+
+    const editorRect = editorWindow.getBoundingClientRect();
+    const editorCenterX = editorRect.left + editorRect.width / 2;
+    const editorCenterY = editorRect.top + editorRect.height / 2;
+
+    confirmDialog.style.left = `${editorCenterX}px`;
+    confirmDialog.style.top = `${editorCenterY}px`;
+    confirmDialog.style.transform = "translate(-50%, -50%)";
+  });
+
+
+  // === Initial Render ===
+  editableArea.innerHTML = "";
+  lastEditorText = "";
+  showFormattedDisplay();
+  entries = entries.filter(e => e.name.trim() !== "");
+
+  updateArrowVisibility();
+  updateUI();
+});
 </script>
-  
-<!-- Export Modal -->
-<div id="exportModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-  <div style="background:white; border-radius:8px; text-align:center; min-width:250px; overflow:hidden;">
-    <!-- Title Bar -->
-    <div style="background-color:#007bff; color:white; padding:10px; font-weight:bold; text-align:center;">
-      Export to CSV File
-    </div>
-    <!-- Modal Content -->
-    <div style="padding:8px 20px 20px 20px;">
-      <p>Which entries do you want to export?</p>
-      <button id="exportDraftBtn">Unsaved</button>    
-      <button id="exportSavedBtn">Saved</button>
-      <button id="cancelExportBtn">Cancel</button>
-    </div>    
-  </div>
-</div>
-  
-<!-- Confirm Modal -->
-<div id="confirmModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-  <div style="background:white; border-radius:8px; text-align:center; min-width:250px; overflow:hidden;">
-    <!-- Title Bar -->
-    <div style="background-color:#007bff; color:white; padding:10px; font-weight:bold; text-align:center;">
-      Export to CSV File
-    </div>
-    <!-- Modal Content -->
-    <div style="padding:8px 20px 20px 20px;">
-      <p>Do you want to export the saved entries?</p>
-      <button id="confirmOkBtn" style="margin-right:10px;">OK</button>
-      <button id="confirmCancelBtn">Cancel</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
