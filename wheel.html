@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Application Settings</title>
+  <title>Random Wheel Selector</title>
   <style>
   /* === 🧱 Base Styles === */
   /* === Base Body Styling === */
@@ -191,6 +191,7 @@
       border-bottom: 14px solid transparent;
       border-left: 28px solid black;
       z-index: 10;
+      cursor: default; /* Optional */
     }
 
     #arrow::before {
@@ -202,6 +203,10 @@
       border-bottom: 10px solid transparent;
       border-left: 20px solid red;
       z-index: -1;
+    }
+
+    #arrow.icon-wrapper::before {
+      display: none;
     }
 
   /* === 🧩 Title Bar & Icon Bar === */
@@ -770,7 +775,7 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div id="arrow"></div>
+    <div id="arrow" class="icon-wrapper" data-tooltip=""></div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
@@ -1185,6 +1190,7 @@ function spinWheel() {
 
       entryWasRemoved = false;
       selectedEntry = selected.name;
+      arrow.setAttribute("data-tooltip", "Click to display result"); 
       resultText.innerHTML = `Selected entry: <span class="highlighted-entry">${selected.name}</span>`;
 
       // Re-enable Remove button
