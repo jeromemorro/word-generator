@@ -216,59 +216,144 @@
 /* Apply same tooltip behavior as buttons */
     /* Arrow styling */
     #arrow {
+      position: absolute;
+      top: 60%;
+      left: 98%;
+      transform: translateY(-50%) rotate(180deg);
       width: 0;
       height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 30px solid red; /* red arrow */
-      position: relative;
-      cursor: pointer;
-      display: inline-block;
-      margin: 2rem;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 28px solid black;
+      z-index: 10;
     }
 
-    /* Tooltip base */
-    .tooltip {
-      position: relative;
-      display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s;
+    #arrow::before {
+      content: '';
       position: absolute;
-      background-color: #333;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 5px;
-      font-size: 14px;
-      white-space: nowrap;
-      z-index: 1;
-      bottom: 100%; /* place tooltip above */
-      left: 50%;
-      transform: translateX(-50%);
-      margin-bottom: 8px;
+      top: -10px;
+      left: -26px;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 20px solid red;
+      z-index: -1;
     }
 
-    /* Tooltip arrow (small triangle) */
-    .tooltip .tooltiptext::after {
-      content: "";
-      position: absolute;
-      top: 100%; /* below the tooltip box */
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: #333 transparent transparent transparent;
-    }
+  /* ---------------------------
+     Arrow tooltip overrides
+     (minimal & non-invasive)
+     --------------------------- */
 
-    /* Show tooltip on hover */
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
+  /* Wrap the arrow in an icon-wrapper + arrow-wrapper.
+     We override the icon-wrapper sizing/hover background
+     so the arrow layout is preserved while re-using the
+     same tooltip pseudo-elements. */
+  .arrow-wrapper {
+    position: absolute;
+    top: 60%;
+    left: 98%;
+    transform: translateY(-50%);
+    display: inline-block;   /* override inline-flex from .icon-wrapper */
+    width: auto;
+    height: auto;
+    padding: 0;
+    background: transparent; /* prevent the hover background */
+    border-radius: 0;
+    z-index: 10;             /* keep arrow above canvas but below tooltip */
+    align-items: initial;
+    justify-content: initial;
+  }
+
+  /* ensure hover doesn't add dark background like other icon-wrapper items */
+  .arrow-wrapper:hover {
+    background: transparent;
+  }
+
+  /* place the actual arrow *inside* the wrapper (keep your original arrow shape) */
+  /* override the earlier #arrow absolute positioning so the wrapper owns it */
+  #arrow {
+    /* make the arrow positioned relative inside the wrapper */
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: rotate(180deg); /* keep original rotation you used */
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-left: 28px solid black;
+    z-index: 10;
+  }
+
+  /* preserve the red overlay exactly as before (relative to #arrow) */
+  #arrow::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -26px;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 20px solid red;
+    z-index: 11; /* in front of the black arrow */
+  }
+
+  /* Override tooltip placement for the arrow wrapper so it shows *above* the arrow */
+  .arrow-wrapper::after {
+    /* re-use the same content (data-tooltip) as .icon-wrapper */
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 130%;           /* place tooltip above the wrapper */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #555;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 11px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10000;         /* above everything */
+  }
+
+  /* small triangle/pointer under the tooltip (pointing down to the arrow) */
+  .arrow-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    /* border-top colored produces a small triangle pointing down */
+    border-color: #555 transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+  }
+
+  /* show with a slightly different animation (moves upward a bit when appearing) */
+  .arrow-wrapper:hover::after,
+  .arrow-wrapper:hover::before {
+    animation: showTooltipAbove 0s linear 2s forwards;
+  }
+
+  @keyframes showTooltipAbove {
+    to {
       opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
     }
+  }
 
+  /* hide tooltip entirely when data-tooltip is not present (so hover shows nothing) */
+  .arrow-wrapper:not([data-tooltip])::after,
+  .arrow-wrapper:not([data-tooltip])::before {
+    content: none;
+    opacity: 0;
+    pointer-events: none;
+    animation: none;
+  }
 
   /* === 🧩 Title Bar & Icon Bar === */
   /* === Title Bar Styling === */
@@ -836,9 +921,8 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div class="tooltip">
+    <div class="icon-wrapper arrow-wrapper" id="arrowWrapper" data-tooltip="">
       <div id="arrow"></div>
-      <span class="tooltiptext">This is the arrow tooltip</span>
     </div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
@@ -965,6 +1049,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const importFileInput = document.getElementById("importFile");
   const exportFile = document.getElementById("exportFile");
   const arrow = document.getElementById("arrow");
+  const arrowWrapper = document.getElementById('arrowWrapper');
   const resultDialog = document.getElementById("resultDialog");
   const confirmDialog = document.getElementById("confirmDialog");
   const resultText = document.getElementById("resultText");
@@ -1254,7 +1339,7 @@ function spinWheel() {
 
       entryWasRemoved = false;
       selectedEntry = selected.name;
-      arrow.setAttribute("data-tooltip", "Click to display result"); 
+      arrowWrapper.setAttribute('data-tooltip', "Click to display result"); 
       resultText.innerHTML = `Selected entry: <span class="highlighted-entry">${selected.name}</span>`;
 
       // Re-enable Remove button
@@ -1788,7 +1873,7 @@ function showConfirmationDialog(title, message, onConfirm) {
         lastEditorText = "";
         selectedEntry = "";
         entryWasRemoved = false;
-        arrow.removeAttribute("data-tooltip");
+        arrowWrapper.removeAttribute("data-tooltip");
 
         editableArea.innerText = "";
         formattedDisplay.innerHTML = "";
@@ -1976,6 +2061,7 @@ function showConfirmationDialog(title, message, onConfirm) {
   entries = entries.filter(e => e.name.trim() !== "");
 
   updateArrowVisibility();
+  arrowWrapper.removeAttribute("data-tooltip");
   updateUI();
 });
 </script>
