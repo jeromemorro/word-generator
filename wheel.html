@@ -213,47 +213,46 @@
       z-index: -1;
     }
 */
-    #arrowContainer {
-      position: absolute;
-      top: 60%;
-      left: 98%;
-      transform: translateY(-50%);
-    }
+.arrow-container {
+  position: relative;
+  display: inline-block;
+}
 
-#arrow {
+.arrow {
   width: 0;
   height: 0;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-  border-left: 28px solid black;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-right: 40px solid red; /* arrow points LEFT */
+  cursor: pointer;
   position: relative;
-  z-index: 10;
 }
 
-#arrow::before {
-  content: '';
+/* Tooltip above */
+.arrow::after {
+  content: attr(data-tooltip);
   position: absolute;
-  top: -10px;
-  left: -26px;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 20px solid red;
-  z-index: -1;
-}
-
-.tooltip-enabled::before {
-  content: '';
-  position: absolute;
-  top: -6px; /* place it above tooltip box */
+  bottom: 100%;   /* place tooltip above arrow */
   left: 50%;
   transform: translateX(-50%);
-  border-width: 0 6px 6px 6px; /* small triangle pointing up */
-  border-style: solid;
-  border-color: transparent transparent #555 transparent;
+  background: black;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 0.9em;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 9;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  margin-bottom: 6px; /* small gap between arrow and tooltip */
 }
+
+/* Show on hover */
+.arrow:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 
 
   /* === 🧩 Title Bar & Icon Bar === */
@@ -822,8 +821,8 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div id="arrowContainer" class="tooltip-enabled" data-tooltip="">
-      <div id="arrow"></div>
+    <div class="arrow-container">
+      <div class="arrow" data-tooltip=""></div>
     </div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
