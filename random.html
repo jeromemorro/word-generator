@@ -35,7 +35,31 @@
     #add:hover {
       background-color: #A080E0;
     }
+    
+    /* Tooltip styling */
+    #add::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;      /* position above the button */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #555;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1001;
+    }
 
+    #add:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px); /* small upward motion */
+    }
+    
     .component-wrapper {
       position: relative;
       margin: 10px 0;
@@ -72,7 +96,7 @@
   <div id="container"></div>
 
   <!-- Floating Button -->
-  <button id="add">Add wheel</button>
+  <button id="add" data-tooltip="Click to add a wheel to the page">Add wheel</button>
 
   <script>
     const container = document.getElementById('container');
