@@ -5,10 +5,9 @@
   <title>Random Wheel</title>
   <style>
     iframe {
-      width: 400px;
-      height: 300px;
       border: 1px solid #ccc;
       margin: 10px;
+      display: block;
     }
   </style>
 </head>
@@ -22,8 +21,15 @@
 
     addBtn.addEventListener('click', () => {
       const frame = document.createElement('iframe');
-      frame.src = "wheel.html"; // your standalone HTML page
+      frame.src = "component.html"; // your standalone component page
+      frame.style.width = "100%";   // optional: make it full width
       container.appendChild(frame);
+
+      // Once iframe loads, adjust height to match content
+      frame.onload = () => {
+        const doc = frame.contentWindow.document;
+        frame.style.height = doc.documentElement.scrollHeight + "px";
+      };
     });
   </script>
 </body>
