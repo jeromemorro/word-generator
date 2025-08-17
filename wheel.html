@@ -213,37 +213,34 @@
       z-index: -1;
     }
 */
-
-#arrow { 
-  position: absolute; 
-  top: 60%; 
-  left: 98%; 
-  transform: translateY(-50%) rotate(180deg); 
-  width: 0; 
-  height: 0; 
-  border-top: 14px solid transparent; 
-  border-bottom: 14px solid transparent; 
-  border-left: 28px solid black; 
-  z-index: 10; 
-  cursor: pointer;
-} 
-
-#arrow::before { 
-  content: ''; 
-  position: absolute; 
-  top: -10px; 
-  left: -26px; 
-  border-top: 10px solid transparent; 
-  border-bottom: 10px solid transparent; 
-  border-left: 20px solid red; 
-  z-index: 11; /* place above black arrow */
+/* Black arrow */
+#arrow {
+  width: 0;
+  height: 0;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-left: 28px solid black;
+  z-index: 10;
+  position: relative;
 }
 
-/* Tooltip */
-#arrow[data-tooltip]::after {
-  content: attr(data-tooltip);
+/* Red arrow overlay */
+#red-arrow {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 20px solid red;
   position: absolute;
-  bottom: 100%;
+  top: -10px;
+  left: -26px;
+  z-index: 11; /* above black arrow */
+}
+
+/* Tooltip styling */
+.arrow-tooltip {
+  position: absolute;
+  bottom: 100%; /* above arrow */
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 6px;
@@ -256,29 +253,11 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  z-index: 20; /* above red arrow */
+  z-index: 20;
 }
 
-#arrow[data-tooltip]::after::before {
-  content: '';
-}
-
-#arrow[data-tooltip]::before { 
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 19;
-}
-
-#arrow[data-tooltip]:hover::after,
-#arrow[data-tooltip]:hover::before {
+/* Show tooltip on hover */
+#arrow-wrapper:hover .arrow-tooltip {
   opacity: 1;
 }
 
@@ -850,9 +829,14 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div id="arrow" data-tooltip="Spin the wheel">
-      <div class="red-arrow"></div>
-    </div>
+<div id="arrow-wrapper" style="position: absolute; top: 60%; left: 98%; transform: translateY(-50%) rotate(180deg);">
+  <!-- Black Arrow -->
+  <div id="arrow"></div>
+  <!-- Red Arrow overlay -->
+  <div id="red-arrow"></div>
+  <!-- Tooltip -->
+  <div class="arrow-tooltip">Tooltip text here</div>
+</div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
