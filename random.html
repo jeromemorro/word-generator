@@ -87,6 +87,30 @@
     .remove-btn:hover {
       background: #A080E0;
     }
+    
+    /* Tooltip for remove button */
+    .remove-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;      /* display above the button */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #555;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1001;
+    }
+
+    .remove-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
   </style>
 </head>
 <body>
@@ -110,7 +134,7 @@
       const removeBtn = document.createElement('button');
       removeBtn.className = 'remove-btn';
       removeBtn.textContent = '✖'; // X symbol
-      removeBtn.title = "Remove this wheel";
+      removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
 
       // Remove component when button is clicked
       removeBtn.addEventListener('click', () => {
