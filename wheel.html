@@ -244,7 +244,7 @@
   position: relative;
 }
 
-#arrow[data-tooltip]::after {
+#arrow[data-tooltip]::before.tooltip {
   content: attr(data-tooltip);
   position: absolute;
   bottom: 100%; 
@@ -263,7 +263,7 @@
   z-index: 20;
 }
 
-#arrow[data-tooltip]::before.tooltip {
+#arrow[data-tooltip]::after {
   content: '';
   position: absolute;
   bottom: 100%; 
@@ -277,12 +277,12 @@
   transition: opacity 0.3s ease;
   z-index: 19;
 }
- /*
+
 #arrow[data-tooltip]:hover::after,
 #arrow[data-tooltip]:hover::before.tooltip {
   opacity: 1;
 }
-*/
+
 
 
   /* === 🧩 Title Bar & Icon Bar === */
