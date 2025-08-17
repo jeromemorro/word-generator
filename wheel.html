@@ -187,8 +187,6 @@
     }
 
   /* === Arrow Pointer === */
-
-  /*  
     #arrow {
       position: absolute;
       top: 60%;
@@ -212,55 +210,6 @@
       border-left: 20px solid red;
       z-index: -1;
     }
-*/
-/* Black arrow */
-#arrow {
-  width: 0;
-  height: 0;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-  border-left: 28px solid black;
-  z-index: 10;
-  position: relative;
-}
-
-/* Red arrow overlay */
-#red-arrow {
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 20px solid red;
-  position: absolute;
-  top: -10px;
-  left: -26px;
-  z-index: 11; /* above black arrow */
-}
-
-/* Tooltip styling */
-.arrow-tooltip {
-  position: absolute;
-  bottom: 100%; /* above arrow */
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 6px;
-  background-color: #555;
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 11px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 20;
-}
-
-/* Show tooltip on hover */
-#arrow-wrapper:hover .arrow-tooltip {
-  opacity: 1;
-}
-
 
 
   /* === 🧩 Title Bar & Icon Bar === */
@@ -829,14 +778,7 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-<div id="arrow-wrapper" style="position: absolute; top: 60%; left: 98%; transform: translateY(-50%) rotate(180deg);">
-  <!-- Black Arrow -->
-  <div id="arrow"></div>
-  <!-- Red Arrow overlay -->
-  <div id="red-arrow"></div>
-  <!-- Tooltip -->
-  <div class="arrow-tooltip">Tooltip text here</div>
-</div>
+    <div id="arrow"></div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
