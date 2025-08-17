@@ -214,7 +214,7 @@
     }
 */
 
-/* Black arrow (base) */
+/* Black arrow (unchanged) */
 #arrow {
   position: absolute;
   top: 60%;
@@ -229,11 +229,12 @@
   cursor: pointer;
 }
 
-/* Red arrow on top of black arrow */
+/* Red arrow exactly on top, using transform to align */
 #arrow .red-arrow {
   position: absolute;
-  top: -14px;  /* tweak to center over black arrow */
-  left: -14px; /* tweak to center over black arrow */
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%) rotate(180deg);
   width: 0;
   height: 0;
   border-top: 10px solid transparent;
@@ -242,11 +243,11 @@
   z-index: 11;
 }
 
-/* Tooltip styling attached to parent (#arrow) */
+/* Tooltip */
 #arrow[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 100%;       /* above arrow */
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 6px;
@@ -277,12 +278,11 @@
   z-index: 19;
 }
 
-/* Show tooltip on hover (parent or red arrow) */
+/* Show tooltip on hover */
 #arrow:hover::after,
 #arrow:hover::before {
   opacity: 1;
 }
-
 
 
 
