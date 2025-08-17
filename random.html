@@ -25,18 +25,42 @@
       cursor: pointer;
       font-size: 16px;
       transition: background-color 0.3s ease;
-      z-index: 1000; /* keeps it above iframes */
+      z-index: 1000;
     }
 
     #add:hover {
       background-color: #A080E0;
     }
 
+    .component-wrapper {
+      position: relative;
+      margin: 10px 0;
+    }
+
     iframe {
       border: 0px;
-      margin: 10px 0;
       display: block;
       width: 100%;
+    }
+
+    /* Remove button styling */
+    .remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+      z-index: 10;
+    }
+
+    .remove-btn:hover {
+      background: #ff1a1a;
     }
   </style>
 </head>
@@ -51,10 +75,28 @@
     const addBtn = document.getElementById('add');
 
     addBtn.addEventListener('click', () => {
+      // Create a wrapper div to hold iframe + remove button
+      const wrapper = document.createElement('div');
+      wrapper.className = 'component-wrapper';
+
       const frame = document.createElement('iframe');
       frame.src = "wheel.html";
-      container.appendChild(frame);
 
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = '✖'; // X symbol
+      removeBtn.title = "Remove this wheel";
+
+      // Remove component when button is clicked
+      removeBtn.addEventListener('click', () => {
+        container.removeChild(wrapper);
+      });
+
+      wrapper.appendChild(removeBtn);
+      wrapper.appendChild(frame);
+      container.appendChild(wrapper);
+
+      // Auto-size iframe
       frame.onload = () => {
         const doc = frame.contentWindow.document;
         frame.style.height = doc.documentElement.scrollHeight + "px";
