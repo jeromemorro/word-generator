@@ -241,6 +241,19 @@
   z-index: -1;
 }
 
+.tooltip-enabled::before {
+  content: '';
+  position: absolute;
+  top: -6px; /* place it above tooltip box */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px; /* small triangle pointing up */
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 9;
+}
 
 
   /* === 🧩 Title Bar & Icon Bar === */
