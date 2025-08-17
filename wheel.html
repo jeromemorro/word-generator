@@ -214,33 +214,29 @@
     }
 */
 
-/* Black arrow (unchanged) */
-#arrow {
-  position: absolute;
-  top: 60%;
-  left: 98%;
-  transform: translateY(-50%) rotate(180deg);
-  width: 0;
-  height: 0;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-  border-left: 28px solid black;
-  z-index: 10;
+#arrow { 
+  position: absolute; 
+  top: 60%; 
+  left: 98%; 
+  transform: translateY(-50%) rotate(180deg); 
+  width: 0; 
+  height: 0; 
+  border-top: 14px solid transparent; 
+  border-bottom: 14px solid transparent; 
+  border-left: 28px solid black; 
+  z-index: 10; 
   cursor: pointer;
-}
+} 
 
-/* Red arrow exactly on top, using transform to align */
-#arrow .red-arrow {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%) rotate(180deg);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 20px solid red;
-  z-index: 11;
+#arrow::before { 
+  content: ''; 
+  position: absolute; 
+  top: -10px; 
+  left: -26px; 
+  border-top: 10px solid transparent; 
+  border-bottom: 10px solid transparent; 
+  border-left: 20px solid red; 
+  z-index: 11; /* place above black arrow */
 }
 
 /* Tooltip */
@@ -260,11 +256,14 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  z-index: 20;
+  z-index: 20; /* above red arrow */
 }
 
-/* Tooltip triangle */
-#arrow[data-tooltip]::before {
+#arrow[data-tooltip]::after::before {
+  content: '';
+}
+
+#arrow[data-tooltip]::before { 
   content: '';
   position: absolute;
   bottom: 100%;
@@ -278,9 +277,8 @@
   z-index: 19;
 }
 
-/* Show tooltip on hover */
-#arrow:hover::after,
-#arrow:hover::before {
+#arrow[data-tooltip]:hover::after,
+#arrow[data-tooltip]:hover::before {
   opacity: 1;
 }
 
