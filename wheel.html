@@ -239,18 +239,18 @@
   z-index: -1;
 }
 
-/* Tooltip styling (separate from ::before) */   
+/* Tooltip styling (separate from ::before) */
 #arrow[data-tooltip] {
-  position: relative;
+  position: relative; /* necessary for tooltip positioning */
 }
 
 #arrow[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 100%; 
+  bottom: 100%; /* place above the arrow */
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 6px; 
+  margin-bottom: 6px; /* small gap */
   background-color: #555;
   color: #fff;
   padding: 6px 10px;
@@ -266,7 +266,7 @@
 #arrow[data-tooltip]::before.tooltip {
   content: '';
   position: absolute;
-  bottom: 100%; 
+  bottom: 100%; /* above arrow */
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 0px;
@@ -282,6 +282,7 @@
 #arrow[data-tooltip]:hover::before.tooltip {
   opacity: 1;
 }
+
 
 
 
