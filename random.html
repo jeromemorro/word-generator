@@ -148,6 +148,8 @@
       // Auto-size iframe
       frame.onload = () => {
         const doc = frame.contentWindow.document;
+        doc.documentElement.style.overflow = 'hidden';  // prevents internal scrollbar
+        doc.body.style.overflow = 'hidden';            // extra safety
         frame.style.height = doc.documentElement.scrollHeight + "px";
       };
     });
