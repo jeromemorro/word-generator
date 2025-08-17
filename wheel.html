@@ -214,7 +214,7 @@
     }
 */
 
-/* Keep original arrow intact */
+/* Black arrow (base) */
 #arrow {
   position: absolute;
   top: 60%;
@@ -226,28 +226,30 @@
   border-bottom: 14px solid transparent;
   border-left: 28px solid black;
   z-index: 10;
+  cursor: pointer;
 }
 
-#arrow::before {
-  content: '';
+/* Red arrow on top of black arrow */
+#arrow .red-arrow {
   position: absolute;
-  top: -10px;
-  left: -26px;
+  top: -14px;  /* tweak to center over black arrow */
+  left: -14px; /* tweak to center over black arrow */
+  width: 0;
+  height: 0;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   border-left: 20px solid red;
-  z-index: -1;
+  z-index: 11;
 }
 
-
-/* Arrow tooltip styling */
+/* Tooltip styling attached to parent (#arrow) */
 #arrow[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 100%;       /* place above arrow */
+  bottom: 100%;       /* above arrow */
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 6px; /* small gap */
+  margin-bottom: 6px;
   background-color: #555;
   color: #fff;
   padding: 6px 10px;
@@ -260,14 +262,13 @@
   z-index: 20;
 }
 
-/* Triangle */
+/* Tooltip triangle */
 #arrow[data-tooltip]::before {
   content: '';
   position: absolute;
-  bottom: 100%;       /* align with top of tooltip */
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 0px;
   border-width: 6px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
@@ -276,11 +277,12 @@
   z-index: 19;
 }
 
-/* Show tooltip on hover */
-#arrow[data-tooltip]:hover::after,
-#arrow[data-tooltip]:hover::before {
+/* Show tooltip on hover (parent or red arrow) */
+#arrow:hover::after,
+#arrow:hover::before {
   opacity: 1;
 }
+
 
 
 
@@ -850,7 +852,9 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div id="arrow" data-tooltip="This is the arrow"></div>
+    <div id="arrow" data-tooltip="Spin the wheel">
+      <div class="red-arrow"></div>
+    </div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
