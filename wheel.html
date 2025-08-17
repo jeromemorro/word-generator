@@ -213,46 +213,61 @@
       z-index: -1;
     }
 */
-.arrow-container {
-  position: relative;
-  display: inline-block;
-}
+/* Apply same tooltip behavior as buttons */
+    /* Arrow styling */
+    #arrow {
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 30px solid red; /* red arrow */
+      position: relative;
+      cursor: pointer;
+      display: inline-block;
+      margin: 2rem;
+    }
 
-.arrow {
-  width: 0;
-  height: 0;
-  border-top: 25px solid transparent;
-  border-bottom: 25px solid transparent;
-  border-right: 40px solid red; /* arrow points LEFT */
-  cursor: pointer;
-  position: relative;
-}
+    /* Tooltip base */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
 
-/* Tooltip above */
-.arrow::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;   /* place tooltip above arrow */
-  left: 50%;
-  transform: translateX(-50%);
-  background: black;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 0.9em;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s;
-  margin-bottom: 6px; /* small gap between arrow and tooltip */
-}
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s;
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: nowrap;
+      z-index: 1;
+      bottom: 100%; /* place tooltip above */
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 8px;
+    }
 
-/* Show on hover */
-.arrow:hover::after {
-  opacity: 1;
-  visibility: visible;
-}
+    /* Tooltip arrow (small triangle) */
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%; /* below the tooltip box */
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
 
+    /* Show tooltip on hover */
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
 
 
   /* === 🧩 Title Bar & Icon Bar === */
@@ -821,8 +836,9 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div class="arrow-container">
-      <div class="arrow" data-tooltip=""></div>
+    <div class="tooltip">
+      <div id="arrow"></div>
+      <span class="tooltiptext">This is the arrow tooltip</span>
     </div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
