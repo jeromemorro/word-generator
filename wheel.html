@@ -214,6 +214,7 @@
     }
 */
 
+/* Keep original arrow intact */
 #arrow {
   position: absolute;
   top: 60%;
@@ -226,6 +227,7 @@
   border-left: 28px solid black;
   z-index: 10;
 }
+
 #arrow::before {
   content: '';
   position: absolute;
@@ -237,12 +239,18 @@
   z-index: -1;
 }
 
+/* Tooltip styling (separate from ::before) */
+#arrow[data-tooltip] {
+  position: relative; /* necessary for tooltip positioning */
+}
+
 #arrow[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: -35px; /* above the arrow */
+  bottom: 100%; /* place above the arrow */
   left: 50%;
   transform: translateX(-50%);
+  margin-bottom: 6px; /* small gap */
   background-color: #555;
   color: #fff;
   padding: 6px 10px;
@@ -251,16 +259,17 @@
   font-size: 11px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease;
   z-index: 20;
 }
 
-#arrow[data-tooltip]::before {
+#arrow[data-tooltip]::before.tooltip {
   content: '';
   position: absolute;
-  top: -20px; /* above the arrow */
+  bottom: 100%; /* above arrow */
   left: 50%;
   transform: translateX(-50%);
+  margin-bottom: 0px;
   border-width: 6px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
@@ -270,9 +279,10 @@
 }
 
 #arrow[data-tooltip]:hover::after,
-#arrow[data-tooltip]:hover::before {
+#arrow[data-tooltip]:hover::before.tooltip {
   opacity: 1;
 }
+
 
 
   /* === 🧩 Title Bar & Icon Bar === */
