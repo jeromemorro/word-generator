@@ -1570,6 +1570,14 @@ function showConfirmationDialog(title, message, onConfirm) {
       editTitleBtn.style.visibility = "visible";
     }
   });
+
+  // Handle losing focus (blur) same as Escape
+  titleInput.addEventListener("blur", () => {
+    titleInput.value = originalTitle;
+    titleInput.style.display = "none";
+    wheelTitle.style.display = "inline";
+    editTitleBtn.style.visibility = "visible";
+  });
   
   editableArea.addEventListener("focus", () => {
     if (state !== "editing") {
