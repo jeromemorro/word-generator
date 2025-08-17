@@ -1714,6 +1714,9 @@ function showConfirmationDialog(title, message, onConfirm) {
         persistentLines = [];
         entries = [];
         lastEditorText = "";
+        selectedEntry = "";
+        entryWasRemoved = false;
+        arrow.removeAttribute("data-tooltip");
 
         editableArea.innerText = "";
         formattedDisplay.innerHTML = "";
