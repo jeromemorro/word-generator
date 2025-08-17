@@ -198,7 +198,6 @@
       border-bottom: 14px solid transparent;
       border-left: 28px solid black;
       z-index: 10;
-      //cursor: default; /* Optional */
     }
 
     #arrow::before {
@@ -212,9 +211,43 @@
       z-index: -1;
     }
 
-   // #arrow.icon-wrapper::before {
-   //   display: none;
-   // }
+    /* Tooltip pseudo-elements for any element with tooltip-enabled */
+    .tooltip-enabled::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #555;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 11px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 10;
+    }
+
+    .tooltip-enabled::before {
+      content: '';
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 9;
+    }
+
+    .tooltip-enabled:hover::after,
+    .tooltip-enabled:hover::before {
+      animation: showTooltip 0s linear 0s forwards;
+    }
 
   /* === 🧩 Title Bar & Icon Bar === */
   /* === Title Bar Styling === */
@@ -782,7 +815,7 @@ body.light-mode #confirmDialog .question-icon {
     </div>
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <div id="arrow" class="icon-wrapper" data-tooltip=""></div>
+    <div id="arrow" class="tooltip-enabled" data-tooltip=""></div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
