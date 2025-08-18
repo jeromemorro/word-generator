@@ -91,6 +91,7 @@
     }
 
     /* Tooltip styling (restored) */
+    #add::after,
     .remove-btn::after,
     .drag-handle::after {
       content: attr(data-tooltip);
@@ -109,7 +110,8 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
       z-index: 1001;
     }
-
+    
+    #add:hover::after,
     .remove-btn:hover::after,
     .drag-handle:hover::after {
       opacity: 1;
