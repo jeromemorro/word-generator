@@ -2,211 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Random Wheel Selector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iframe Drag Reorder (No Refresh)</title>
   <style>
     body {
-      background-color: #121212;
       font-family: sans-serif;
-      color: white;
-      margin: 0;
-      padding: 20px;      
+      margin: 20px;
     }
-
-    /* Floating Add Component button */
-    #add {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #9370DB;
-      color: white;
-      border: none;
-      padding: 14px 20px;
+    .iframe-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .iframe-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-      z-index: 1000;
+      background: #f9f9f9;
     }
-
-    #add:hover {
-      background-color: #A080E0;
-    }
-
-    .component-wrapper {
-      position: relative;
-      margin: 10px 0;
-      border: 2px solid transparent;
-      border-radius: 8px;
-    }
-
-    iframe {
-      border: none;
-      display: block;
-      width: 100%;
-      overflow: hidden; /* prevents scrollbars */
-    }
-
-    /* Remove button styling */
-    .remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #9370DB;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-      z-index: 10;
-    }
-
-    .remove-btn:hover {
-      background: #A080E0;
-    }
-
-    /* Drag handle styling */
     .drag-handle {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #444;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
       cursor: grab;
-      font-size: 16px;
-      z-index: 10;
+      font-size: 18px;
+      padding: 5px;
     }
-
-    .drag-handle:active {
-      cursor: grabbing;
+    iframe {
+      width: 500px;
+      height: 200px;
+      border: none;
+      border-radius: 6px;
     }
-
-    /* Visual feedback while dragging */
-    .drag-over {
-      border: 2px dashed #9370DB;
+    .tooltip {
+      position: relative;
+      display: inline-block;
     }
-
-    /* Tooltip styling (restored) */
-    #add::after,
-    .remove-btn::after,
-    .drag-handle::after {
-      content: attr(data-tooltip);
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: max-content;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 4px 8px;
       position: absolute;
-      bottom: 120%;      /* display above the button */
+      z-index: 1;
+      bottom: 125%;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #555;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      white-space: nowrap;
       opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      z-index: 1001;
+      transition: opacity 0.3s;
+      white-space: nowrap;
     }
-    
-    #add:hover::after,
-    .remove-btn:hover::after,
-    .drag-handle:hover::after {
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
       opacity: 1;
-      transform: translateX(-50%) translateY(-4px);
+    }
+    #addBtn {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <div id="container"></div>
 
-  <!-- Floating Button -->
-  <button id="add" data-tooltip="Add a wheel to the page">Add wheel</button>
+  <h2>Drag and Reorder iFrames (Without Refresh)</h2>
 
+  <div class="iframe-container" id="iframeContainer">
+    <div class="iframe-wrapper">
+      <span class="drag-handle tooltip">☰
+        <span class="tooltiptext">Drag to reorder</span>
+      </span>
+      <iframe src="https://example.com"></iframe>
+    </div>
+    <div class="iframe-wrapper">
+      <span class="drag-handle tooltip">☰
+        <span class="tooltiptext">Drag to reorder</span>
+      </span>
+      <iframe src="https://www.wikipedia.org"></iframe>
+    </div>
+    <div class="iframe-wrapper">
+      <span class="drag-handle tooltip">☰
+        <span class="tooltiptext">Drag to reorder</span>
+      </span>
+      <iframe src="https://www.openai.com"></iframe>
+    </div>
+  </div>
+
+  <div class="tooltip">
+    <button id="addBtn">Add iFrame</button>
+    <span class="tooltiptext">Click to add a new iframe</span>
+  </div>
+
+  <!-- SortableJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
-    const container = document.getElementById('container');
-    const addBtn = document.getElementById('add');
-    let dragSrcEl = null;
+    // Enable drag-and-drop with SortableJS
+    new Sortable(document.getElementById("iframeContainer"), {
+      handle: ".drag-handle",
+      animation: 150
+    });
 
-    addBtn.addEventListener('click', () => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'component-wrapper';
+    // Add new iframe on button click
+    document.getElementById("addBtn").addEventListener("click", () => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "iframe-wrapper";
 
-      const frame = document.createElement('iframe');
-      frame.src = "wheel.html";
+      wrapper.innerHTML = `
+        <span class="drag-handle tooltip">☰
+          <span class="tooltiptext">Drag to reorder</span>
+        </span>
+        <iframe src="https://www.bing.com"></iframe>
+      `;
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove-btn';
-      removeBtn.textContent = '✖';
-      removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
-
-      const dragHandle = document.createElement('button');
-      dragHandle.className = 'drag-handle';
-      dragHandle.textContent = '≡';
-      dragHandle.setAttribute('data-tooltip', 'Drag to reorder');
-
-      // Only the handle is draggable
-      dragHandle.addEventListener('mousedown', () => {
-        wrapper.draggable = true;
-      });
-      dragHandle.addEventListener('mouseup', () => {
-        wrapper.draggable = false;
-      });
-
-      removeBtn.addEventListener('click', () => {
-        container.removeChild(wrapper);
-      });
-
-      wrapper.appendChild(dragHandle);
-      wrapper.appendChild(removeBtn);
-      wrapper.appendChild(frame);
-      container.appendChild(wrapper);
-
-      // Auto-size iframe
-      frame.onload = () => {
-        const doc = frame.contentWindow.document;
-        doc.documentElement.style.overflow = 'hidden';
-        frame.style.height = doc.documentElement.scrollHeight + "px";
-      };
-
-      // Drag and drop events
-      wrapper.addEventListener('dragstart', (e) => {
-        dragSrcEl = wrapper;
-        e.dataTransfer.effectAllowed = 'move';
-      });
-
-      wrapper.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        wrapper.classList.add('drag-over');
-        e.dataTransfer.dropEffect = 'move';
-      });
-
-      wrapper.addEventListener('dragleave', () => {
-        wrapper.classList.remove('drag-over');
-      });
-
-      wrapper.addEventListener('drop', (e) => {
-        e.stopPropagation();
-        wrapper.classList.remove('drag-over');
-        if (dragSrcEl !== wrapper) {
-          const children = Array.from(container.children);
-          const srcIndex = children.indexOf(dragSrcEl);
-          const targetIndex = children.indexOf(wrapper);
-          if (srcIndex < targetIndex) {
-            container.insertBefore(dragSrcEl, wrapper.nextSibling);
-          } else {
-            container.insertBefore(dragSrcEl, wrapper);
-          }
-        }
-      });
-
-      wrapper.addEventListener('dragend', () => {
-        const wrappers = container.querySelectorAll('.component-wrapper');
-        wrappers.forEach(w => w.classList.remove('drag-over'));
-      });
+      document.getElementById("iframeContainer").appendChild(wrapper);
     });
   </script>
+
 </body>
 </html>
