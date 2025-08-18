@@ -89,6 +89,32 @@
     .drag-over {
       border: 2px dashed #9370DB;
     }
+
+    /* Tooltip styling (restored) */
+    .remove-btn::after,
+    .drag-handle::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;      /* display above the button */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #555;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1001;
+    }
+
+    .remove-btn:hover::after,
+    .drag-handle:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
   </style>
 </head>
 <body>
@@ -116,8 +142,8 @@
 
       const dragHandle = document.createElement('button');
       dragHandle.className = 'drag-handle';
-      dragHandle.textContent = '≡'; // handle icon
-      dragHandle.title = "Drag to reorder";
+      dragHandle.textContent = '≡';
+      dragHandle.setAttribute('data-tooltip', 'Drag to reorder');
 
       // Only the handle is draggable
       dragHandle.addEventListener('mousedown', () => {
