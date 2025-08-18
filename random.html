@@ -31,34 +31,12 @@
     #add:hover {
       background-color: #A080E0;
     }
-    
-    /* Tooltip styling */
-    #add::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 120%;      /* position above the button */
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #555;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      z-index: 1001;
-    }
 
-    #add:hover::after {
-      opacity: 1;
-      transform: translateX(-50%) translateY(-4px); /* small upward motion */
-    }
-    
     .component-wrapper {
       position: relative;
       margin: 10px 0;
+      border: 2px solid transparent;
+      border-radius: 8px;
     }
 
     iframe {
@@ -87,29 +65,29 @@
     .remove-btn:hover {
       background: #A080E0;
     }
-    
-    /* Tooltip for remove button */
-    .remove-btn::after {
-      content: attr(data-tooltip);
+
+    /* Drag handle styling */
+    .drag-handle {
       position: absolute;
-      bottom: 120%;      /* display above the button */
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #555;
+      top: 8px;
+      left: 8px;
+      background: #444;
+      border: none;
       color: white;
-      padding: 4px 8px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 11px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      z-index: 1001;
+      cursor: grab;
+      font-size: 16px;
+      z-index: 10;
     }
 
-    .remove-btn:hover::after {
-      opacity: 1;
-      transform: translateX(-50%) translateY(-4px);
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    /* Visual feedback while dragging */
+    .drag-over {
+      border: 2px dashed #9370DB;
     }
   </style>
 </head>
@@ -122,9 +100,9 @@
   <script>
     const container = document.getElementById('container');
     const addBtn = document.getElementById('add');
+    let dragSrcEl = null;
 
     addBtn.addEventListener('click', () => {
-      // Create a wrapper div to hold iframe + remove button
       const wrapper = document.createElement('div');
       wrapper.className = 'component-wrapper';
 
@@ -133,14 +111,27 @@
 
       const removeBtn = document.createElement('button');
       removeBtn.className = 'remove-btn';
-      removeBtn.textContent = '✖'; // X symbol
+      removeBtn.textContent = '✖';
       removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
 
-      // Remove component when button is clicked
+      const dragHandle = document.createElement('button');
+      dragHandle.className = 'drag-handle';
+      dragHandle.textContent = '≡'; // handle icon
+      dragHandle.title = "Drag to reorder";
+
+      // Only the handle is draggable
+      dragHandle.addEventListener('mousedown', () => {
+        wrapper.draggable = true;
+      });
+      dragHandle.addEventListener('mouseup', () => {
+        wrapper.draggable = false;
+      });
+
       removeBtn.addEventListener('click', () => {
         container.removeChild(wrapper);
       });
 
+      wrapper.appendChild(dragHandle);
       wrapper.appendChild(removeBtn);
       wrapper.appendChild(frame);
       container.appendChild(wrapper);
@@ -148,10 +139,45 @@
       // Auto-size iframe
       frame.onload = () => {
         const doc = frame.contentWindow.document;
-        doc.documentElement.style.overflow = 'hidden';  // prevents internal scrollbar
-        //doc.body.style.overflow = 'hidden';            // extra safety
+        doc.documentElement.style.overflow = 'hidden';
         frame.style.height = doc.documentElement.scrollHeight + "px";
       };
+
+      // Drag and drop events
+      wrapper.addEventListener('dragstart', (e) => {
+        dragSrcEl = wrapper;
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      wrapper.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        wrapper.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      wrapper.addEventListener('dragleave', () => {
+        wrapper.classList.remove('drag-over');
+      });
+
+      wrapper.addEventListener('drop', (e) => {
+        e.stopPropagation();
+        wrapper.classList.remove('drag-over');
+        if (dragSrcEl !== wrapper) {
+          const children = Array.from(container.children);
+          const srcIndex = children.indexOf(dragSrcEl);
+          const targetIndex = children.indexOf(wrapper);
+          if (srcIndex < targetIndex) {
+            container.insertBefore(dragSrcEl, wrapper.nextSibling);
+          } else {
+            container.insertBefore(dragSrcEl, wrapper);
+          }
+        }
+      });
+
+      wrapper.addEventListener('dragend', () => {
+        const wrappers = container.querySelectorAll('.component-wrapper');
+        wrappers.forEach(w => w.classList.remove('drag-over'));
+      });
     });
   </script>
 </body>
