@@ -198,6 +198,7 @@
       border-bottom: 14px solid transparent;
       border-left: 28px solid black;
       z-index: 10;
+      cursor: pointer;
     }
 
     #arrow::before {
@@ -210,7 +211,35 @@
       border-left: 20px solid red;
       z-index: -1;
     }
+  /* === Arrow Tooltip === */
+    #arrowTooltip {
+      position: fixed;
+      background-color: #555;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 11px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1001;
+      transform: translateX(-50%) translateY(-2px);
+    }
 
+    #arrowTooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+      opacity: 1;
+      z-index: 1000;
+    }
 
   /* === 🧩 Title Bar & Icon Bar === */
   /* === Title Bar Styling === */
@@ -779,6 +808,7 @@ body.light-mode #confirmDialog .question-icon {
 
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
     <div id="arrow"></div>
+    <div id="arrowTooltip">Click to show result</div>
     <!-- Tooltip for truncated wheel entries -->
     <div id="wheelTooltip" class="icon-wrapper" data-tooltip="" style="
       position: fixed;
@@ -798,22 +828,20 @@ body.light-mode #confirmDialog .question-icon {
         <button id="editBtn">⚙️Edit</button>
       </div>
     </div>
-<dialog id="resultDialog">
-  <div class="title-bar">
-    <div class="left">🎯 Result</div>
-    <div class="icon-wrapper right" id="closeDialogBtn" data-tooltip="Close dialog">✖️</div>
+    <dialog id="resultDialog">
+      <div class="title-bar">
+        <div class="left">🎯 Result</div>
+        <div class="icon-wrapper right" id="closeDialogBtn" data-tooltip="Close dialog">✖️</div>
+      </div>
+      <div class="dialog-content">
+        <p id="resultText"></p>
+        <div class="dialog-buttons">
+          <button class="icon-wrapper" id="removeBtn" data-tooltip="Remove entry">Remove</button>
+          <button class="icon-wrapper" id="okBtn" data-tooltip="Confirm result">OK</button>
+        </div>
+      </div>
+    </dialog>
   </div>
-  <div class="dialog-content">
-    <p id="resultText"></p>
-    <div class="dialog-buttons">
-      <button class="icon-wrapper" id="removeBtn" data-tooltip="Remove entry">Remove</button>
-      <button class="icon-wrapper" id="okBtn" data-tooltip="Confirm result">OK</button>
-    </div>
-  </div>
-</dialog>
-
-  </div>
-
   <div class="window" id="editorWindow">
     <div class="title-bar">
       <div class="left">
@@ -842,27 +870,26 @@ body.light-mode #confirmDialog .question-icon {
         <div id="formatted-display"></div>
       </div>
     </div>
-<dialog id="confirmDialog">
-  <div class="title-bar">
-    <span id="confirmDialogTitle">Confirm</span>
-    <div class="icon-wrapper" data-tooltip="Close dialog">
-      <span id="closeConfirmDialogBtn" class="right">✖️</span>
-    </div>
-  </div>
-  <div class="dialog-content">
-    <div class="question-icon">❔</div>
-    <div id="confirmDialogText">Are you sure?</div>
-  </div>
-<div class="dialog-buttons compact">
-  <div class="icon-wrapper" data-tooltip="Confirm action">
-    <button id="confirmYesBtn">Yes</button>
-  </div>
-  <div class="icon-wrapper" data-tooltip="Cancel action">
-    <button id="confirmNoBtn" autofocus>No</button>
-  </div>
-</div>
-</dialog>
-
+    <dialog id="confirmDialog">
+      <div class="title-bar">
+        <span id="confirmDialogTitle">Confirm</span>
+        <div class="icon-wrapper" data-tooltip="Close dialog">
+          <span id="closeConfirmDialogBtn" class="right">✖️</span>
+        </div>
+      </div>
+      <div class="dialog-content">
+        <div class="question-icon">❔</div>
+        <div id="confirmDialogText">Are you sure?</div>
+      </div>
+      <div class="dialog-buttons compact">
+        <div class="icon-wrapper" data-tooltip="Confirm action">
+          <button id="confirmYesBtn">Yes</button>
+        </div>
+        <div class="icon-wrapper" data-tooltip="Cancel action">
+          <button id="confirmNoBtn" autofocus>No</button>
+        </div>
+      </div>
+    </dialog>
   </div>
 </div>
 <script>
@@ -870,6 +897,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // === State Variables ===
   let typingTimer;
   let originalTitle = "";
+  let arrowTooltipTimer;
   let state = "formatted"; // Tracks whether we're in editing or formatted view
   let isMouseDown = false; // Used to delay formatting while dragging
   let colorEditMode = false; // Toggles color editing mode
@@ -904,6 +932,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const importFileInput = document.getElementById("importFile");
   const exportFile = document.getElementById("exportFile");
   const arrow = document.getElementById("arrow");
+  const arrowTooltip = document.getElementById("arrowTooltip");
   const resultDialog = document.getElementById("resultDialog");
   const confirmDialog = document.getElementById("confirmDialog");
   const resultText = document.getElementById("resultText");
@@ -941,70 +970,39 @@ document.addEventListener("DOMContentLoaded", () => {
     return brightness < 128 ? "#fff" : "#000";
   }
 
-/*
-function getTextDrawRadius(entryCount, radius) {
-  if (entryCount === 12 || entryCount === 13) return radius - 34;
-  if (entryCount >= 14 && entryCount <= 50) return radius - 30;
+  //Estimates how much space each slice of the wheel should reserve for its text, based on how many slices there are.
+  function getArcSafetyFactor(count) {
+    const targetMaxTextAngle = 0.95; // empirically derived from 2 and 3 slices
+    const arc = (2 * Math.PI) / count;
+    const dynamicFactor = targetMaxTextAngle / arc;
 
-  return radius - (-0.1338 * Math.pow(entryCount, 3) + 3.633 * Math.pow(entryCount, 2) - 36.34 * entryCount + 176.2);
-}
-*/
-
-/*
-function getArcSafetyFactor(count) {
-  if (count >= 5 || count === 1) return 0.92;
-  if (count === 4) return 0.88;
-  if (count === 3) return 0.46;
-  if (count === 2) return 0.30;
-  return 0.50; // fallback for unexpected case
-}
-*/
-
-/*
-function getSafeArcWidth(entry, radius, fontSize, ctx, entryCount) {
-  ctx.font = `bold ${fontSize}px sans-serif`;
-  const textWidth = ctx.measureText(entry.displayText).width;
-  const textDrawRadius = getTextDrawRadius(entryCount, radius);
-  return textWidth / textDrawRadius; // angular width in radians
-}
-*/
-
-
-//Estimates how much space each slice of the wheel should reserve for its text, based on how many slices there are.
-function getArcSafetyFactor(count) {
-  const targetMaxTextAngle = 0.95; // empirically derived from 2 and 3 slices
-  const arc = (2 * Math.PI) / count;
-  const dynamicFactor = targetMaxTextAngle / arc;
-
-  // Clamp to reasonable bounds
-  if (count > 20) {
-     return 0.92;
+    // Clamp to reasonable bounds
+    if (count > 20) {
+       return 0.92;
   } else {
-     return Math.max(0.30, Math.min(dynamicFactor, 1.19));
+       return Math.max(0.30, Math.min(dynamicFactor, 1.19));
+    }
   }
-}
 
-
-//Estimates how much arc space the text will take up on the wheel, given its font size and position.
-function getSafeArcWidth(entry, radius, fontSize, ctx, entryCount) {
-  ctx.font = `bold ${fontSize}px sans-serif`;
-  const textWidth = ctx.measureText(entry.displayText).width * 1.01; // add safety margin
-  const textDrawRadius =  radius - 10; // match actual drawing position
-  return textWidth / textDrawRadius;
-}
-
-
-function truncateTextToFit(text, maxAngle, radius, fontSize, ctx, entryCount) {
-  let truncated = text;
-  while (truncated.length > 0) {
-    const candidate = truncated + "…";
-    const testEntry = { displayText: candidate };
-    const angle = getSafeArcWidth(testEntry, radius, fontSize, ctx, entryCount);
-    if (angle <= maxAngle) return candidate;
-    truncated = truncated.slice(0, -1);
+  //Estimates how much arc space the text will take up on the wheel, given its font size and position.
+  function getSafeArcWidth(entry, radius, fontSize, ctx, entryCount) {
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    const textWidth = ctx.measureText(entry.displayText).width * 1.01; // add safety margin
+    const textDrawRadius =  radius - 10; // match actual drawing position
+    return textWidth / textDrawRadius;
   }
-  return "…";
-}
+
+  function truncateTextToFit(text, maxAngle, radius, fontSize, ctx, entryCount) {
+    let truncated = text;
+    while (truncated.length > 0) {
+      const candidate = truncated + "…";
+      const testEntry = { displayText: candidate };
+      const angle = getSafeArcWidth(testEntry, radius, fontSize, ctx, entryCount);
+      if (angle <= maxAngle) return candidate;
+      truncated = truncated.slice(0, -1);
+    }
+    return "…";
+  }
 
 function drawWheel() {
   const count = entries.length;
@@ -1048,24 +1046,6 @@ function drawWheel() {
       truncated = true;
       displayText = truncateTextToFit(entry.name, maxTextAngle, radius, fontSize, ctx, count);
     }
-
-
-/*    if (finalAngle > maxTextAngle * 1.05) {
-      truncated = true;
-      fontSize = targetFontSize;
-      displayText = truncateTextToFit(entry.name, maxTextAngle, radius, fontSize, ctx, count);
-
-      if (displayText === "…") {
-        for (let size = targetFontSize - 1; size >= minFontSize; size--) {
-          const candidate = truncateTextToFit(entry.name, maxTextAngle, radius, size, ctx, count);
-          if (candidate !== "…") {
-            displayText = candidate;
-            fontSize = size;
-            break;
-          }
-        }
-      }
-    } */
 
     entry.displayText = displayText;
     entry.truncated = truncated;
@@ -1193,7 +1173,6 @@ function spinWheel() {
 
       entryWasRemoved = false;
       selectedEntry = selected.name;
-      //arrow.setAttribute('data-tooltip', "Click to display result"); 
       resultText.innerHTML = `Selected entry: <span class="highlighted-entry">${selected.name}</span>`;
 
       // Re-enable Remove button
@@ -1241,10 +1220,12 @@ function spinWheel() {
 
   function updateArrowVisibility() {
     arrow.style.display = entries.length > 0 ? "block" : "none";
+    //arrowTooltip.style.visibility = (entries.length > 0 && selectedEntry !== "") ? "visible" : "hidden";
+    //arrowTooltip.style.opacity = (entries.length > 0 && selectedEntry !== "") ? 1 : 0;
   }
 
   function updateUI() {
-    const hasEntries = entries.length >= 1;
+    const hasEntries = entries.length > 0;
     const canSpin = hasEntries && !spinning && state !== "editing" && !colorEditMode;
   
     spinBtn.disabled = !canSpin;
@@ -1574,7 +1555,26 @@ function showConfirmationDialog(title, message, onConfirm) {
     wheelTitle.style.display = "inline";
     editTitleBtn.style.visibility = "visible";
   });
-  
+
+  arrow.addEventListener("mouseenter", () => {
+    if (!(entries.length > 0 && selectedEntry !== "")) return;
+    arrowTooltipTimer = setTimeout(() => {
+      const rect = arrow.getBoundingClientRect();
+      arrowTooltip.style.left = `${rect.left + rect.width / 2}px`;
+      arrowTooltip.style.top = `${rect.top - 22}px`; // 10px higher than before
+
+      // Show tooltip after layout is stable
+      arrowTooltip.style.visibility = "visible";
+      arrowTooltip.style.opacity = 1;
+    }, 2000); // 2-second delay
+  });
+
+  arrow.addEventListener("mouseleave", () => {
+    clearTimeout(arrowTooltipTimer);
+    arrowTooltip.style.opacity = 0;
+    arrowTooltip.style.visibility = "hidden";
+  });
+
   editableArea.addEventListener("focus", () => {
     if (state !== "editing") {
       state = "editing";
@@ -1727,8 +1727,6 @@ function showConfirmationDialog(title, message, onConfirm) {
         lastEditorText = "";
         selectedEntry = "";
         entryWasRemoved = false;
-        //arrow.removeAttribute("data-tooltip");
-
         editableArea.innerText = "";
         formattedDisplay.innerHTML = "";
         drawWheel();
@@ -1915,7 +1913,6 @@ function showConfirmationDialog(title, message, onConfirm) {
   entries = entries.filter(e => e.name.trim() !== "");
 
   updateArrowVisibility();
-  //arrow.removeAttribute("data-tooltip");
   updateUI();
 });
 </script>
