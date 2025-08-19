@@ -37,6 +37,7 @@
       margin: 10px 0;
       border: 2px solid transparent;
       border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease; /* smooth move effect */
     }
 
     iframe {
@@ -85,11 +86,6 @@
       cursor: grabbing;
     }
 
-    /* Visual feedback while dragging */
-    .drag-over {
-      border: 2px dashed #9370DB;
-    }
-
     /* Tooltip styling */
     #add::after,
     .remove-btn::after,
@@ -117,6 +113,15 @@
       opacity: 1;
       transform: translateX(-50%) translateY(-4px);
     }
+
+    /* Visual highlight while dragging */
+    .sortable-chosen {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .sortable-ghost {
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body>
@@ -125,15 +130,24 @@
   <!-- Floating Button -->
   <button id="add" data-tooltip="Add a wheel to the page">Add wheel</button>
 
+  <!-- Include Sortable.js -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
   <script>
     const container = document.getElementById('container');
     const addBtn = document.getElementById('add');
-    let dragSrcEl = null;
+
+    // Initialize Sortable.js on the container
+    const sortable = new Sortable(container, {
+      handle: '.drag-handle',  // Only drag when handle is used
+      animation: 200,          // Smooth movement animation
+      chosenClass: 'sortable-chosen',  // class for dragged item
+      ghostClass: 'sortable-ghost'     // class for placeholder
+    });
 
     addBtn.addEventListener('click', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'component-wrapper';
-      wrapper.draggable = true; // always draggable, but controlled in dragstart
 
       const frame = document.createElement('iframe');
       frame.src = "wheel.html";
@@ -142,15 +156,14 @@
       removeBtn.className = 'remove-btn';
       removeBtn.textContent = '✖';
       removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
+      removeBtn.addEventListener('click', () => {
+        container.removeChild(wrapper);
+      });
 
       const dragHandle = document.createElement('button');
       dragHandle.className = 'drag-handle';
       dragHandle.textContent = '≡';
       dragHandle.setAttribute('data-tooltip', 'Drag to reorder');
-
-      removeBtn.addEventListener('click', () => {
-        container.removeChild(wrapper);
-      });
 
       wrapper.appendChild(dragHandle);
       wrapper.appendChild(removeBtn);
@@ -163,49 +176,6 @@
         doc.documentElement.style.overflow = 'hidden';
         frame.style.height = doc.documentElement.scrollHeight + "px";
       };
-
-      // Drag and drop events
-      wrapper.addEventListener('dragstart', (e) => {
-        // Only allow drag if it started on the handle
-        if (e.target !== dragHandle) {
-          e.preventDefault();
-          return;
-        }
-        dragSrcEl = wrapper;
-        e.dataTransfer.effectAllowed = 'move';
-        // Firefox requires dataTransfer data to be set
-        e.dataTransfer.setData('text/plain', '');
-      });
-
-      wrapper.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        wrapper.classList.add('drag-over');
-        e.dataTransfer.dropEffect = 'move';
-      });
-
-      wrapper.addEventListener('dragleave', () => {
-        wrapper.classList.remove('drag-over');
-      });
-
-      wrapper.addEventListener('drop', (e) => {
-        e.stopPropagation();
-        wrapper.classList.remove('drag-over');
-        if (dragSrcEl !== wrapper) {
-          const children = Array.from(container.children);
-          const srcIndex = children.indexOf(dragSrcEl);
-          const targetIndex = children.indexOf(wrapper);
-          if (srcIndex < targetIndex) {
-            container.insertBefore(dragSrcEl, wrapper.nextSibling);
-          } else {
-            container.insertBefore(dragSrcEl, wrapper);
-          }
-        }
-      });
-
-      wrapper.addEventListener('dragend', () => {
-        const wrappers = container.querySelectorAll('.component-wrapper');
-        wrappers.forEach(w => w.classList.remove('drag-over'));
-      });
     });
   </script>
 </body>
