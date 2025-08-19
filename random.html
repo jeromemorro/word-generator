@@ -1,182 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Random Wheel Selector</title>
-  <style>
-    body {
-      background-color: #121212;
-      font-family: sans-serif;
-      color: white;
-      margin: 0;
-      padding: 20px;      
-    }
+<meta charset="UTF-8">
+<title>Random Wheel Selector</title>
+<style>
+body {
+  background-color: #121212;
+  font-family: sans-serif;
+  color: white;
+  margin: 0;
+  padding: 20px;      
+}
 
-    /* Floating Add Component button */
-    #add {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #9370DB;
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-      z-index: 1000;
-    }
+/* Floating Add Component button */
+#add {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #9370DB;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
 
-    #add:hover {
-      background-color: #A080E0;
-    }
+#add:hover { background-color: #A080E0; }
 
-    .component-wrapper {
-      position: relative;
-      margin: 10px 0;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease; /* smooth move effect */
-    }
+.component-wrapper {
+  position: relative;
+  margin: 10px 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-    iframe {
-      border: none;
-      display: block;
-      width: 100%;
-      overflow: hidden;
-    }
+iframe {
+  border: none;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
 
-    /* Remove button styling */
-    .remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #9370DB;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-      z-index: 10;
-    }
+/* Remove button styling */
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #9370DB;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+}
+.remove-btn:hover { background: #A080E0; }
 
-    .remove-btn:hover {
-      background: #A080E0;
-    }
+/* Drag handle styling */
+.drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #444;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 16px;
+  z-index: 10;
+}
+.drag-handle:active { cursor: grabbing; }
 
-    /* Drag handle styling */
-    .drag-handle {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #444;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: grab;
-      font-size: 16px;
-      z-index: 10;
-    }
+/* Tooltip styling */
+#add::after,
+.remove-btn::after,
+.drag-handle::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #555;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1001;
+}
+#add:hover::after,
+.remove-btn:hover::after,
+.drag-handle:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
 
-    .drag-handle:active {
-      cursor: grabbing;
-    }
-
-    /* Tooltip styling */
-    #add::after,
-    .remove-btn::after,
-    .drag-handle::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 120%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #555;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      z-index: 1001;
-    }
-    
-    #add:hover::after,
-    .remove-btn:hover::after,
-    .drag-handle:hover::after {
-      opacity: 1;
-      transform: translateX(-50%) translateY(-4px);
-    }
-
-    /* Visual highlight while dragging */
-    .sortable-chosen {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-
-    .sortable-ghost {
-      opacity: 0.6;
-    }
-  </style>
+/* Ghost for dragging */
+.drag-ghost {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.6;
+  border: 2px dashed #9370DB;
+  border-radius: 8px;
+  background-color: #222;
+  z-index: 1000;
+}
+</style>
 </head>
 <body>
-  <div id="container"></div>
+<div id="container"></div>
+<button id="add" data-tooltip="Add a wheel to the page">Add wheel</button>
 
-  <!-- Floating Button -->
-  <button id="add" data-tooltip="Add a wheel to the page">Add wheel</button>
+<script>
+const container = document.getElementById('container');
+const addBtn = document.getElementById('add');
 
-  <!-- Include Sortable.js -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+let dragging = null;
+let ghost = null;
+let startY = 0;
+let offsetY = 0;
 
-  <script>
-    const container = document.getElementById('container');
-    const addBtn = document.getElementById('add');
+addBtn.addEventListener('click', () => {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'component-wrapper';
 
-    // Initialize Sortable.js on the container
-    const sortable = new Sortable(container, {
-      handle: '.drag-handle',  // Only drag when handle is used
-      animation: 200,          // Smooth movement animation
-      chosenClass: 'sortable-chosen',  // class for dragged item
-      ghostClass: 'sortable-ghost'     // class for placeholder
-    });
+  const frame = document.createElement('iframe');
+  frame.src = "wheel.html";
 
-    addBtn.addEventListener('click', () => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'component-wrapper';
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'remove-btn';
+  removeBtn.textContent = '✖';
+  removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
+  removeBtn.addEventListener('click', () => container.removeChild(wrapper));
 
-      const frame = document.createElement('iframe');
-      frame.src = "wheel.html";
+  const dragHandle = document.createElement('button');
+  dragHandle.className = 'drag-handle';
+  dragHandle.textContent = '≡';
+  dragHandle.setAttribute('data-tooltip', 'Drag to reorder');
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove-btn';
-      removeBtn.textContent = '✖';
-      removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
-      removeBtn.addEventListener('click', () => {
-        container.removeChild(wrapper);
-      });
+  wrapper.appendChild(dragHandle);
+  wrapper.appendChild(removeBtn);
+  wrapper.appendChild(frame);
+  container.appendChild(wrapper);
 
-      const dragHandle = document.createElement('button');
-      dragHandle.className = 'drag-handle';
-      dragHandle.textContent = '≡';
-      dragHandle.setAttribute('data-tooltip', 'Drag to reorder');
+  // Auto-size iframe
+  frame.onload = () => {
+    const doc = frame.contentWindow.document;
+    doc.documentElement.style.overflow = 'hidden';
+    frame.style.height = doc.documentElement.scrollHeight + "px";
+  };
 
-      wrapper.appendChild(dragHandle);
-      wrapper.appendChild(removeBtn);
-      wrapper.appendChild(frame);
-      container.appendChild(wrapper);
+  // Drag logic
+  dragHandle.addEventListener('mousedown', e => {
+    dragging = wrapper;
+    startY = e.clientY;
+    const rect = wrapper.getBoundingClientRect();
+    offsetY = startY - rect.top;
 
-      // Auto-size iframe
-      frame.onload = () => {
-        const doc = frame.contentWindow.document;
-        doc.documentElement.style.overflow = 'hidden';
-        frame.style.height = doc.documentElement.scrollHeight + "px";
-      };
-    });
-  </script>
+    ghost = wrapper.cloneNode(true);
+    ghost.classList.add('drag-ghost');
+    ghost.style.width = rect.width + "px";
+    ghost.style.height = rect.height + "px";
+    ghost.style.top = rect.top + "px";
+    ghost.style.left = rect.left + "px";
+    document.body.appendChild(ghost);
+
+    wrapper.style.visibility = 'hidden';
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    e.preventDefault();
+  });
+});
+
+function onMouseMove(e) {
+  if (!ghost) return;
+  ghost.style.top = e.clientY - offsetY + "px";
+
+  // Determine new position
+  const wrappers = Array.from(container.children).filter(c => c !== dragging);
+  for (let w of wrappers) {
+    const rect = w.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      container.insertBefore(dragging, w);
+      break;
+    } else if (w === wrappers[wrappers.length-1]) {
+      container.appendChild(dragging);
+      break;
+    }
+  }
+}
+
+function onMouseUp() {
+  if (!ghost) return;
+  dragging.style.visibility = 'visible';
+  ghost.remove();
+  ghost = null;
+  dragging = null;
+
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+</script>
 </body>
 </html>
