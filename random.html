@@ -12,35 +12,24 @@ body {
   padding: 20px;      
 }
 
-/* Floating Add Component button */
-#add {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #9370DB;
-  color: white;
-  border: none;
-  padding: 14px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  z-index: 1000;
+#container {
+  display: flex;
+  flex-direction: column;
 }
-
-#add:hover { background-color: #A080E0; }
 
 .component-wrapper {
   position: relative;
   margin: 10px 0;
   border: 2px solid transparent;
   border-radius: 8px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
 }
 
+/* Iframe styling */
 iframe {
   border: none;
-  display: block;
   width: 100%;
   overflow: hidden;
 }
@@ -57,7 +46,6 @@ iframe {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s ease;
   z-index: 10;
 }
 .remove-btn:hover { background: #A080E0; }
@@ -78,7 +66,7 @@ iframe {
 }
 .drag-handle:active { cursor: grabbing; }
 
-/* Tooltip styling */
+/* Tooltips */
 #add::after,
 .remove-btn::after,
 .drag-handle::after {
@@ -105,11 +93,11 @@ iframe {
   transform: translateX(-50%) translateY(-4px);
 }
 
-/* Ghost for dragging */
+/* Ghost element for drag */
 .drag-ghost {
   position: absolute;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.7;
   border: 2px dashed #9370DB;
   border-radius: 8px;
   background-color: #222;
@@ -118,6 +106,7 @@ iframe {
 </style>
 </head>
 <body>
+
 <div id="container"></div>
 <button id="add" data-tooltip="Add a wheel to the page">Add wheel</button>
 
@@ -125,14 +114,18 @@ iframe {
 const container = document.getElementById('container');
 const addBtn = document.getElementById('add');
 
-let dragging = null;
+let dragItem = null;
 let ghost = null;
-let startY = 0;
 let offsetY = 0;
+
+// Logical order array
+let orderArray = [];
 
 addBtn.addEventListener('click', () => {
   const wrapper = document.createElement('div');
   wrapper.className = 'component-wrapper';
+  wrapper.dataset.id = Date.now(); // unique id
+  orderArray.push(wrapper.dataset.id);
 
   const frame = document.createElement('iframe');
   frame.src = "wheel.html";
@@ -141,7 +134,11 @@ addBtn.addEventListener('click', () => {
   removeBtn.className = 'remove-btn';
   removeBtn.textContent = '✖';
   removeBtn.setAttribute('data-tooltip', 'Remove this wheel');
-  removeBtn.addEventListener('click', () => container.removeChild(wrapper));
+  removeBtn.addEventListener('click', () => {
+    container.removeChild(wrapper);
+    orderArray = orderArray.filter(id => id !== wrapper.dataset.id);
+    updateOrder();
+  });
 
   const dragHandle = document.createElement('button');
   dragHandle.className = 'drag-handle';
@@ -160,12 +157,11 @@ addBtn.addEventListener('click', () => {
     frame.style.height = doc.documentElement.scrollHeight + "px";
   };
 
-  // Drag logic
+  // Drag events
   dragHandle.addEventListener('mousedown', e => {
-    dragging = wrapper;
-    startY = e.clientY;
+    dragItem = wrapper;
     const rect = wrapper.getBoundingClientRect();
-    offsetY = startY - rect.top;
+    offsetY = e.clientY - rect.top;
 
     ghost = wrapper.cloneNode(true);
     ghost.classList.add('drag-ghost');
@@ -175,7 +171,7 @@ addBtn.addEventListener('click', () => {
     ghost.style.left = rect.left + "px";
     document.body.appendChild(ghost);
 
-    wrapper.style.visibility = 'hidden';
+    wrapper.style.opacity = "0.5";
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -187,31 +183,47 @@ function onMouseMove(e) {
   if (!ghost) return;
   ghost.style.top = e.clientY - offsetY + "px";
 
-  // Determine new position
-  const wrappers = Array.from(container.children).filter(c => c !== dragging);
-  for (let w of wrappers) {
+  // Determine closest wrapper
+  const wrappers = Array.from(container.children).filter(c => c !== dragItem);
+  let closest = null;
+  let closestDistance = Infinity;
+
+  wrappers.forEach(w => {
     const rect = w.getBoundingClientRect();
     const midY = rect.top + rect.height / 2;
-    if (e.clientY < midY) {
-      container.insertBefore(dragging, w);
-      break;
-    } else if (w === wrappers[wrappers.length-1]) {
-      container.appendChild(dragging);
-      break;
+    const distance = Math.abs(e.clientY - midY);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closest = w;
     }
+  });
+
+  if (closest) {
+    const idx = orderArray.indexOf(closest.dataset.id);
+    orderArray = orderArray.filter(id => id !== dragItem.dataset.id);
+    orderArray.splice(idx, 0, dragItem.dataset.id);
+    updateOrder();
   }
 }
 
 function onMouseUp() {
   if (!ghost) return;
-  dragging.style.visibility = 'visible';
+  dragItem.style.opacity = "1";
   ghost.remove();
   ghost = null;
-  dragging = null;
+  dragItem = null;
 
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
 }
+
+// Update wrapper positions using CSS order
+function updateOrder() {
+  container.querySelectorAll('.component-wrapper').forEach(wrapper => {
+    wrapper.style.order = orderArray.indexOf(wrapper.dataset.id);
+  });
+}
 </script>
+
 </body>
 </html>
