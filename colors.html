@@ -6,6 +6,10 @@
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
+      --legend-visible: none; /* set to 'block' to show the legend, set to 'none' to hide the legend */
+    }
+    #legend {
+      display: var(--legend-visible);
     }
     body {
       margin: 0;
@@ -177,7 +181,7 @@
       cycleEntries = shuffle(cycleEntries);
 
       index = 0;
-      //renderLegend(cycleEntries);
+      renderLegend(cycleEntries);
     }
 
     function renderLegend(entries) {
