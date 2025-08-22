@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Color Word Roulette — Corrected</title>
+  <title>Color Word Roulette — Randomized Order</title>
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
@@ -23,7 +23,6 @@
       font-weight: 800;
       line-height: 1.05;
       text-align: center;
-      /* Option A: universal outline for readability on black */
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
@@ -75,7 +74,6 @@
       background: #0c0c0c;
       text-align: center;
       font-size: 14px;
-      /* same readability treatment */
       text-shadow: 0 0 4px rgba(255,255,255,0.8);
       -webkit-text-stroke: 0.5px rgba(255,255,255,0.6);
     }
@@ -99,13 +97,11 @@
   <div id="legend"></div>
 
   <script>
-    // 21 words (Silver replaced with Aqua)
     const WORDS = [
       "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
       "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Aqua","Teal","Cream","Lime"
     ];
 
-    // Actual display colors (including required remaps)
     const COLOR_MAP = {
       Red: "Red",
       Blue: "Blue",
@@ -116,21 +112,20 @@
       Pink: "Pink",
       Purple: "Purple",
       Orange: "Orange",
-      Brown: "SaddleBrown",       // remap
+      Brown: "SaddleBrown",
       Gray: "Gray",
       Magenta: "Magenta",
-      Lavender: "Violet",         // remap
+      Lavender: "Violet",
       Maroon: "Maroon",
       Olive: "Olive",
       Tan: "Tan",
-      Gold: "DarkGoldenRod",      // remap
-      Aqua: "Aqua",               // replaces Silver
+      Gold: "DarkGoldenRod",
+      Aqua: "Aqua",
       Teal: "Teal",
-      Cream: "LightYellow",       // remap
+      Cream: "LightYellow",
       Lime: "Lime"
     };
 
-    // Fisher–Yates shuffle
     function shuffle(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
@@ -140,50 +135,46 @@
       return a;
     }
 
-    // Sattolo's algorithm → a single cycle (no fixed points): perfect for derangement
     function sattolo(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * i); // 0..i-1
+        const j = Math.floor(Math.random() * i);
         [a[i], a[j]] = [a[j], a[i]];
       }
       return a;
     }
 
-    let cycleEntries = [];   // [{word, color}]
-    let displayOrder = [];   // array of words in this cycle's order
+    let cycleEntries = [];
     let index = 0;
     let timer = null;
 
     function newCycle() {
-      // 1) randomize display order
-      displayOrder = shuffle(WORDS);
-      const n = displayOrder.length;           // 21
-      const oneThird = Math.floor(n / 3);      // 7
-      const actualWords = displayOrder.slice(0, oneThird);
-      const mismatchedWords = displayOrder.slice(oneThird); // 14
+      // Pick 1/3 words for true color
+      const shuffledWords = shuffle(WORDS);
+      const n = shuffledWords.length;
+      const oneThird = Math.floor(n / 3);
+      const actualWords = shuffledWords.slice(0, oneThird);
+      const remaining = shuffledWords.slice(oneThird);
 
-      // 2) actual group: word uses its own color (unique set)
       const assignments = new Map();
       actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
 
-      // 3) mismatched group: derange their own color set (unique + no self)
-      const mismatchColors = mismatchedWords.map(w => COLOR_MAP[w]);
-      // Use Sattolo to ensure no color remains at original index
+      // Deranged colors for remaining
+      const mismatchColors = remaining.map(w => COLOR_MAP[w]);
       let deranged = sattolo(mismatchColors);
 
-      // Safety: if any accidental equality (extremely unlikely here), reshuffle
-      // (e.g., if COLOR_MAP had duplicates). Keep it robust anyway.
       let guard = 0;
       while (deranged.some((c, i) => c === mismatchColors[i]) && guard < 10) {
         deranged = sattolo(mismatchColors);
         guard++;
       }
 
-      mismatchedWords.forEach((w, i) => assignments.set(w, deranged[i]));
+      remaining.forEach((w,i) => assignments.set(w, deranged[i]));
 
-      // 4) build cycle entries in the display order
-      cycleEntries = displayOrder.map(w => ({ word: w, color: assignments.get(w) }));
+      // Combine all entries
+      cycleEntries = [...WORDS].map(w => ({ word: w, color: assignments.get(w) }));
+      // Randomize full order
+      cycleEntries = shuffle(cycleEntries);
 
       index = 0;
       renderLegend(cycleEntries);
@@ -215,7 +206,7 @@
         newCycle();
       }
       showCurrent();
-      startTimer(); // resume timer from the new/next word
+      startTimer();
     }
 
     function startTimer() {
@@ -230,18 +221,14 @@
       }, interval * 1000);
     }
 
-    // Init
     window.addEventListener("load", () => {
       newCycle();
       showCurrent();
       startTimer();
 
-      // Controls
       document.getElementById("interval-input").addEventListener("change", startTimer);
       document.getElementById("next-btn").addEventListener("click", nextWord);
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") nextWord();
-      });
+      document.addEventListener("keydown", (e) => { if (e.key === "Enter") nextWord(); });
     });
   </script>
 </body>
