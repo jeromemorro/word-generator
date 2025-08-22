@@ -68,8 +68,7 @@
     button:hover { background: #3a3a3a; }
 
     /* Legend and caption controlled by CSS variable */
-    .legend-caption,
-    #legend {
+    #legend-container {
       display: var(--legend-visible);
     }
 
@@ -109,8 +108,10 @@
     <button id="next-btn">Next Word</button>
   </div>
 
-  <div class="legend-caption">Current cycle assignments (Word → Color)</div>
-  <div id="legend"></div>
+  <div id="legend-container">
+    <div class="legend-caption">Current cycle assignments (Word → Color)</div>
+    <div id="legend"></div>
+  </div>
 
   <script>
     const WORDS = [
