@@ -6,11 +6,9 @@
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: none; /* set to 'block' to show the legend, set to 'none' to hide the legend */
+      --legend-visible: none; /* Set to 'block' to show the caption and legend, set to 'none' to hide caption and legend */
     }
-    #legend {
-      display: var(--legend-visible);
-    }
+
     body {
       margin: 0;
       background: #000;
@@ -21,6 +19,7 @@
       align-items: center;
       min-height: 100vh;
     }
+
     #word-display {
       margin-top: 14vh;
       font-size: var(--word-size);
@@ -30,6 +29,7 @@
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
+
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -38,10 +38,12 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+
     label {
       font-size: 18px;
       opacity: 0.9;
     }
+
     input[type="number"] {
       width: 72px;
       font-size: 20px;
@@ -52,6 +54,7 @@
       background: #111;
       color: #fff;
     }
+
     button {
       font-size: 20px;
       padding: 8px 14px;
@@ -61,16 +64,24 @@
       color: #fff;
       cursor: pointer;
     }
+
     button:hover { background: #3a3a3a; }
-    /* Legend for verification */
+
+    /* Legend and caption controlled by CSS variable */
+    .legend-caption,
+    #legend {
+      display: var(--legend-visible);
+    }
+
     #legend {
       margin: 28px auto 40px;
       max-width: 1100px;
-      display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px;
       padding: 0 16px;
+      display: grid;
     }
+
     .legend-item {
       border: 1px solid #333;
       border-radius: 10px;
@@ -81,6 +92,7 @@
       text-shadow: 0 0 4px rgba(255,255,255,0.8);
       -webkit-text-stroke: 0.5px rgba(255,255,255,0.6);
     }
+
     .legend-caption {
       margin-top: 24px;
       font-size: 14px;
@@ -94,7 +106,7 @@
   <div id="controls">
     <label for="interval-input">Interval (sec)</label>
     <input type="number" id="interval-input" value="5" min="1" max="60" />
-    <button id="next-btn">Next Word</button>
+    <button id="next-btn">Next Word (Enter)</button>
   </div>
 
   <div class="legend-caption">Current cycle assignments (Word → Color)</div>
@@ -126,7 +138,7 @@
       Gold: "DarkGoldenRod",
       Aqua: "Aqua",
       Teal: "Teal",
-      Cream: "CornSilk",
+      Cream: "LightYellow",
       Lime: "Lime"
     };
 
@@ -153,7 +165,6 @@
     let timer = null;
 
     function newCycle() {
-      // Pick 1/3 words for true color
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
       const oneThird = Math.floor(n / 3);
@@ -163,7 +174,6 @@
       const assignments = new Map();
       actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
 
-      // Deranged colors for remaining
       const mismatchColors = remaining.map(w => COLOR_MAP[w]);
       let deranged = sattolo(mismatchColors);
 
@@ -175,9 +185,8 @@
 
       remaining.forEach((w,i) => assignments.set(w, deranged[i]));
 
-      // Combine all entries
+      // Combine all entries and shuffle fully
       cycleEntries = [...WORDS].map(w => ({ word: w, color: assignments.get(w) }));
-      // Randomize full order
       cycleEntries = shuffle(cycleEntries);
 
       index = 0;
