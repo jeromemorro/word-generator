@@ -2,169 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Color Word Roulette</title>
+  <title>Word Color Interval</title>
   <style>
     body {
-      background: black;
+      background-color: black;
       color: white;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
+      font-family: Arial, sans-serif;
+      text-align: center;
       margin: 0;
-      padding-top: 50px;
+      padding: 0;
     }
-    #word-display {
-      font-size: 100px;
+    #word {
+      font-size: 100px; /* enlarged since countdown is removed */
+      margin-top: 20vh;
       font-weight: bold;
-      margin-bottom: 20px;
-    }
-    #timer {
-      font-size: 50px;
-      margin-bottom: 20px;
+      transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
     }
     #controls {
-      display: flex;
-      gap: 20px;
-      align-items: center;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    label, input {
+      font-size: 18px;
+      margin: 5px;
     }
     input {
-      font-size: 24px;
-      width: 80px;
+      width: 60px;
       text-align: center;
-    }
-    button {
-      font-size: 24px;
-      padding: 5px 15px;
-      border-radius: 5px;
-      border: none;
-      background: gray;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #666;
     }
   </style>
 </head>
 <body>
-  <div id="word-display">Loading...</div>
-  <div id="timer"></div>
-
+  <div id="word">Loading...</div>
   <div id="controls">
-    <label for="interval-input" style="font-size: 20px;">Interval</label>
-    <input type="number" id="interval-input" value="10" min="1" max="60">
-    <button id="restart-btn">Next Word</button>
+    <label for="intervalInput">Interval (sec):</label>
+    <input type="number" id="intervalInput" value="5" min="1">
   </div>
 
   <script>
-    const allWords = [
-      "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
-      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Teal","Cream","Lime"
+    const words = [
+      "Red","Green","Blue","Yellow","Violet","LightYellow",
+      "DarkGoldenRod","SaddleBrown","Aqua","Black"
     ];
-    let wordArray = [];
-    let timer, secondsLeft, currentIndex = 0;
 
-    // Shuffle helper
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
+    // Map each word to its actual display color
+    const colorMap = {
+      "Red": "Red",
+      "Green": "Green",
+      "Blue": "Blue",
+      "Yellow": "Yellow",
+      "Violet": "Violet",
+      "LightYellow": "LightYellow",
+      "DarkGoldenRod": "DarkGoldenRod",
+      "SaddleBrown": "SaddleBrown",
+      "Aqua": "Aqua",
+      "Black": "Black"
+    };
+
+    const wordElement = document.getElementById("word");
+    const intervalInput = document.getElementById("intervalInput");
+
+    let interval = parseInt(intervalInput.value, 10);
+    let timerId;
+
+    function getRandomItem(arr, exclude) {
+      let item;
+      do {
+        item = arr[Math.floor(Math.random() * arr.length)];
+      } while (item === exclude);
+      return item;
     }
 
-    // Assign colors based on 1/3 actual, 2/3 mismatched
-    function assignColors() {
-      let shuffledWords = shuffle([...allWords]);
-      let total = shuffledWords.length;
-      let oneThird = Math.floor(total / 3); // ~7
-      let twoThirds = total - oneThird;
+    function updateWord() {
+      const word = getRandomItem(words, wordElement.textContent);
+      let color = getRandomItem(Object.values(colorMap), colorMap[word]);
 
-      let actualColorWords = shuffledWords.slice(0, oneThird);
-      let mismatchWords = shuffledWords.slice(oneThird);
+      wordElement.textContent = word;
+      wordElement.style.color = color;
 
-      let assignments = [];
+      // Reset stroke each time
+      wordElement.style.webkitTextStroke = "0px";
 
-      // Actual color assignments
-      actualColorWords.forEach(word => {
-        assignments.push({word: word, color: word.toLowerCase()});
-      });
-
-      // Mismatched color assignments
-      let mismatchColors = shuffle([...mismatchWords]);
-      mismatchWords.forEach((word, i) => {
-        let color = mismatchColors[i];
-        if (color === word) {
-          color = mismatchColors[(i+1) % mismatchColors.length];
-        }
-        assignments.push({word: word, color: color.toLowerCase()});
-      });
-
-      return shuffle(assignments);
-    }
-
-    function startCycle() {
-      wordArray = assignColors();
-      currentIndex = 0;
-      startTimer();
-    }
-
-    function startTimer() {
-      clearInterval(timer);
-      secondsLeft = parseInt(document.getElementById("interval-input").value) || 10;
-      displayWord();
-      document.getElementById("timer").textContent = secondsLeft;
-      timer = setInterval(updateTimer, 1000);
-    }
-
-    function updateTimer() {
-      secondsLeft--;
-      document.getElementById("timer").textContent = secondsLeft;
-      if (secondsLeft <= 0) {
-        clearInterval(timer);
-        currentIndex++;
-        if (currentIndex >= wordArray.length) {
-          startCycle();
-        } else {
-          startTimer();
-        }
+      // If text color is black, apply a white outline
+      if (color.toLowerCase() === "black") {
+        wordElement.style.webkitTextStroke = "2px white";
       }
     }
 
-    function displayWord() {
-      let entry = wordArray[currentIndex];
-      const display = document.getElementById("word-display");
-      display.textContent = entry.word;
-      display.style.color = entry.color;
+    function startRotation() {
+      clearInterval(timerId);
+      updateWord();
+      timerId = setInterval(updateWord, interval * 1000);
     }
 
-    // Next word function
-    function nextWord() {
-      clearInterval(timer);
-      currentIndex++;
-      if (currentIndex >= wordArray.length) {
-        startCycle();
-      } else {
-        startTimer();
-      }
-    }
-
-    // Button → go to next word immediately
-    document.getElementById("restart-btn").addEventListener("click", nextWord);
-
-    // Enter key → same as button
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        nextWord();
-      }
+    intervalInput.addEventListener("change", () => {
+      interval = parseInt(intervalInput.value, 10) || 5;
+      startRotation();
     });
 
-    window.onload = () => {
-      startCycle();
-    };
+    startRotation();
   </script>
 </body>
 </html>
