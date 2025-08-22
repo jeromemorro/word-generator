@@ -1,108 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Word Color Interval</title>
+  <meta charset="UTF-8" />
+  <title>Color Word Roulette — Corrected</title>
   <style>
-    body {
-      background-color: black;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
+    :root {
+      --word-size: clamp(56px, 12vw, 160px);
     }
-    #word {
-      font-size: 100px; /* enlarged since countdown is removed */
-      margin-top: 20vh;
-      font-weight: bold;
-      transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #word-display {
+      margin-top: 14vh;
+      font-size: var(--word-size);
+      font-weight: 800;
+      line-height: 1.05;
+      text-align: center;
+      /* Option A: universal outline for readability on black */
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
     #controls {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      margin-top: 6vh;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    label, input {
+    label {
       font-size: 18px;
-      margin: 5px;
+      opacity: 0.9;
     }
-    input {
-      width: 60px;
+    input[type="number"] {
+      width: 72px;
+      font-size: 20px;
+      padding: 6px 8px;
       text-align: center;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    button {
+      font-size: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #2f2f2f;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover { background: #3a3a3a; }
+    /* Legend for verification */
+    #legend {
+      margin: 28px auto 40px;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 0 16px;
+    }
+    .legend-item {
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #0c0c0c;
+      text-align: center;
+      font-size: 14px;
+      /* same readability treatment */
+      text-shadow: 0 0 4px rgba(255,255,255,0.8);
+      -webkit-text-stroke: 0.5px rgba(255,255,255,0.6);
+    }
+    .legend-caption {
+      margin-top: 24px;
+      font-size: 14px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  <div id="word">Loading...</div>
+  <div id="word-display">Loading…</div>
+
   <div id="controls">
-    <label for="intervalInput">Interval (sec):</label>
-    <input type="number" id="intervalInput" value="5" min="1">
+    <label for="interval-input">Interval (sec)</label>
+    <input type="number" id="interval-input" value="5" min="1" max="60" />
+    <button id="next-btn">Next Word (Enter)</button>
   </div>
 
+  <div class="legend-caption">Current cycle assignments (Word → Color)</div>
+  <div id="legend"></div>
+
   <script>
-    const words = [
-      "Red","Green","Blue","Yellow","Violet","LightYellow",
-      "DarkGoldenRod","SaddleBrown","Aqua","Black"
+    // 21 words (Silver replaced with Aqua)
+    const WORDS = [
+      "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
+      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Aqua","Teal","Cream","Lime"
     ];
 
-    // Map each word to its actual display color
-    const colorMap = {
-      "Red": "Red",
-      "Green": "Green",
-      "Blue": "Blue",
-      "Yellow": "Yellow",
-      "Violet": "Violet",
-      "LightYellow": "LightYellow",
-      "DarkGoldenRod": "DarkGoldenRod",
-      "SaddleBrown": "SaddleBrown",
-      "Aqua": "Aqua",
-      "Black": "Black"
+    // Actual display colors (including required remaps)
+    const COLOR_MAP = {
+      Red: "Red",
+      Blue: "Blue",
+      Green: "Green",
+      Yellow: "Yellow",
+      Black: "Black",
+      White: "White",
+      Pink: "Pink",
+      Purple: "Purple",
+      Orange: "Orange",
+      Brown: "SaddleBrown",       // remap
+      Gray: "Gray",
+      Magenta: "Magenta",
+      Lavender: "Violet",         // remap
+      Maroon: "Maroon",
+      Olive: "Olive",
+      Tan: "Tan",
+      Gold: "DarkGoldenRod",      // remap
+      Aqua: "Aqua",               // replaces Silver
+      Teal: "Teal",
+      Cream: "LightYellow",       // remap
+      Lime: "Lime"
     };
 
-    const wordElement = document.getElementById("word");
-    const intervalInput = document.getElementById("intervalInput");
-
-    let interval = parseInt(intervalInput.value, 10);
-    let timerId;
-
-    function getRandomItem(arr, exclude) {
-      let item;
-      do {
-        item = arr[Math.floor(Math.random() * arr.length)];
-      } while (item === exclude);
-      return item;
-    }
-
-    function updateWord() {
-      const word = getRandomItem(words, wordElement.textContent);
-      let color = getRandomItem(Object.values(colorMap), colorMap[word]);
-
-      wordElement.textContent = word;
-      wordElement.style.color = color;
-
-      // Reset stroke each time
-      wordElement.style.webkitTextStroke = "0px";
-
-      // If text color is black, apply a white outline
-      if (color.toLowerCase() === "black") {
-        wordElement.style.webkitTextStroke = "2px white";
+    // Fisher–Yates shuffle
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
+      return a;
     }
 
-    function startRotation() {
-      clearInterval(timerId);
-      updateWord();
-      timerId = setInterval(updateWord, interval * 1000);
+    // Sattolo's algorithm → a single cycle (no fixed points): perfect for derangement
+    function sattolo(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * i); // 0..i-1
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
 
-    intervalInput.addEventListener("change", () => {
-      interval = parseInt(intervalInput.value, 10) || 5;
-      startRotation();
+    let cycleEntries = [];   // [{word, color}]
+    let displayOrder = [];   // array of words in this cycle's order
+    let index = 0;
+    let timer = null;
+
+    function newCycle() {
+      // 1) randomize display order
+      displayOrder = shuffle(WORDS);
+      const n = displayOrder.length;           // 21
+      const oneThird = Math.floor(n / 3);      // 7
+      const actualWords = displayOrder.slice(0, oneThird);
+      const mismatchedWords = displayOrder.slice(oneThird); // 14
+
+      // 2) actual group: word uses its own color (unique set)
+      const assignments = new Map();
+      actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
+
+      // 3) mismatched group: derange their own color set (unique + no self)
+      const mismatchColors = mismatchedWords.map(w => COLOR_MAP[w]);
+      // Use Sattolo to ensure no color remains at original index
+      let deranged = sattolo(mismatchColors);
+
+      // Safety: if any accidental equality (extremely unlikely here), reshuffle
+      // (e.g., if COLOR_MAP had duplicates). Keep it robust anyway.
+      let guard = 0;
+      while (deranged.some((c, i) => c === mismatchColors[i]) && guard < 10) {
+        deranged = sattolo(mismatchColors);
+        guard++;
+      }
+
+      mismatchedWords.forEach((w, i) => assignments.set(w, deranged[i]));
+
+      // 4) build cycle entries in the display order
+      cycleEntries = displayOrder.map(w => ({ word: w, color: assignments.get(w) }));
+
+      index = 0;
+      renderLegend(cycleEntries);
+    }
+
+    function renderLegend(entries) {
+      const legend = document.getElementById("legend");
+      legend.innerHTML = "";
+      entries.forEach(({ word, color }) => {
+        const div = document.createElement("div");
+        div.className = "legend-item";
+        div.textContent = `${word} → ${color}`;
+        div.style.color = color;
+        legend.appendChild(div);
+      });
+    }
+
+    function showCurrent() {
+      const el = document.getElementById("word-display");
+      const { word, color } = cycleEntries[index];
+      el.textContent = word;
+      el.style.color = color;
+    }
+
+    function nextWord() {
+      clearInterval(timer);
+      index++;
+      if (index >= cycleEntries.length) {
+        newCycle();
+      }
+      showCurrent();
+      startTimer(); // resume timer from the new/next word
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      const interval = Math.max(1, parseInt(document.getElementById("interval-input").value, 10) || 5);
+      timer = setInterval(() => {
+        index++;
+        if (index >= cycleEntries.length) {
+          newCycle();
+        }
+        showCurrent();
+      }, interval * 1000);
+    }
+
+    // Init
+    window.addEventListener("load", () => {
+      newCycle();
+      showCurrent();
+      startTimer();
+
+      // Controls
+      document.getElementById("interval-input").addEventListener("change", startTimer);
+      document.getElementById("next-btn").addEventListener("click", nextWord);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") nextWord();
+      });
     });
-
-    startRotation();
   </script>
 </body>
 </html>
