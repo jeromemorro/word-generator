@@ -49,10 +49,13 @@
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: normal;
+  
+  /* simulate white outline around letters */
   text-shadow:
-     0 0 2px rgba(255,255,255,0.6),
-     0 0 4px rgba(255,255,255,0.4),
-     0 0 6px rgba(255,255,255,0.3); /* subtle outline similar to other words */
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
 }
 
     #controls {
