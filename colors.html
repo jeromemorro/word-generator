@@ -6,7 +6,7 @@
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: block; /* 'block' to show legend */
+      --legend-visible: block; /* 'block' to show caption+legend */
     }
 
     body {
@@ -24,23 +24,24 @@
       margin-top: 14vh;
       font-size: var(--word-size);
       font-weight: 800;
-      line-height: 1.1;
+      line-height: 1.25;      /* increased to fix white tips */
       text-align: center;
       overflow: visible;
       white-space: nowrap;
     }
 
-    /* Non-gold words: solid color + white outline */
+    /* Default (non-gold) rendering: solid color + white outline */
     #word-display.normal {
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-    /* ===== Gold layering technique ===== */
+    /* Gold layering technique */
     .gold-wrap {
       position: relative;
       display: inline-block;
-      line-height: 1.1;
+      line-height: 1.25;           /* match word-display line-height */
+      padding-bottom: 0.05em;      /* ensure descenders are visible */
       white-space: nowrap;
     }
 
@@ -48,15 +49,18 @@
     .gold-fill {
       font-size: var(--word-size);
       font-weight: 800;
+      letter-spacing: normal;
       white-space: nowrap;
     }
 
+    /* Stroke layer (no fill) */
     .gold-stroke {
       color: transparent;
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
     }
 
+    /* Gradient fill layer */
     .gold-fill {
       position: absolute;
       top: 0; left: 0;
@@ -75,7 +79,6 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Controls & legend styling */
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -107,9 +110,9 @@
       color: #fff;
       cursor: pointer;
     }
-
     button:hover { background: #3a3a3a; }
 
+    /* Legend controlled by CSS variable */
     #legend-container { display: var(--legend-visible); }
 
     #legend {
@@ -161,27 +164,11 @@
     ];
 
     const COLOR_MAP = {
-      Red: "Red",
-      Blue: "Blue",
-      Green: "Green",
-      Yellow: "Yellow",
-      Black: "Black",
-      White: "White",
-      Pink: "Pink",
-      Purple: "Purple",
-      Orange: "Orange",
-      Brown: "SaddleBrown",
-      Gray: "Gray",
-      Magenta: "Magenta",
-      Lavender: "Violet",
-      Maroon: "Maroon",
-      Olive: "Olive",
-      Tan: "Tan",
-      Gold: "DarkGoldenRod",
-      Aqua: "Aqua",
-      Teal: "Teal",
-      Cream: "Khaki",
-      Lime: "Lime"
+      Red: "Red", Blue: "Blue", Green: "Green", Yellow: "Yellow",
+      Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
+      Orange: "Orange", Brown: "SaddleBrown", Gray: "Gray", Magenta: "Magenta",
+      Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
+      Gold: "DarkGoldenRod", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -209,8 +196,7 @@
     function newCycle() {
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
-      const oneThird = Math.floor(n / 3);
-
+      const oneThird = Math.floor(n/3);
       const actualWords = shuffledWords.slice(0, oneThird);
       const remaining = shuffledWords.slice(oneThird);
 
@@ -220,32 +206,28 @@
       const mismatchColors = remaining.map(w => COLOR_MAP[w]);
       let deranged = sattolo(mismatchColors);
       let guard = 0;
-      while (deranged.some((c,i)=>c===mismatchColors[i]) && guard<20) {
-        deranged = sattolo(mismatchColors);
-        guard++;
-      }
-      remaining.forEach((w,i)=>assignments.set(w, deranged[i]));
+      while(deranged.some((c,i)=>c===mismatchColors[i]) && guard<20){deranged=sattolo(mismatchColors); guard++;}
+      remaining.forEach((w,i)=>assignments.set(w,deranged[i]));
 
-      cycleEntries = WORDS.map(w => ({ word: w, color: assignments.get(w) }));
+      cycleEntries = WORDS.map(w=>({word:w,color:assignments.get(w)}));
       cycleEntries = shuffle(cycleEntries);
-
       index = 0;
       renderLegend(cycleEntries);
     }
 
-    function renderLegend(entries) {
+    function renderLegend(entries){
       const legend = document.getElementById("legend");
-      legend.innerHTML = "";
-      entries.forEach(({ word, color }) => {
+      legend.innerHTML="";
+      entries.forEach(({word,color})=>{
         const div = document.createElement("div");
-        div.className = "legend-item";
-        div.textContent = `${word} → ${color}`;
-        div.style.color = color;
+        div.className="legend-item";
+        div.textContent=`${word} → ${color}`;
+        div.style.color=color;
         legend.appendChild(div);
       });
     }
 
-    function renderGold(word) {
+    function renderGold(word){
       return `
         <span class="gold-wrap">
           <span class="gold-stroke">${word}</span>
@@ -254,11 +236,10 @@
       `;
     }
 
-    function showCurrent() {
+    function showCurrent(){
       const el = document.getElementById("word-display");
-      const { word, color } = cycleEntries[index];
-
-      if (color === "DarkGoldenRod") {
+      const {word,color} = cycleEntries[index];
+      if(color==="DarkGoldenRod"){
         el.classList.remove("normal");
         el.innerHTML = renderGold(word);
       } else {
@@ -269,32 +250,32 @@
       }
     }
 
-    function nextWord() {
+    function nextWord(){
       clearInterval(timer);
       index++;
-      if (index >= cycleEntries.length) newCycle();
+      if(index>=cycleEntries.length) newCycle();
       showCurrent();
       startTimer();
     }
 
-    function startTimer() {
+    function startTimer(){
       clearInterval(timer);
-      const interval = Math.max(1, parseInt(document.getElementById("interval-input").value,10) || 5);
-      timer = setInterval(() => {
+      const interval = Math.max(1,parseInt(document.getElementById("interval-input").value,10)||5);
+      timer=setInterval(()=>{
         index++;
-        if (index >= cycleEntries.length) newCycle();
+        if(index>=cycleEntries.length) newCycle();
         showCurrent();
-      }, interval * 1000);
+      },interval*1000);
     }
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load",()=>{
       newCycle();
       showCurrent();
       startTimer();
 
-      document.getElementById("interval-input").addEventListener("change", startTimer);
-      document.getElementById("next-btn").addEventListener("click", nextWord);
-      document.addEventListener("keydown", (e) => { if (e.key === "Enter") nextWord(); });
+      document.getElementById("interval-input").addEventListener("change",startTimer);
+      document.getElementById("next-btn").addEventListener("click",nextWord);
+      document.addEventListener("keydown",(e)=>{if(e.key==="Enter")nextWord();});
     });
   </script>
 </body>
