@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Color Word Roulette — Randomized Order</title>
+  <title>Color Word Roulette — Shiny Gold</title>
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: none; /* Set to 'block' to show caption and legend */
+      --legend-visible: none; /* Set to 'block' to show legend */
     }
 
     body {
@@ -28,28 +28,36 @@
       text-align: center;
     }
 
+    /* White outline for all words (including black) */
     #word-display.normal {
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
+    /* Shiny metallic gold effect */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
     #word-display.shiny-gold {
       background: linear-gradient(
-        135deg,
+        45deg,
         #FFD700 0%,
-        #FFE066 20%,
-        #FFD700 40%,
-        #FFB700 60%,
-        #FFE066 80%,
+        #FFE066 15%,
+        #FFD700 30%,
+        #FFB700 45%,
+        #FFE066 60%,
+        #FFD700 75%,
+        #FFB700 90%,
         #FFD700 100%
       );
+      background-size: 200% 100%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.3),
-                   0 0 4px rgba(255,215,0,0.6),
-                   0 0 8px rgba(255,215,0,0.4);
-      -webkit-text-stroke: 0;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+      animation: shimmer 2s linear infinite;
     }
 
     #controls {
@@ -61,10 +69,7 @@
       justify-content: center;
     }
 
-    label {
-      font-size: 18px;
-      opacity: 0.9;
-    }
+    label { font-size: 18px; opacity: 0.9; }
 
     input[type="number"] {
       width: 72px;
@@ -89,18 +94,15 @@
 
     button:hover { background: #3a3a3a; }
 
-    /* Legend and caption controlled by CSS variable */
-    #legend-container {
-      display: var(--legend-visible);
-    }
+    #legend-container { display: var(--legend-visible); }
 
     #legend {
       margin: 28px auto 40px;
       max-width: 1100px;
+      display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px;
       padding: 0 16px;
-      display: grid;
     }
 
     .legend-item {
@@ -200,14 +202,12 @@
 
       const mismatchColors = remaining.map(w => COLOR_MAP[w]);
       let deranged = sattolo(mismatchColors);
-
       let guard = 0;
-      while (deranged.some((c, i) => c === mismatchColors[i]) && guard < 10) {
+      while (deranged.some((c,i)=>c===mismatchColors[i]) && guard<20) {
         deranged = sattolo(mismatchColors);
         guard++;
       }
-
-      remaining.forEach((w,i) => assignments.set(w, deranged[i]));
+      remaining.forEach((w,i)=>assignments.set(w,deranged[i]));
 
       // Combine all entries and shuffle fully
       cycleEntries = [...WORDS].map(w => ({ word: w, color: assignments.get(w) }));
@@ -232,7 +232,6 @@
     function showCurrent() {
       const el = document.getElementById("word-display");
       const { word, color } = cycleEntries[index];
-
       el.textContent = word;
 
       if (color === "DarkGoldenRod") {
@@ -248,23 +247,19 @@
     function nextWord() {
       clearInterval(timer);
       index++;
-      if (index >= cycleEntries.length) {
-        newCycle();
-      }
+      if (index >= cycleEntries.length) newCycle();
       showCurrent();
       startTimer();
     }
 
     function startTimer() {
       clearInterval(timer);
-      const interval = Math.max(1, parseInt(document.getElementById("interval-input").value, 10) || 5);
+      const interval = Math.max(1, parseInt(document.getElementById("interval-input").value,10)||5);
       timer = setInterval(() => {
         index++;
-        if (index >= cycleEntries.length) {
-          newCycle();
-        }
+        if (index >= cycleEntries.length) newCycle();
         showCurrent();
-      }, interval * 1000);
+      }, interval*1000);
     }
 
     window.addEventListener("load", () => {
@@ -274,7 +269,7 @@
 
       document.getElementById("interval-input").addEventListener("change", startTimer);
       document.getElementById("next-btn").addEventListener("click", nextWord);
-      document.addEventListener("keydown", (e) => { if (e.key === "Enter") nextWord(); });
+      document.addEventListener("keydown",(e)=>{if(e.key==="Enter") nextWord();});
     });
   </script>
 </body>
