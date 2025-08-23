@@ -168,7 +168,7 @@
     function newCycle() {
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
-      const oneThird = Math.floor(n / 3);
+      const oneThird = 5; //Math.floor(n / 3);
       const actualWords = shuffledWords.slice(0, oneThird);
       const remaining = shuffledWords.slice(oneThird);
 
