@@ -6,7 +6,7 @@
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: none; /* Set to 'block' to show the caption and legend, set to 'none' to hide caption and legend */
+      --legend-visible: none; /* Set to 'block' to show caption and legend */
     }
 
     body {
@@ -29,7 +29,6 @@
     }
 
     #word-display.normal {
-      color: inherit;
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
@@ -162,7 +161,7 @@
       Gold: "DarkGoldenRod",
       Aqua: "Aqua",
       Teal: "Teal",
-      Cream: "Khaki",
+      Cream: "LightYellow",
       Lime: "Lime"
     };
 
@@ -191,7 +190,8 @@
     function newCycle() {
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
-      const oneThird = 5; //Math.floor(n / 3);
+      const oneThird = Math.floor(n / 3);
+
       const actualWords = shuffledWords.slice(0, oneThird);
       const remaining = shuffledWords.slice(oneThird);
 
