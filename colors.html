@@ -219,12 +219,12 @@
 
       el.textContent = word;
 
-      if (word === "Gold") { 
+      if (color === "DarkGoldenRod") { 
         // Apply shiny metallic effect
         el.classList.add("shiny-gold");
-        el.style.color = ""; // remove regular color
+        el.style.color = ""; // remove regular flat color
       } else {
-        // Remove effect for other words
+        // Remove effect for other colors
         el.classList.remove("shiny-gold");
         el.style.color = color;
       }
