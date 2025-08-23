@@ -30,6 +30,14 @@
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
+    #word-display span.shiny-gold {
+      background: linear-gradient(135deg, #FFD700, #FFC700 30%, #FFEA00 70%, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 6px rgba(255,215,0,0.7), 0 0 10px rgba(255,255,200,0.4);
+      font-weight: bold;
+    }
+
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -96,14 +104,6 @@
       margin-top: 24px;
       font-size: 14px;
       opacity: 0.8;
-    }
-    .shiny-gold {
-      background: linear-gradient(135deg, #FFD700, #FFC700 30%, #FFEA00 70%, #FFD700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: bold;
-      text-shadow: 0 0 6px rgba(255,215,0,0.7), 0 0 10px rgba(255,255,200,0.4);
-      -webkit-text-stroke: 0; /* remove stroke for gradient effect */
     }
   </style>
 </head>
@@ -218,20 +218,13 @@
       const el = document.getElementById("word-display");
       const { word, color } = cycleEntries[index];
 
-      el.textContent = word;
-
       if (color === "DarkGoldenRod") {
-        // Apply metallic effect
-        el.classList.add("shiny-gold");
-        // Remove conflicting styles
-        el.style.color = "";
+        // Wrap in span with shiny effect
+        el.innerHTML = `<span class="shiny-gold">${word}</span>`;
       } else {
-        // Remove metallic effect for other colors
-        el.classList.remove("shiny-gold");
-        // Restore normal styles
+        // Regular flat color
+        el.textContent = word;
         el.style.color = color;
-        el.style.textShadow = "0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85)";
-        el.style.webkitTextStroke = "1px rgba(255,255,255,0.6)";
       }
     }
 
