@@ -97,6 +97,13 @@
       font-size: 14px;
       opacity: 0.8;
     }
+    .shiny-gold {
+      background: linear-gradient(135deg, #FFD700, #FFC700 30%, #FFEA00 70%, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(255,215,0,0.7), 0 0 10px rgba(255,255,200,0.4);
+    }
   </style>
 </head>
 <body>
@@ -209,8 +216,18 @@
     function showCurrent() {
       const el = document.getElementById("word-display");
       const { word, color } = cycleEntries[index];
+
       el.textContent = word;
-      el.style.color = color;
+
+      if (word === "Gold") { 
+        // Apply shiny metallic effect
+        el.classList.add("shiny-gold");
+        el.style.color = ""; // remove regular color
+      } else {
+        // Remove effect for other words
+        el.classList.remove("shiny-gold");
+        el.style.color = color;
+      }
     }
 
     function nextWord() {
