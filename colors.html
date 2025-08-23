@@ -26,28 +26,32 @@
       font-weight: 800;
       line-height: 1.05;
       text-align: center;
+    }
+
+    #word-display.normal {
+      color: inherit;
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-#word-display span.shiny-gold {
-  font-weight: bold;
-  background: linear-gradient(
-    135deg,
-    #FFD700 0%,
-    #FFE066 20%,
-    #FFD700 40%,
-    #FFB700 60%,
-    #FFE066 80%,
-    #FFD700 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow:
-    0 1px 1px rgba(0,0,0,0.3),
-    0 0 4px rgba(255,215,0,0.6),
-    0 0 8px rgba(255,215,0,0.4);
-}
+    #word-display.shiny-gold {
+      background: linear-gradient(
+        135deg,
+        #FFD700 0%,
+        #FFE066 20%,
+        #FFD700 40%,
+        #FFB700 60%,
+        #FFE066 80%,
+        #FFD700 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.3),
+                   0 0 4px rgba(255,215,0,0.6),
+                   0 0 8px rgba(255,215,0,0.4);
+      -webkit-text-stroke: 0;
+    }
 
     #controls {
       margin-top: 6vh;
@@ -229,12 +233,14 @@
       const el = document.getElementById("word-display");
       const { word, color } = cycleEntries[index];
 
+      el.textContent = word;
+
       if (color === "DarkGoldenRod") {
-        // Wrap in span with shiny effect
-        el.innerHTML = `<span class="shiny-gold">${word}</span>`;
+        el.classList.remove("normal");
+        el.classList.add("shiny-gold");
       } else {
-        // Regular flat color
-        el.textContent = word;
+        el.classList.remove("shiny-gold");
+        el.classList.add("normal");
         el.style.color = color;
       }
     }
