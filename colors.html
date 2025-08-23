@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Color Word Roulette — Fixed Gold Gradient</title>
+  <title>Color Word Roulette — Static Gold Gradient Fixed</title>
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: block; /* 'block' to show legend and caption */
+      --legend-visible: block; /* 'block' to show legend */
     }
 
     body {
@@ -24,20 +24,45 @@
       margin-top: 14vh;
       font-size: var(--word-size);
       font-weight: 800;
-      line-height: 1.2;       /* taller to prevent clipping descenders */
+      line-height: 1.1;
       text-align: center;
       overflow: visible;
       white-space: nowrap;
     }
 
-    /* Non-gold words: solid color + outline */
+    /* Non-gold words: solid color + white outline */
     #word-display.normal {
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-    /* Gold word using gradient fill + outline via text-shadow */
-    #word-display.gold {
+    /* ===== Gold layering technique ===== */
+    .gold-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .gold-stroke,
+    .gold-fill {
+      font-size: var(--word-size);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .gold-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+    }
+
+    .gold-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
       background: linear-gradient(
         135deg,
         #AE8625 0%,
@@ -48,18 +73,9 @@
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      /* simulate white outline */
-      text-shadow:
-        1px 1px 0 rgba(255,255,255,0.6),
-        -1px 1px 0 rgba(255,255,255,0.6),
-        1px -1px 0 rgba(255,255,255,0.6),
-        -1px -1px 0 rgba(255,255,255,0.6),
-        0 1px 0 rgba(255,255,255,0.6),
-        0 -1px 0 rgba(255,255,255,0.6),
-        1px 0 0 rgba(255,255,255,0.6),
-        -1px 0 0 rgba(255,255,255,0.6);
     }
 
+    /* Controls & legend styling */
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -68,7 +84,9 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+
     label { font-size: 18px; opacity: 0.9; }
+
     input[type="number"] {
       width: 72px;
       font-size: 20px;
@@ -79,6 +97,7 @@
       background: #111;
       color: #fff;
     }
+
     button {
       font-size: 20px;
       padding: 8px 14px;
@@ -88,9 +107,11 @@
       color: #fff;
       cursor: pointer;
     }
+
     button:hover { background: #3a3a3a; }
 
     #legend-container { display: var(--legend-visible); }
+
     #legend {
       margin: 28px auto 40px;
       max-width: 1100px;
@@ -99,6 +120,7 @@
       gap: 10px;
       padding: 0 16px;
     }
+
     .legend-item {
       border: 1px solid #333;
       border-radius: 10px;
@@ -109,6 +131,7 @@
       text-shadow: 0 0 4px rgba(255,255,255,0.8);
       -webkit-text-stroke: 0.5px rgba(255,255,255,0.6);
     }
+
     .legend-caption {
       margin-top: 24px;
       font-size: 14px;
@@ -138,11 +161,27 @@
     ];
 
     const COLOR_MAP = {
-      Red: "Red", Blue: "Blue", Green: "Green", Yellow: "Yellow",
-      Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
-      Orange: "Orange", Brown: "SaddleBrown", Gray: "Gray", Magenta: "Magenta",
-      Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
-      Gold: "DarkGoldenRod", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
+      Red: "Red",
+      Blue: "Blue",
+      Green: "Green",
+      Yellow: "Yellow",
+      Black: "Black",
+      White: "White",
+      Pink: "Pink",
+      Purple: "Purple",
+      Orange: "Orange",
+      Brown: "SaddleBrown",
+      Gray: "Gray",
+      Magenta: "Magenta",
+      Lavender: "Violet",
+      Maroon: "Maroon",
+      Olive: "Olive",
+      Tan: "Tan",
+      Gold: "DarkGoldenRod",
+      Aqua: "Aqua",
+      Teal: "Teal",
+      Cream: "Khaki",
+      Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -206,16 +245,24 @@
       });
     }
 
+    function renderGold(word) {
+      return `
+        <span class="gold-wrap">
+          <span class="gold-stroke">${word}</span>
+          <span class="gold-fill">${word}</span>
+        </span>
+      `;
+    }
+
     function showCurrent() {
       const el = document.getElementById("word-display");
       const { word, color } = cycleEntries[index];
 
       if (color === "DarkGoldenRod") {
         el.classList.remove("normal");
-        el.classList.add("gold");
-        el.textContent = word;
+        el.innerHTML = renderGold(word);
       } else {
-        el.classList.remove("gold");
+        el.classList.remove("shiny-gold");
         el.classList.add("normal");
         el.textContent = word;
         el.style.color = color;
@@ -244,6 +291,7 @@
       newCycle();
       showCurrent();
       startTimer();
+
       document.getElementById("interval-input").addEventListener("change", startTimer);
       document.getElementById("next-btn").addEventListener("click", nextWord);
       document.addEventListener("keydown", (e) => { if (e.key === "Enter") nextWord(); });
