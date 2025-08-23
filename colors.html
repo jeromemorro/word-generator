@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Color Word Roulette — SVG Gold Fix (Sized)</title>
+  <title>Color Word Roulette — CSS Gradient Gold</title>
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
@@ -27,32 +27,30 @@
       line-height: 1.1;
       text-align: center;
       white-space: nowrap;
-      overflow: visible;
     }
 
-    /* Default (non-gold) rendering: solid color + white outline via stroke simulation */
+    /* Default rendering: colored text + white outline */
     #word-display.normal {
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-    /* Inline SVG styling: make SVG exactly match the CSS font-size of #word-display
-       height = 1em ensures the SVG visually equals the surrounding text size.
-       font-size: 1em ensures text inside the SVG uses the same computed font size.
-       vertical-align tweak helps align the SVG baseline to the surrounding text baseline.
-    */
-    .gold-svg {
-      height: 1em;
-      width: auto;
-      display: inline-block;
-      vertical-align: -0.08em; /* slight tweak for baseline alignment; adjust if needed */
-      overflow: visible;
-      font-family: inherit; /* inherit the page font so glyph shapes match */
-      font-weight: 800;
-      font-size: 1em; /* make internal SVG font scale with parent */
+    /* CSS gradient for gold */
+    #word-display.gold {
+      background: linear-gradient(
+        135deg,
+        #AE8625,
+        #F7EF8A,
+        #D2AC47,
+        #EDC967
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-    /* Controls and legend (unchanged except layout) */
+    /* Controls and legend */
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -135,7 +133,7 @@
       Blue: "Blue",
       Green: "Green",
       Yellow: "Yellow",
-      Black: "Black",
+      Black: "White", // Keep white outline for visibility
       White: "White",
       Pink: "Pink",
       Purple: "Purple",
@@ -150,161 +148,109 @@
       Gold: "DarkGoldenRod",
       Aqua: "Aqua",
       Teal: "Teal",
-      Cream: "Khaki", 
+      Cream: "Khaki",
       Lime: "Lime"
     };
 
-    // Utilities
     function shuffle(arr) {
       const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-    function sattolo(arr) {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * i);
-        [a[i], a[j]] = [a[j], a[i]];
+      for (let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
       }
       return a;
     }
 
-    // cycle state
+    function sattolo(arr){
+      const a=arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*i);
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
     let cycleEntries = [];
     let index = 0;
     let timer = null;
-    let uniqueId = 1; // for unique gradient ids in SVG
 
-    function newCycle() {
-      const shuffledWords = shuffle(WORDS);
-      const n = shuffledWords.length;
-      const oneThird = Math.floor(n / 3);
+    function newCycle(){
+      const shuffled = shuffle(WORDS);
+      const n = shuffled.length;
+      const oneThird = Math.floor(n/3);
 
-      const actualWords = shuffledWords.slice(0, oneThird);
-      const remaining = shuffledWords.slice(oneThird);
+      const actualWords = shuffled.slice(0, oneThird);
+      const remaining = shuffled.slice(oneThird);
 
       const assignments = new Map();
-      actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
+      actualWords.forEach(w=>assignments.set(w,COLOR_MAP[w]));
 
-      const mismatchColors = remaining.map(w => COLOR_MAP[w]);
+      const mismatchColors = remaining.map(w=>COLOR_MAP[w]);
       let deranged = sattolo(mismatchColors);
       let guard = 0;
-      while (deranged.some((c,i)=>c===mismatchColors[i]) && guard<20) {
+      while(deranged.some((c,i)=>c===mismatchColors[i]) && guard<20){
         deranged = sattolo(mismatchColors);
         guard++;
       }
       remaining.forEach((w,i)=>assignments.set(w,deranged[i]));
 
-      // combine and shuffle so true/mismatch positions are randomized
-      cycleEntries = WORDS.map(w => ({ word: w, color: assignments.get(w) }));
+      // combine all and shuffle fully
+      cycleEntries = WORDS.map(w=>({word:w,color:assignments.get(w)}));
       cycleEntries = shuffle(cycleEntries);
-
-      index = 0;
+      index=0;
       renderLegend(cycleEntries);
     }
 
-    function renderLegend(entries) {
-      const legend = document.getElementById("legend");
-      legend.innerHTML = "";
-      entries.forEach(({ word, color }) => {
-        const div = document.createElement("div");
-        div.className = "legend-item";
-        div.textContent = `${word} → ${color}`;
-        div.style.color = color;
+    function renderLegend(entries){
+      const legend=document.getElementById("legend");
+      legend.innerHTML="";
+      entries.forEach(({word,color})=>{
+        const div=document.createElement("div");
+        div.className="legend-item";
+        div.textContent=`${word} → ${color}`;
+        div.style.color=color;
         legend.appendChild(div);
       });
     }
 
-    // Create an inline SVG string for the gold word.
-    // Important: font-size inside the SVG is 1em and the <svg> element has height:1em (CSS).
-    // That combination makes the SVG text render at the *same* size as the surrounding DOM text.
-    function renderGoldSVG(word) {
-      const id = 'goldGrad' + (uniqueId++);
-      // pick a simple viewBox width that will scale; actual size will be driven by CSS height:1em
-      const viewW = Math.max(200, word.length * 70);
-      const viewH = 100;
-
-      const svg = `
-        <svg class="gold-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewW} ${viewH}"
-             preserveAspectRatio="xMidYMid meet" role="img" aria-label="${word}">
-          <defs>
-            <linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#AE8625"/>
-              <stop offset="25%" stop-color="#F7EF8A"/>
-              <stop offset="50%" stop-color="#D2AC47"/>
-              <stop offset="75%" stop-color="#EDC967"/>
-              <stop offset="100%" stop-color="#AE8625"/>
-            </linearGradient>
-          </defs>
-
-          <!-- text centered in the viewBox; font-size uses '1em' so when SVG scaled to height:1em it matches CSS -->
-          <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central"
-                fill="url(#${id})"
-                stroke="#ffffff"
-                stroke-width="0.06em"
-                paint-order="stroke fill"
-                stroke-linejoin="round"
-                style="font-family: inherit; font-weight:800; font-size:1em;">
-            ${escapeXml(word)}
-          </text>
-        </svg>`;
-      return svg;
-    }
-
-    // Escape function for safety (words are simple but safe to do anyway)
-    function escapeXml(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-    }
-
-    function showCurrent() {
-      const el = document.getElementById("word-display");
-      const { word, color } = cycleEntries[index];
-
-      if (color === "DarkGoldenRod") {
-        // Render as inline SVG (gradient + stroke) so fill+outline align precisely and avoid white-tip artifacts
-        el.classList.remove("normal");
-        el.innerHTML = renderGoldSVG(word);
-
-        // ensure the svg inherits the font metrics (some browsers need explicit font-size on parent)
-        // the #word-display already has font-size: var(--word-size)
+    function showCurrent(){
+      const el=document.getElementById("word-display");
+      const {word,color} = cycleEntries[index];
+      el.className=""; 
+      if(color==="DarkGoldenRod"){
+        el.classList.add("gold");
       } else {
-        // Standard DOM text with outline via text-stroke
-        el.classList.remove("shiny-gold");
         el.classList.add("normal");
-        el.textContent = word;
-        el.style.color = color;
+        el.style.color=color;
       }
+      el.textContent = word;
     }
 
-    function nextWord() {
+    function nextWord(){
       clearInterval(timer);
       index++;
-      if (index >= cycleEntries.length) newCycle();
+      if(index>=cycleEntries.length) newCycle();
       showCurrent();
       startTimer();
     }
 
-    function startTimer() {
+    function startTimer(){
       clearInterval(timer);
-      const interval = Math.max(1, parseInt(document.getElementById("interval-input").value,10) || 5);
-      timer = setInterval(() => {
+      const interval=Math.max(1,parseInt(document.getElementById("interval-input").value,10)||5);
+      timer=setInterval(()=>{
         index++;
-        if (index >= cycleEntries.length) newCycle();
+        if(index>=cycleEntries.length) newCycle();
         showCurrent();
-      }, interval * 1000);
+      }, interval*1000);
     }
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load",()=>{
       newCycle();
       showCurrent();
       startTimer();
-
-      document.getElementById("interval-input").addEventListener("change", startTimer);
-      document.getElementById("next-btn").addEventListener("click", nextWord);
-      document.addEventListener("keydown", (e) => { if (e.key === "Enter") nextWord(); });
+      document.getElementById("interval-input").addEventListener("change",startTimer);
+      document.getElementById("next-btn").addEventListener("click",nextWord);
+      document.addEventListener("keydown",(e)=>{if(e.key==="Enter") nextWord();});
     });
   </script>
 </body>
