@@ -236,18 +236,29 @@
       `;
     }
 
-    function showCurrent(){
+    function showCurrent() {
       const el = document.getElementById("word-display");
-      const {word,color} = cycleEntries[index];
-      if(color==="DarkGoldenRod"){
-        el.classList.remove("normal");
-        el.innerHTML = renderGold(word);
+      const { word, color } = cycleEntries[index];
+
+      // Wrap every word in gold-wrap to maintain consistent layout
+      if (color === "DarkGoldenRod") {
+        // Gold gradient for gold words
+        el.innerHTML = `
+          <span class="gold-wrap">
+            <span class="gold-stroke">${word}</span>
+            <span class="gold-fill">${word}</span>
+          </span>`;
       } else {
-        el.classList.remove("shiny-gold");
-        el.classList.add("normal");
-        el.textContent = word;
-        el.style.color = color;
+        // Solid color for other words, but still wrapped for same metrics
+        el.innerHTML = `
+          <span class="gold-wrap">
+            <span class="gold-stroke">${word}</span>
+            <span class="gold-fill" style="background:none; -webkit-text-fill-color:${color};">${word}</span>
+          </span>`;
       }
+
+      // Remove normal class since layout is now handled by gold-wrap
+      el.classList.remove("normal");
     }
 
     function nextWord(){
