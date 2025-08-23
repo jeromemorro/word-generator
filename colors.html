@@ -46,9 +46,11 @@
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-weight: bold;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.3); /* subtle shadow for contrast */
-      -webkit-text-stroke: 0; /* no outline for gold */
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6); /* same outline as normal words */
+      font-weight: 800;
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85); /* matches other words */
+      letter-spacing: normal; /* consistent width with other words */
+      line-height: 1.05; /* prevent clipping of descenders like "g" */
     }
 
     #controls {
