@@ -37,12 +37,29 @@
     }
 
     /* Gold layering technique */
+ //   .gold-wrap {
+ //     position: relative;
+ //     display: inline-block;
+  //    line-height: 1.25;           /* match word-display line-height */
+  //    padding-bottom: 0.05em;      /* ensure descenders are visible */
+//      white-space: nowrap;
+//    }
+
+//    .gold-stroke,
+//    .gold-fill {
+//      font-size: var(--word-size);
+//      font-weight: 800;
+//      letter-spacing: normal;
+   //   white-space: nowrap;
+  //  }
+
     .gold-wrap {
       position: relative;
       display: inline-block;
-      line-height: 1.25;           /* match word-display line-height */
-      padding-bottom: 0.05em;      /* ensure descenders are visible */
+      line-height: 1.1;           /* enough for descenders to show */
+      vertical-align: middle;
       white-space: nowrap;
+      margin-bottom: -0.08em;     /* slightly pull up the row below */
     }
 
     .gold-stroke,
@@ -51,6 +68,7 @@
       font-weight: 800;
       letter-spacing: normal;
       white-space: nowrap;
+      line-height: 1.1;
     }
 
     /* Stroke layer (no fill) */
