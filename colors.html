@@ -128,6 +128,52 @@
   -webkit-text-fill-color: transparent;
 }
 
+    /* Bronze layering technique (matches gold/silver structure) */
+.bronze-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 1.25;        /* match #word-display */
+  padding-bottom: 0.05em;   /* ensures descenders are visible */
+  white-space: nowrap;
+}
+
+.bronze-stroke,
+.bronze-fill {
+  font-size: var(--word-size);
+  font-weight: 800;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+/* Stroke layer (no fill) */
+.bronze-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+}
+
+/* Gradient fill layer with two highlight bands */
+.bronze-fill {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    #6E3F1F 0%,    /* dark edge */
+    #A5622E 20%,   /* warm mid shadow */
+    #CD7F32 40%,   /* polished bronze base */
+    #E6B07A 50%,   /* first highlight */
+    #CD7F32 60%,   /* base again */
+    #A5622E 75%,   /* warm mid shadow */
+    #E6B07A 88%,   /* second highlight (glint) */
+    #6E3F1F 100%   /* dark edge */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -209,7 +255,7 @@
   <script>
     const WORDS = [
       "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
-      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Aqua","Teal","Cream","Lime"
+      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Bronze","Aqua","Teal","Cream","Lime"
     ];
 
     const COLOR_MAP = {
@@ -217,7 +263,7 @@
       Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
       Orange: "Orange", Brown: "SaddleBrown", Gray: "DimGray", Magenta: "Magenta",
       Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
-      Gold: "DarkGoldenRod", Silver: "Silver", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
+      Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Bronze", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -285,12 +331,21 @@
       `;
     }
 
-function renderSilver(word){
-  return `
-    <span class="silver-wrap">
-      <span class="silver-stroke">${word}</span>
-      <span class="silver-fill">${word}</span>
-    </span>
+    function renderSilver(word){
+      return `
+        <span class="silver-wrap">
+          <span class="silver-stroke">${word}</span>
+          <span class="silver-fill">${word}</span>
+        </span>
+      `;
+    }
+
+    function renderBronze(word){
+      return `
+        <span class="bronze-wrap">
+          <span class="bronze-stroke">${word}</span>
+          <span class="bronze-fill">${word}</span>
+        </span>
       `;
     }
 
@@ -304,6 +359,9 @@ function showCurrent() {
   } else if (color === "Silver") {
     // Silver gradient
     el.innerHTML = renderSilver(word);
+  } else if (color === "bronze") {
+    // Bronze gradient
+    el.innerHTML = renderBronze(word);    
   } else {
     // Solid color words, still wrapped for metrics
     el.innerHTML = `
