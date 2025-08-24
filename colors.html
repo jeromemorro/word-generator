@@ -6,7 +6,7 @@
   <style>
     :root {
       --word-size: clamp(56px, 12vw, 160px);
-      --legend-visible: block; /* 'block' to show caption+legend */
+      --legend-visible: none; /* 'block' to show caption+legend */
     }
 
     body {
@@ -36,189 +36,189 @@
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-/* Gold layering technique */
-.gold-wrap {
-  position: relative;
-  display: inline-block;
-  line-height: 1.25;           /* match word-display line-height */
-  padding-bottom: 0.05em;      /* ensure descenders are visible */
-  white-space: nowrap;
-}
+    /* Gold layering technique */
+    .gold-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 1.25;           /* match word-display line-height */
+      padding-bottom: 0.05em;      /* ensure descenders are visible */
+      white-space: nowrap;
+    }
 
-.gold-stroke,
-.gold-fill {
-  font-size: var(--word-size);
-  font-weight: 800;
-  letter-spacing: normal;
-  white-space: nowrap;
-}
+    .gold-stroke,
+    .gold-fill {
+      font-size: var(--word-size);
+      font-weight: 800;
+      letter-spacing: normal;
+      white-space: nowrap;
+    }
 
-/* Stroke layer (no fill) */
-.gold-stroke {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
-}
+    /* Stroke layer (no fill) */
+    .gold-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+    }
 
-/* Gradient fill layer with second highlight band */
-.gold-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    #A57D22 0%,    /* dark shadow */
-    #B4902C 20%,   /* midtone shadow */
-    #D2AC47 40%,   /* base gold */
-    #F7EF8A 50%,   /* first highlight */
-    #D2AC47 60%,   /* base gold again */
-    #B4902C 75%,   /* midtone shadow */
-    #F7EF8A 88%,   /* second highlight (new band) */
-    #A57D22 100%   /* dark edge */
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    /* Gradient fill layer with second highlight band */
+    .gold-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        135deg,
+        #A57D22 0%,    /* dark shadow */
+        #B4902C 20%,   /* midtone shadow */
+        #D2AC47 40%,   /* base gold */
+        #F7EF8A 50%,   /* first highlight */
+        #D2AC47 60%,   /* base gold again */
+        #B4902C 75%,   /* midtone shadow */
+        #F7EF8A 88%,   /* second highlight (new band) */
+        #A57D22 100%   /* dark edge */
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     
-/* Silver layering technique */
-.silver-wrap {
-  position: relative;
-  display: inline-block;
-  line-height: 1.25;        /* match #word-display */
-  padding-bottom: 0.05em;   /* ensures descenders are visible */
-  white-space: nowrap;
-}
+    /* Silver layering technique */
+    .silver-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 1.25;        /* match #word-display */
+      padding-bottom: 0.05em;   /* ensures descenders are visible */
+      white-space: nowrap;
+    }
 
-.silver-stroke,
-.silver-fill {
-  font-size: var(--word-size);
-  font-weight: 800;
-  letter-spacing: normal;
-  white-space: nowrap;
-}
+    .silver-stroke,
+    .silver-fill {
+      font-size: var(--word-size);
+      font-weight: 800;
+      letter-spacing: normal;
+      white-space: nowrap;
+    }
 
-/* Stroke layer (no fill) */
-.silver-stroke {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
-}
+    /* Stroke layer (no fill) */
+    .silver-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+    }
 
-/* Gradient fill layer with second highlight band */
-.silver-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    #7F7F7F 0%,    /* dark edge */
-    #A0A0A0 20%,   /* mid silver */
-    #C0C0C0 40%,   /* lighter silver */
-    #FFFFFF 50%,   /* first highlight */
-    #C0C0C0 60%,   /* light silver again */
-    #A0A0A0 75%,   /* mid silver */
-    #FFFFFF 88%,   /* second highlight (new band) */
-    #7F7F7F 100%   /* dark edge */
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    /* Gradient fill layer with second highlight band */
+    .silver-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        135deg,
+        #7F7F7F 0%,    /* dark edge */
+        #A0A0A0 20%,   /* mid silver */
+        #C0C0C0 40%,   /* lighter silver */
+        #FFFFFF 50%,   /* first highlight */
+        #C0C0C0 60%,   /* light silver again */
+        #A0A0A0 75%,   /* mid silver */
+        #FFFFFF 88%,   /* second highlight (new band) */
+        #7F7F7F 100%   /* dark edge */
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     /* Bronze layering technique (matches gold/silver structure) */
-.bronze-wrap {
-  position: relative;
-  display: inline-block;
-  line-height: 1.25;        /* match #word-display */
-  padding-bottom: 0.05em;   /* ensures descenders are visible */
-  white-space: nowrap;
-}
+    .bronze-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 1.25;        /* match #word-display */
+      padding-bottom: 0.05em;   /* ensures descenders are visible */
+      white-space: nowrap;
+    }
 
-.bronze-stroke,
-.bronze-fill {
-  font-size: var(--word-size);
-  font-weight: 800;
-  letter-spacing: normal;
-  white-space: nowrap;
-}
+    .bronze-stroke,
+    .bronze-fill {
+      font-size: var(--word-size);
+      font-weight: 800;
+      letter-spacing: normal;
+      white-space: nowrap;
+    }
 
-/* Stroke layer (no fill) */
-.bronze-stroke {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
-}
+    /* Stroke layer (no fill) */
+    .bronze-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+    }
 
-/* Gradient fill layer with two highlight bands */
-.bronze-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    #6E3F1F 0%,    /* dark edge */
-    #A5622E 20%,   /* warm mid shadow */
-    #CD7F32 40%,   /* polished bronze base */
-    #E6B07A 50%,   /* first highlight */
-    #CD7F32 60%,   /* base again */
-    #A5622E 75%,   /* warm mid shadow */
-    #E6B07A 88%,   /* second highlight (glint) */
-    #6E3F1F 100%   /* dark edge */
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    /* Gradient fill layer with two highlight bands */
+    .bronze-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        135deg,
+        #6E3F1F 0%,    /* dark edge */
+        #A5622E 20%,   /* warm mid shadow */
+        #CD7F32 40%,   /* polished bronze base */
+        #E6B07A 50%,   /* first highlight */
+        #CD7F32 60%,   /* base again */
+        #A5622E 75%,   /* warm mid shadow */
+        #E6B07A 88%,   /* second highlight (glint) */
+        #6E3F1F 100%   /* dark edge */
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     /* ===== Copper layering technique (pinkish) with two highlights ===== */
-.copper-wrap {
-  position: relative;
-  display: inline-block;
-  line-height: 1.25;         
-  padding-bottom: 0.05em;    
-  white-space: nowrap;
-}
+    .copper-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 1.25;         
+      padding-bottom: 0.05em;    
+      white-space: nowrap;
+    }
 
-.copper-stroke,
-.copper-fill {
-  font-size: var(--word-size);
-  font-weight: 800;
-  letter-spacing: normal;
-  white-space: nowrap;
-}
+    .copper-stroke,
+    .copper-fill {
+      font-size: var(--word-size);
+      font-weight: 800;
+      letter-spacing: normal;
+      white-space: nowrap;
+    }
 
-/* Stroke layer (no fill) */
-.copper-stroke {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
-}
+    /* Stroke layer (no fill) */
+    .copper-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+    }
 
-/* Gradient fill layer with two highlight bands */
-.copper-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    #b35c42 0%,    /* dark reddish base */
-    #d87c6f 25%,   /* mid copper-pink */
-    #ff8c69 45%,   /* base copper */
-    #ffd3b2 50%,   /* first highlight */
-    #ff8c69 55%,   /* base copper again */
-    #d87c6f 70%,   /* mid copper-pink */
-    #ffd3b2 88%,   /* second highlight */
-    #b35c42 100%   /* dark edge */
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    /* Gradient fill layer with two highlight bands */
+    .copper-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        135deg,
+        #b35c42 0%,    /* dark reddish base */
+        #d87c6f 25%,   /* mid copper-pink */
+        #ff8c69 45%,   /* base copper */
+        #ffd3b2 50%,   /* first highlight */
+        #ff8c69 55%,   /* base copper again */
+        #d87c6f 70%,   /* mid copper-pink */
+        #ffd3b2 88%,   /* second highlight */
+        #b35c42 100%   /* dark edge */
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     
     #controls {
       margin-top: 6vh;
@@ -337,9 +337,9 @@
     function newCycle() {
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
-      const oneThird = Math.floor(n/3);
-      const actualWords = shuffledWords.slice(0, oneThird);
-      const remaining = shuffledWords.slice(oneThird);
+      const oneFourth = Math.floor(n/4);
+      const actualWords = shuffledWords.slice(0, oneFourth);
+      const remaining = shuffledWords.slice(oneFourth);
 
       const assignments = new Map();
       actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
