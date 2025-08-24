@@ -312,6 +312,27 @@
       Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Peru", Copper: "Tomato", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
+    // Exclusion rules: word -> list of forbidden COLOR_MAP values
+    const EXCLUSIONS = {
+      Blue: ["Teal", "Aqua"],
+      Green: ["Lime", "Olive"],
+      Lime: ["Green"],
+      Olive: ["Green"],
+      Bronze: ["SaddleBrown"],
+      Lavender: ["Magenta", "Pink"],
+      Magenta: ["Violet"], //Lavender
+      Purple: ["Magenta", "Violet"], //Magenta & Lavender
+      Pink: ["Magenta", "Violet"], //Magenta & Lavender
+      White: ["Khaki"], // Cream
+      Cream: ["White"],
+      Aqua: ["Blue"],
+      Gold: ["Yellow"],
+      Silver: ["DimGray"],
+      Gray: ["Silver"],
+      Red: ["Maroon"],
+      Brown: ["Tan"]
+    };
+
     function shuffle(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
@@ -319,6 +340,28 @@
         [a[i], a[j]] = [a[j], a[i]];
       }
       return a;
+    }
+
+    // Validate mapping against exclusions
+    function isValidMapping(word, color) {
+      return !(EXCLUSIONS[word] && EXCLUSIONS[word].includes(color));
+    }
+
+    // Modified Sattolo shuffle with rules
+    function sattoloWithRules(words, colors) {
+      let deranged;
+      let guard = 0;
+      do {
+        deranged = sattolo(colors);
+        guard++;
+        if (guard > 1000) {
+          console.warn("Could not satisfy exclusions after 1000 attempts.");
+          break;
+        }
+      } while (
+        deranged.some((c, i) => c === colors[i] || !isValidMapping(words[i], c))
+      );
+      return deranged;
     }
 
     function sattolo(arr) {
@@ -337,7 +380,7 @@
     function newCycle() {
       const shuffledWords = shuffle(WORDS);
       const n = shuffledWords.length;
-      const oneFourth = Math.floor(n/4);
+      const oneFourth = Math.floor(n / 4);
       const actualWords = shuffledWords.slice(0, oneFourth);
       const remaining = shuffledWords.slice(oneFourth);
 
@@ -345,12 +388,11 @@
       actualWords.forEach(w => assignments.set(w, COLOR_MAP[w]));
 
       const mismatchColors = remaining.map(w => COLOR_MAP[w]);
-      let deranged = sattolo(mismatchColors);
-      let guard = 0;
-      while(deranged.some((c,i)=>c===mismatchColors[i]) && guard<20){deranged=sattolo(mismatchColors); guard++;}
-      remaining.forEach((w,i)=>assignments.set(w,deranged[i]));
+      let deranged = sattoloWithRules(remaining, mismatchColors);
 
-      cycleEntries = WORDS.map(w=>({word:w,color:assignments.get(w)}));
+      remaining.forEach((w, i) => assignments.set(w, deranged[i]));
+
+      cycleEntries = WORDS.map(w => ({ word: w, color: assignments.get(w) }));
       cycleEntries = shuffle(cycleEntries);
       index = 0;
       renderLegend(cycleEntries);
