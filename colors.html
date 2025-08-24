@@ -61,7 +61,52 @@
     }
 
     /* Gradient fill layer */
-.gold-fill {
+    .gold-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        135deg,
+        #A57D22 0%,    /* dark shadow */
+        #B4902C 20%,   /* midtone shadow */
+        #D2AC47 40%,   /* base gold */
+        #F7EF8A 50%,   /* concentrated highlight */
+        #D2AC47 60%,   /* base gold again */
+        #B4902C 80%,   /* midtone shadow */
+        #A57D22 100%   /* dark edge */
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Silver layering technique: similar to gold */
+.silver-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 1.25;        /* match #word-display */
+  padding-bottom: 0.05em;   /* ensures descenders are visible */
+  white-space: nowrap;
+}
+
+.silver-stroke,
+.silver-fill {
+  font-size: var(--word-size);
+  font-weight: 800;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+/* Stroke layer (no fill) */
+.silver-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+}
+
+/* Gradient fill layer */
+.silver-fill {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
@@ -69,62 +114,17 @@
   pointer-events: none;
   background: linear-gradient(
     135deg,
-    #A57D22 0%,    /* dark shadow */
-    #B4902C 20%,   /* midtone shadow */
-    #D2AC47 40%,   /* base gold */
-    #F7EF8A 50%,   /* concentrated highlight */
-    #D2AC47 60%,   /* base gold again */
-    #B4902C 80%,   /* midtone shadow */
-    #A57D22 100%   /* dark edge */
+    #7F7F7F 0%,
+    #A0A0A0 20%,
+    #C0C0C0 40%,
+    #FFFFFF 50%,
+    #C0C0C0 60%,
+    #A0A0A0 80%,
+    #7F7F7F 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
-    
-//.gold-fill {
-//  position: absolute;
-//  top: 0; left: 0;
-//  width: 100%;
-//  height: 100%;
-//  pointer-events: none;
-//  background: linear-gradient(
-//    135deg,
-//    #A57D22 0%,    /* dark gold shadow */
-//    #B4902C 10%,   /* midtone */
-//    #CBA73B 20%,   /* subtle highlight */
-//    #E0C25D 35%,   /* highlight */
-//    #F7EF8A 45%,   /* peak shine */
-//    #EAD06A 55%,   /* slight midtone */
-//    #D2AC47 65%,   /* base gold */
-//    #C19633 75%,   /* soft shadow */
-//    #B08628 90%,   /* darker edge */
-//    #A57D22 100%   /* dark gold shadow */
-//  );
-//  -webkit-background-clip: text;
-//  -webkit-text-fill-color: transparent;
-//}
-
-
-    /*
-.gold-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    #AE8625 0%,
-    #C5A43F 15%,
-    #F7EF8A 35%,
-    #D2AC47 50%,
-    #E9C66A 65%,
-    #EDC967 85%,
-    #AE8625 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-} */
 
     #controls {
       margin-top: 6vh;
@@ -207,7 +207,7 @@
   <script>
     const WORDS = [
       "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
-      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Aqua","Teal","Cream","Lime"
+      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Aqua","Teal","Cream","Lime"
     ];
 
     const COLOR_MAP = {
@@ -215,7 +215,7 @@
       Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
       Orange: "Orange", Brown: "SaddleBrown", Gray: "DimGray", Magenta: "Magenta",
       Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
-      Gold: "DarkGoldenRod", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
+      Gold: "DarkGoldenRod", Silver: "Silver", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -283,30 +283,37 @@
       `;
     }
 
-    function showCurrent() {
-      const el = document.getElementById("word-display");
-      const { word, color } = cycleEntries[index];
-
-      // Wrap every word in gold-wrap to maintain consistent layout
-      if (color === "DarkGoldenRod") {
-        // Gold gradient for gold words
-        el.innerHTML = `
-          <span class="gold-wrap">
-            <span class="gold-stroke">${word}</span>
-            <span class="gold-fill">${word}</span>
-          </span>`;
-      } else {
-        // Solid color for other words, but still wrapped for same metrics
-        el.innerHTML = `
-          <span class="gold-wrap">
-            <span class="gold-stroke">${word}</span>
-            <span class="gold-fill" style="background:none; -webkit-text-fill-color:${color};">${word}</span>
-          </span>`;
-      }
-
-      // Remove normal class since layout is now handled by gold-wrap
-      el.classList.remove("normal");
+function renderSilver(word){
+  return `
+    <span class="silver-wrap">
+      <span class="silver-stroke">${word}</span>
+      <span class="silver-fill">${word}</span>
+    </span>
+      `;
     }
+
+function showCurrent() {
+  const el = document.getElementById("word-display");
+  const { word, color } = cycleEntries[index];
+
+  if (color === "DarkGoldenRod") {
+    // Gold gradient
+    el.innerHTML = renderGold(word);
+  } else if (color === "Silver") {
+    // Silver gradient
+    el.innerHTML = renderSilver(word);
+  } else {
+    // Solid color words, still wrapped for metrics
+    el.innerHTML = `
+      <span class="gold-wrap">
+        <span class="gold-stroke">${word}</span>
+        <span class="gold-fill" style="background:none; -webkit-text-fill-color:${color};">${word}</span>
+      </span>`;
+  }
+
+  el.classList.remove("normal");
+}
+
 
     function nextWord(){
       clearInterval(timer);
