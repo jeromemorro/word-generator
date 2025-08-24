@@ -36,30 +36,31 @@
       -webkit-text-stroke: 1px rgba(255,255,255,0.6);
     }
 
-    /* Gold layering technique */
-    .gold-wrap {
-      position: relative;
-      display: inline-block;
-      line-height: 1.25;           /* match word-display line-height */
-      padding-bottom: 0.05em;      /* ensure descenders are visible */
-      white-space: nowrap;
-    }
+/* Gold layering technique */
+.gold-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 1.25;           /* match word-display line-height */
+  padding-bottom: 0.05em;      /* ensure descenders are visible */
+  white-space: nowrap;
+}
 
-    .gold-stroke,
-    .gold-fill {
-      font-size: var(--word-size);
-      font-weight: 800;
-      letter-spacing: normal;
-      white-space: nowrap;
-    }
+.gold-stroke,
+.gold-fill {
+  font-size: var(--word-size);
+  font-weight: 800;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
 
-    /* Stroke layer (no fill) */
-    .gold-stroke {
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-      text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
-    }
+/* Stroke layer (no fill) */
+.gold-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+}
 
+/* Gradient fill layer with second highlight band */
 .gold-fill {
   position: absolute;
   top: 0; left: 0;
@@ -71,16 +72,17 @@
     #A57D22 0%,    /* dark shadow */
     #B4902C 20%,   /* midtone shadow */
     #D2AC47 40%,   /* base gold */
-    #F7EF8A 50%,   /* concentrated highlight */
+    #F7EF8A 50%,   /* first highlight */
     #D2AC47 60%,   /* base gold again */
-    #B4902C 80%,   /* midtone shadow */
+    #B4902C 75%,   /* midtone shadow */
+    #F7EF8A 88%,   /* second highlight (new band) */
     #A57D22 100%   /* dark edge */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
     
-/* Silver layering technique: similar to gold */
+/* Silver layering technique */
 .silver-wrap {
   position: relative;
   display: inline-block;
@@ -104,7 +106,7 @@
   text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
 }
 
-/* Gradient fill layer */
+/* Gradient fill layer with second highlight band */
 .silver-fill {
   position: absolute;
   top: 0; left: 0;
@@ -113,13 +115,14 @@
   pointer-events: none;
   background: linear-gradient(
     135deg,
-    #7F7F7F 0%,
-    #A0A0A0 20%,
-    #C0C0C0 40%,
-    #FFFFFF 50%,
-    #C0C0C0 60%,
-    #A0A0A0 80%,
-    #7F7F7F 100%
+    #7F7F7F 0%,    /* dark edge */
+    #A0A0A0 20%,   /* mid silver */
+    #C0C0C0 40%,   /* lighter silver */
+    #FFFFFF 50%,   /* first highlight */
+    #C0C0C0 60%,   /* light silver again */
+    #A0A0A0 75%,   /* mid silver */
+    #FFFFFF 88%,   /* second highlight (new band) */
+    #7F7F7F 100%   /* dark edge */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
