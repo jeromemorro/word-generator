@@ -161,19 +161,65 @@
   pointer-events: none;
   background: linear-gradient(
     135deg,
-    #732e1d 0%,    /* dark reddish base */
-    #b87333 25%,   /* mid copper tone */
-    #ff7f50 45%,   /* base copper */
-    #ffd8a1 50%,   /* first highlight */
-    #ff7f50 55%,   /* base copper again */
-    #b87333 70%,   /* mid copper tone */
-    #ffd8a1 88%,   /* second highlight */
-    #732e1d 100%   /* dark edge */
+    #6E3F1F 0%,    /* dark edge */
+    #A5622E 20%,   /* warm mid shadow */
+    #CD7F32 40%,   /* polished bronze base */
+    #E6B07A 50%,   /* first highlight */
+    #CD7F32 60%,   /* base again */
+    #A5622E 75%,   /* warm mid shadow */
+    #E6B07A 88%,   /* second highlight (glint) */
+    #6E3F1F 100%   /* dark edge */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+    /* ===== Copper layering technique (pinkish) with two highlights ===== */
+.copper-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 1.25;         
+  padding-bottom: 0.05em;    
+  white-space: nowrap;
+}
+
+.copper-stroke,
+.copper-fill {
+  font-size: var(--word-size);
+  font-weight: 800;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+/* Stroke layer (no fill) */
+.copper-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+  text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
+}
+
+/* Gradient fill layer with two highlight bands */
+.copper-fill {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    #b35c42 0%,    /* dark reddish base */
+    #d87c6f 25%,   /* mid copper-pink */
+    #ff8c69 45%,   /* base copper */
+    #ffd3b2 50%,   /* first highlight */
+    #ff8c69 55%,   /* base copper again */
+    #d87c6f 70%,   /* mid copper-pink */
+    #ffd3b2 88%,   /* second highlight */
+    #b35c42 100%   /* dark edge */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+    
     #controls {
       margin-top: 6vh;
       display: flex;
@@ -255,7 +301,7 @@
   <script>
     const WORDS = [
       "Red","Blue","Green","Yellow","Black","White","Pink","Purple","Orange","Brown",
-      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Bronze","Aqua","Teal","Cream","Lime"
+      "Gray","Magenta","Lavender","Maroon","Olive","Tan","Gold","Silver","Bronze","Copper","Aqua","Teal","Cream","Lime"
     ];
 
     const COLOR_MAP = {
@@ -263,7 +309,7 @@
       Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
       Orange: "Orange", Brown: "SaddleBrown", Gray: "DimGray", Magenta: "Magenta",
       Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
-      Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Peru", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
+      Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Peru", Copper: "Tomato", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -348,31 +394,43 @@
         </span>
       `;
     }
+    
+    function renderCopper(word){
+      return `
+        <span class="copper-wrap">
+          <span class="copper-stroke">${word}</span>
+          <span class="copper-fill">${word}</span>
+        </span>
+      `;
+    }
+    
+    function showCurrent() {
+      const el = document.getElementById("word-display");
+      const { word, color } = cycleEntries[index];
 
-function showCurrent() {
-  const el = document.getElementById("word-display");
-  const { word, color } = cycleEntries[index];
+      if (color === "DarkGoldenRod") {
+        // Gold gradient
+        el.innerHTML = renderGold(word);
+      } else if (color === "Silver") {
+        // Silver gradient
+        el.innerHTML = renderSilver(word);
+      } else if (color === "Peru") {
+        // Bronze gradient
+        el.innerHTML = renderBronze(word);    
+      } else if (color === "Tomato") {
+        // Copper gradient
+        el.innerHTML = renderCopper(word);            
+      } else {
+        // Solid color words, still wrapped for metrics
+        el.innerHTML = `
+          <span class="gold-wrap">
+            <span class="gold-stroke">${word}</span>
+            <span class="gold-fill" style="background:none; -webkit-text-fill-color:${color};">${word}</span>
+          </span>`;
+      }
 
-  if (color === "DarkGoldenRod") {
-    // Gold gradient
-    el.innerHTML = renderGold(word);
-  } else if (color === "Silver") {
-    // Silver gradient
-    el.innerHTML = renderSilver(word);
-  } else if (color === "Peru") {
-    // Bronze gradient
-    el.innerHTML = renderBronze(word);    
-  } else {
-    // Solid color words, still wrapped for metrics
-    el.innerHTML = `
-      <span class="gold-wrap">
-        <span class="gold-stroke">${word}</span>
-        <span class="gold-fill" style="background:none; -webkit-text-fill-color:${color};">${word}</span>
-      </span>`;
-  }
-
-  el.classList.remove("normal");
-}
+      el.classList.remove("normal");
+    }
 
     function nextWord(){
       clearInterval(timer);
