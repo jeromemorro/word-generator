@@ -40,10 +40,9 @@
     .gold-wrap {
       position: relative;
       display: inline-block;
-      line-height: 1.1;      /* enough for descenders to show */
-      vertical-align: middle;
+      line-height: 1.25;           /* match word-display line-height */
+      padding-bottom: 0.05em;      /* ensure descenders are visible */
       white-space: nowrap;
-      margin-bottom: 0;       /* no upward shift; row spacing preserved */
     }
 
     .gold-stroke,
@@ -52,7 +51,6 @@
       font-weight: 800;
       letter-spacing: normal;
       white-space: nowrap;
-      line-height: 1.1;
     }
 
     /* Stroke layer (no fill) */
