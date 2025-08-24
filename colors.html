@@ -263,7 +263,7 @@
       Black: "Black", White: "White", Pink: "Pink", Purple: "Purple",
       Orange: "Orange", Brown: "SaddleBrown", Gray: "DimGray", Magenta: "Magenta",
       Lavender: "Violet", Maroon: "Maroon", Olive: "Olive", Tan: "Tan",
-      Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Bronze", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
+      Gold: "DarkGoldenRod", Silver: "Silver", Bronze: "Peru", Aqua: "Aqua", Teal: "Teal", Cream: "Khaki", Lime: "Lime"
     };
 
     function shuffle(arr) {
@@ -359,7 +359,7 @@ function showCurrent() {
   } else if (color === "Silver") {
     // Silver gradient
     el.innerHTML = renderSilver(word);
-  } else if (color === "bronze") {
+  } else if (color === "Peru") {
     // Bronze gradient
     el.innerHTML = renderBronze(word);    
   } else {
@@ -373,7 +373,6 @@ function showCurrent() {
 
   el.classList.remove("normal");
 }
-
 
     function nextWord(){
       clearInterval(timer);
