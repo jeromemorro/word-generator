@@ -60,22 +60,16 @@
       text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
     }
 
-    /* Gradient fill layer */
+    /* Gold gradient with two highlight bands */
     .gold-fill {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
       background: linear-gradient(
-        135deg,
-        #A57D22 0%,    /* dark shadow */
-        #B4902C 20%,   /* midtone shadow */
-        #D2AC47 40%,   /* base gold */
-        #F7EF8A 50%,   /* concentrated highlight */
-        #D2AC47 60%,   /* base gold again */
-        #B4902C 80%,   /* midtone shadow */
-        #A57D22 100%   /* dark edge */
+        180deg,
+        #f9f3c3 0%,     /* light top sheen */
+        #d4af37 25%,    /* deep gold */
+        #ffd700 45%,    /* bright highlight */
+        #b8860b 65%,    /* darker band */
+        #ffd95e 85%,    /* second highlight band */
+        #7a5c0a 100%    /* base gold */
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -105,22 +99,16 @@
   text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 2px rgba(255,255,255,0.85);
 }
 
-/* Gradient fill layer */
+/* Silver gradient with two highlight bands */
 .silver-fill {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
   background: linear-gradient(
-    135deg,
-    #7F7F7F 0%,
-    #A0A0A0 20%,
-    #C0C0C0 40%,
-    #FFFFFF 50%,
-    #C0C0C0 60%,
-    #A0A0A0 80%,
-    #7F7F7F 100%
+    180deg,
+    #f8f8f8 0%,     /* top shine */
+    #c0c0c0 25%,    /* core silver */
+    #e0e0e0 45%,    /* first highlight */
+    #a0a0a0 65%,    /* dark band */
+    #f2f2f2 85%,    /* second highlight band */
+    #8c8c8c 100%    /* base silver */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
